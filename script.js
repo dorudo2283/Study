@@ -1,52 +1,55 @@
-// ===============================
-// 一問一答勉強サイト
-// script.js
-// ===============================
+// フェードイン
+window.addEventListener("load",()=>{
 
-// 勉強開始ボタン
-const startBtn = document.querySelector(".start");
+    document.body.animate([
 
-if(startBtn){
+        {
+            opacity:0,
+            transform:"translateY(20px)"
+        },
 
-    startBtn.addEventListener("click",()=>{
+        {
+            opacity:1,
+            transform:"translateY(0px)"
+        }
 
-        startBtn.innerHTML="読み込み中...";
+    ],{
 
-        startBtn.disabled=true;
-
-        setTimeout(()=>{
-
-            // 後で問題画面へ変更
-            alert("問題画面は次回作成します！");
-
-            startBtn.innerHTML="勉強を始める →";
-
-            startBtn.disabled=false;
-
-        },600);
+        duration:600,
+        easing:"ease"
 
     });
 
-}
+});
 
+// ボタン
+const btn=document.getElementById("startButton");
 
-// ===============================
+btn.addEventListener("mouseenter",()=>{
+
+    btn.style.transform="translateY(-5px) scale(1.03)";
+
+});
+
+btn.addEventListener("mouseleave",()=>{
+
+    btn.style.transform="translateY(0px) scale(1)";
+
+});
+
 // 数字アニメーション
-// ===============================
 
-const numbers=document.querySelectorAll(".status h2");
+document.querySelectorAll(".status h2").forEach(item=>{
 
-numbers.forEach(number=>{
+    const target=parseInt(item.innerText.replace(/[^0-9]/g,""));
 
-    const target=parseInt(number.innerText.replace(/,/g,""));
+    if(isNaN(target)) return;
 
     let current=0;
 
-    const speed=Math.max(1,Math.floor(target/80));
-
     const timer=setInterval(()=>{
 
-        current+=speed;
+        current+=Math.ceil(target/60);
 
         if(current>=target){
 
@@ -56,111 +59,20 @@ numbers.forEach(number=>{
 
         }
 
-        number.innerText=current.toLocaleString();
+        if(item.innerText.includes("Pt")){
 
-    },15);
+            item.innerText=current.toLocaleString()+"Pt";
 
-});
+        }else if(item.innerText.includes("時間")){
 
+            item.innerText=current+"時間";
 
-// ===============================
-// 教科ボタン
-// ===============================
+        }else{
 
-document.querySelectorAll(".subject-list button").forEach(btn=>{
+            item.innerText=current.toLocaleString()+"問";
 
-    btn.addEventListener("click",()=>{
+        }
 
-        document.querySelectorAll(".subject-list button").forEach(b=>{
-
-            b.classList.remove("selected");
-
-        });
-
-        btn.classList.add("selected");
-
-    });
-
-});
-
-
-// ===============================
-// 今日の目標 保存
-// ===============================
-
-const checks=document.querySelectorAll(".goal input");
-
-checks.forEach((check,index)=>{
-
-    const data=localStorage.getItem("goal_"+index);
-
-    if(data==="true"){
-
-        check.checked=true;
-
-    }
-
-    check.addEventListener("change",()=>{
-
-        localStorage.setItem("goal_"+index,check.checked);
-
-    });
-
-});
-
-
-// ===============================
-// スクロールでヘッダー影
-// ===============================
-
-window.addEventListener("scroll",()=>{
-
-    const header=document.querySelector("header");
-
-    if(window.scrollY>20){
-
-        header.style.boxShadow="0 10px 35px rgba(0,0,0,.12)";
-
-    }
-
-    else{
-
-        header.style.boxShadow="none";
-
-    }
-
-});
-
-
-// ===============================
-// 勉強時間（サンプル）
-// ===============================
-
-let hour=13;
-
-setInterval(()=>{
-
-    const title=document.title;
-
-    if(title.includes("📚")){
-
-        document.title="一問一答勉強サイト";
-
-    }else{
-
-        document.title="📚 一問一答勉強サイト";
-
-    }
-
-},1200);
-
-
-// ===============================
-// ページ表示アニメーション
-// ===============================
-
-window.addEventListener("load",()=>{
-
-    document.body.style.opacity="1";
+    },20);
 
 });
