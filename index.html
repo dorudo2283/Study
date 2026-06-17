@@ -1,173 +1,319 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>一問一答勉強サイト</title>
+    <style>
+        /* --- CSS: シンプルで信頼感のあるミニマルデザイン --- */
+        :root {
+            --bg-color: #f8f9fa;
+            --text-color: #212529;
+            --accent-color: #4a6fa5;
+            --card-bg: #ffffff;
+            --border-color: #e9ecef;
+        }
 
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            line-height: 1.6;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+        }
 
-<title>一問一答</title>
+        header {
+            width: 100%;
+            text-align: center;
+            padding: 3rem 1rem 1.5rem 1rem;
+            box-sizing: border-box;
+        }
 
-<link rel="stylesheet" href="style.css">
+        h1 {
+            font-size: 2.2rem;
+            font-weight: 700;
+            letter-spacing: 0.05em;
+            margin: 0;
+            color: var(--text-color);
+        }
 
+        .container {
+            width: 100%;
+            max-width: 600px;
+            padding: 0 1.5rem;
+            box-sizing: border-box;
+            margin-bottom: 3rem;
+        }
+
+        /* 画面の切り替え用管理 */
+        .view-step {
+            display: none;
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 2.5rem 2rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.02);
+            text-align: center;
+        }
+
+        .view-step.active {
+            display: block;
+        }
+
+        h2 {
+            font-size: 1.25rem;
+            margin-top: 0;
+            margin-bottom: 2rem;
+            color: #6c757d;
+            font-weight: 500;
+        }
+
+        /* ボタンデザイン（怪しさを排除したプレーンなスタイル） */
+        .btn-list {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .btn {
+            background-color: var(--card-bg);
+            border: 2px solid var(--border-color);
+            color: var(--text-color);
+            padding: 1rem 2rem;
+            font-size: 1.1rem;
+            font-weight: 500;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .btn:hover {
+            border-color: var(--accent-color);
+            color: var(--accent-color);
+            background-color: rgba(74, 111, 165, 0.03);
+        }
+
+        /* クイズ画面専用 */
+        .quiz-text {
+            font-size: 1.3rem;
+            font-weight: 600;
+            margin-bottom: 2.5rem;
+            min-height: 80px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .answer-box {
+            background: #f1f3f5;
+            padding: 1.5rem;
+            border-radius: 8px;
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: var(--accent-color);
+            margin-bottom: 2rem;
+            display: none;
+        }
+
+        .answer-box.visible {
+            display: block;
+        }
+
+        .progress {
+            font-size: 0.9rem;
+            color: #adb5bd;
+            margin-bottom: 1rem;
+        }
+    </style>
 </head>
-
 <body>
 
-<header>
-
-<div class="logo">
-
-<h1>一問一答勉強WEBサイト</h1>
-
-<p>シンプルに、毎日学ぶ。</p>
-
-</div>
-
-<nav>
-
-<a href="#">ホーム</a>
-<a href="#">ランキング</a>
-<a href="#">お知らせ</a>
-<a href="#">設定</a>
-
-</nav>
-
-</header>
-
-<main>
-
-<section class="hero">
-
-<div class="hero-text">
-
-<h2>
-こんにちは、DORUDOさん。
-</h2>
-
-<p>
-
-今日は何を勉強しますか？
-
-</p>
-
-<button id="startButton">
-
-勉強を始める
-
-</button>
-
-</div>
-
-</section>
-
-<section class="stats">
-
-<div class="stat">
-
-<p>学習時間</p>
-
-<h3>0時間</h3>
-
-</div>
-
-<div class="stat">
-
-<p>解いた問題</p>
-
-<h3>-10000 (-) 問</h3>
-
-</div>
-
-<div class="stat">
-
-<p>ポイント</p>
-
-<h3>999999999999 (+) Pt</h3>
-
-</div>
-
-</section>
-
-<section class="history">
-
-<div class="section-title">
-
-最近の学習
-
-</div>
-
-<div class="history-list">
-
-<div class="history-item">
-
-<span>社会</span>
-
-<span>１００問</span>
-
-</div>
-
-<div class="history-item">
-
-<span>数学</span>
-
-<span>１００問</span>
-
-</div>
-
-<div class="history-item">
-
-<span>英語</span>
-
-<span>１００問</span>
-
-</div>
-
-</div>
-
-</section>
-
-<section class="news">
-
-<div class="section-title">
-
-お知らせ
-
-</div>
-
-<div class="news-list">
-
-<div class="news-item">
-
-特になし
-
-</div>
-
-<div class="news-item">
-
-ランキング機能を準備中です。
-
-</div>
-
-<div class="news-item">
-
-毎日学習でボーナスポイント！（大嘘）
-
-</div>
-
-</div>
-
-</section>
-
-</main>
-
-<footer>
-
-©2026 一問一答
-
-</footer>
-
-<script src="script.js"></script>
-
+    <header>
+        <h1>一問一答勉強サイト</h1>
+    </header>
+
+    <div class="container">
+        <!-- STEP 1: 教科選択 -->
+        <div id="step-subject" class="view-step active">
+            <h2>教科を選択してください</h2>
+            <div class="btn-list">
+                <button class="btn" onclick="selectSubject('math')">数学</button>
+                <button class="btn" onclick="selectSubject('social')">社会</button>
+            </div>
+        </div>
+
+        <!-- STEP 2: 学年選択 -->
+        <div id="step-grade" class="view-step">
+            <h2>学年を選択してください</h2>
+            <div class="btn-list">
+                <button class="btn" onclick="selectGrade(1)">中学1年</button>
+                <button class="btn" onclick="selectGrade(2)">中学2年</button>
+                <button class="btn" onclick="selectGrade(3)">中学3年</button>
+            </div>
+        </div>
+
+        <!-- STEP 3: 問題数選択 -->
+        <div id="step-count" class="view-step">
+            <h2>解く問題数を選択してください</h2>
+            <div class="btn-list">
+                <button class="btn" onclick="startQuiz(5)">5問</button>
+                <button class="btn" onclick="startQuiz(10)">10問</button>
+                <button class="btn" onclick="startQuiz(20)">20問</button>
+            </div>
+        </div>
+
+        <!-- STEP 4: クイズ画面 -->
+        <div id="step-quiz" class="view-step">
+            <div class="progress" id="quiz-progress">1 / 5</div>
+            <div class="quiz-text" id="quiz-question">問題文がここに表示されます</div>
+            <div class="answer-box" id="quiz-answer">正解データ</div>
+            <div class="btn-list">
+                <button class="btn" id="action-btn" onclick="handleaction()">答えを見る</button>
+            </div>
+        </div>
+
+        <!-- STEP 5: 終了画面 -->
+        <div id="step-result" class="view-step">
+            <h2>お疲れ様でした！</h2>
+            <p style="font-size: 1.1rem; margin-bottom: 2rem;">選択した問題がすべて終了しました。</p>
+            <div class="btn-list">
+                <button class="btn" onclick="resetQuiz()">ホームへ戻る</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // --- JavaScript: 動的制御とデータ管理 ---
+
+        // 1. 問題データベース（ここを書き換えて問題を増やせます）
+        const quizDatabase = {
+            math: {
+                1: [
+                    { q: "xの係数が1のとき、1xの「1」は書く？書かない？", a: "書かない（xと書く）" },
+                    { q: "yはxに比例し、x=2のときy=6である。比例定数を求める式は？", a: "6 = 2a" }
+                ],
+                2: [
+                    { q: "連立方程式を解く2つの代表的な方法は？「代入法」と何法？", a: "加減法" }
+                ],
+                3: [
+                    { q: "二次方程式 ax² + bx + c = 0 の解の公式、x = ？", a: "(-b ± √(b² - 4ac)) / 2a" }
+                ]
+            },
+            social: {
+                1: [
+                    { q: "三大宗教のうち、信者数が最も多い宗教は？", a: "キリスト教" }
+                ],
+                2: [
+                    { q: "1573年、織田信長によって滅ぼされた幕府は？", a: "室町幕府" },
+                    { q: "江戸時代、五街道の起点となった江戸の橋は？", a: "日本橋" }
+                ],
+                3: [
+                    { q: "日本国憲法の三大原則は「国民主権」「基本的人権の尊重」と何？", a: "平和主義" }
+                ]
+            }
+        };
+
+        // 2. 状態管理変数
+        let selectedSubject = '';
+        let selectedGrade = '';
+        let currentQuestions = [];
+        let currentIndex = 0;
+        let isShowingAnswer = false;
+
+        // 3. 画面遷移コントロール
+        function changeView(stepId) {
+            document.querySelectorAll('.view-step').forEach(view => {
+                view.classList.remove('active');
+            });
+            document.getElementById(stepId).classList.add('active');
+        }
+
+        // 4. セレクション処理
+        function selectSubject(subject) {
+            selectedSubject = subject;
+            changeView('step-grade');
+        }
+
+        function selectGrade(grade) {
+            selectedGrade = grade;
+            changeView('step-count');
+        }
+
+        // 5. クイズ生成・開始
+        function startQuiz(count) {
+            // 対象となる問題リストを取得
+            const rawQuestions = quizDatabase[selectedSubject]?.[selectedGrade] || [];
+            
+            if (rawQuestions.length === 0) {
+                alert("該当する問題がまだ登録されていません。");
+                resetQuiz();
+                return;
+            }
+
+            // 配列をランダムにシャッフル（行動経済学的な「毎回新鮮な体験」を演出）
+            const shuffled = [...rawQuestions].sort(() => 0.5 - Math.random());
+            // 選択された問題数だけ切り取る
+            currentQuestions = shuffled.slice(0, count);
+            
+            currentIndex = 0;
+            isShowingAnswer = false;
+            
+            changeView('step-quiz');
+            showQuestion();
+        }
+
+        // 6. 問題表示
+        function showQuestion() {
+            const current = currentQuestions[currentIndex];
+            document.getElementById('quiz-progress').innerText = `${currentIndex + 1} / ${currentQuestions.length}`;
+            document.getElementById('quiz-question').innerText = current.q;
+            
+            const answerBox = document.getElementById('quiz-answer');
+            answerBox.innerText = current.a;
+            answerBox.classList.remove('visible');
+            
+            document.getElementById('action-btn').innerText = "答えを見る";
+            isShowingAnswer = false;
+        }
+
+        // 7. ボタンの挙動（答えを見る ⇔ 次へ）
+        function handleaction() {
+            const answerBox = document.getElementById('quiz-answer');
+            const actionBtn = document.getElementById('action-btn');
+
+            if (!isShowingAnswer) {
+                // 答えを表示する（テスト効果のフィードバック）
+                answerBox.classList.add('visible');
+                if (currentIndex === currentQuestions.length - 1) {
+                    actionBtn.innerText = "結果を見る";
+                } else {
+                    actionBtn.innerText = "次の問題へ";
+                }
+                isShowingAnswer = true;
+            } else {
+                // 次の問題へ、または終了画面へ
+                currentIndex++;
+                if (currentIndex < currentQuestions.length) {
+                    showQuestion();
+                } else {
+                    changeView('step-result');
+                }
+            }
+        }
+
+        // 8. リセット
+        function resetQuiz() {
+            selectedSubject = '';
+            selectedGrade = '';
+            currentQuestions = [];
+            currentIndex = 0;
+            changeView('step-subject');
+        }
+    </script>
 </body>
-
 </html>
