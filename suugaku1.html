@@ -55,9 +55,16 @@
         .btn-primary { background-color: var(--accent-color); color: white; border: none; text-align: center; }
         .btn-primary:hover { background-color: var(--accent-hover); }
         
-        .quiz-text { font-size: 1.4rem; font-weight: 700; margin-bottom: 2.5rem; min-height: 80px; display: flex; align-items: center; justify-content: center; color: #0f172a; }
-        .progress { font-size: 0.95rem; font-weight: 700; color: #94a3b8; margin-bottom: 1.5rem; letter-spacing: 0.05em; }
-        .score-display { font-size: 4rem; font-weight: 800; color: var(--accent-color); margin: 1.5rem 0; }
+        /* 問題文エリア（改行対応のために white-space: pre-wrap を追加） */
+        .quiz-text { font-size: 1.4rem; font-weight: 700; margin-bottom: 2.5rem; min-height: 80px; display: flex; align-items: center; justify-content: center; color: #0f172a; white-space: pre-wrap; line-height: 1.5; }
+        
+        /* タイマーとプログレスのレイアウト */
+        .quiz-info { display: flex; justify-content: space-between; margin-bottom: 1.5rem; }
+        .progress, .timer { font-size: 0.95rem; font-weight: 700; color: #94a3b8; letter-spacing: 0.05em; }
+        .timer { color: #64748b; }
+        
+        .score-display { font-size: 4rem; font-weight: 800; color: var(--accent-color); margin: 0.5rem 0 1.5rem 0; }
+        .time-display { font-size: 1.2rem; font-weight: 600; color: #475569; margin-bottom: 2rem; }
         
         #next-btn-box { display: none; margin-top: 2rem; }
     </style>
@@ -79,12 +86,15 @@
             <div class="btn-list">
                 <button class="btn" style="text-align:center;" onclick="startQuiz(5)">5問</button>
                 <button class="btn" style="text-align:center;" onclick="startQuiz(10)">10問</button>
-                <button class="btn" style="text-align:center;" onclick="startQuiz(15)">15問（全問）</button>
+                <button class="btn" style="text-align:center;" onclick="startQuiz(20)">20問（全問）</button>
             </div>
         </div>
 
         <div id="step-quiz" class="card">
-            <div class="progress" id="quiz-progress">第 1 問 / 全 5 問</div>
+            <div class="quiz-info">
+                <div class="progress" id="quiz-progress">第 1 問 / 全 5 問</div>
+                <div class="timer" id="quiz-timer">タイム: 00:00</div>
+            </div>
             <div class="quiz-text" id="quiz-question">問題文</div>
             
             <div class="btn-list" id="choices-box"></div>
@@ -98,6 +108,7 @@
             <h2>結果発表</h2>
             <p id="result-summary" style="font-size: 1.1rem; color: #64748b; margin: 0;">解いた問題数：5問</p>
             <div class="score-display"><span id="correct-count">0</span> / <span id="total-count">5</span></div>
+            <div class="time-display" id="result-time">かかった時間: 0秒</div>
             <div class="btn-list">
                 <a href="index.html" class="btn btn-primary">ホームに戻って実績を確認</a>
             </div>
@@ -105,48 +116,47 @@
     </div>
 
     <script>
-        // --- 中学1年 数学（正負・分数・法則・四則てんこ盛りデータベース） ---
+        // --- 中学1年 数学（基本知識＋計算てんこ盛りデータベース） ---
+        // 式の途中で改行したい場所に \n を入れています。
         const quizDatabase = [
-            // 1. 負の計算（基本・ひっかけ）
+            // === 基本知識・用語（テストの穴埋め対策） ===
             { 
-                q: "計算しなさい： (-3) - (-8)", 
-                choices: ["-11", "5", "-5", "11"],
-                a: "5" 
+                q: "正の整数のことを、別名で何というか？", 
+                choices: ["自然数", "絶対値", "有限数", "素数"],
+                a: "自然数" 
             },
             { 
-                q: "計算しなさい： -2³", 
-                choices: ["-6", "8", "-8", "6"],
-                a: "-8" 
+                q: "0は「自然数」に含まれる？含まれない？", 
+                choices: ["含まれる", "含まれない", "問題によって変わる", "小数に含まれる"],
+                a: "含まれない" 
             },
             { 
-                q: "計算しなさい： (-2)³", 
-                choices: ["-6", "-8", "8", "6"],
-                a: "-8" 
+                q: "数直線上で、ある数に対応する点と「原点」との距離のことを何というか？", 
+                choices: ["符号", "絶対値", "項", "係数"],
+                a: "絶対値" 
             },
             { 
-                q: "計算しなさい： (-2)³ × (-1)²", 
-                choices: ["8", "-8", "6", "-6"],
-                a: "-8" 
-            },
-
-            // 2. 分数の計算（通分・逆数）
-            { 
-                q: "計算しなさい： 1/2 - 2/3", 
-                choices: ["-1/6", "1/6", "-1/1", "1/5"],
-                a: "-1/6" 
+                q: "式 3x - 5y において、+3x や -5y のように、+や-の符号で区切られた1つひとつの要素を何というか？", 
+                choices: ["項", "係数", "定数", "文字式"],
+                a: "項" 
             },
             { 
-                q: "「-3/4」の逆数はどれ？", 
-                choices: ["3/4", "-4/3", "4/3", "-3/4"],
-                a: "-4/3" 
+                q: "文字の前にかかっている数字（例：5x の「5」）を何というか？", 
+                choices: ["項", "係数", "次数", "定数"],
+                a: "係数" 
             },
             { 
-                q: "計算しなさい： 6 ÷ (-2/3)", 
-                choices: ["-4", "-9", "9", "-1/9"],
-                a: "-9" 
+                q: "1つの文字だけをかけ合わせた、最もシンプルな文字式（例：3x や -5ab）を何というか？", 
+                choices: ["単項式", "多項式", "一次式", "方程式"],
+                a: "単項式" 
+            },
+            { 
+                q: "2つ以上の項が足し合わされている式（例：2x + 3y）を何というか？", 
+                choices: ["単項式", "多項式", "等式", "因数"],
+                a: "多項式" 
             },
 
-            // 3. 交換法則・結合法則・分配法則
+            // === 計算の法則・ルール ===
             { 
                 q: "a + b = b + a のように、足し算や掛け算の順序を入れ替えても答えが同じになる法則は？", 
                 choices: ["分配法則", "結合法則", "交換法則", "反比例の法則"],
@@ -158,34 +168,59 @@
                 a: "結合法則" 
             },
             { 
-                q: "分配法則を使って計算しなさい： 103 × (-7) ＝ (100 + 3) × (-7) ＝ ？", 
+                q: "「-3/4」の逆数はどれ？", 
+                choices: ["3/4", "-4/3", "4/3", "-3/4"],
+                a: "-4/3" 
+            },
+
+            // === 計算問題（\n で改行） ===
+            { 
+                q: "計算しなさい：\n(-3) - (-8)", 
+                choices: ["-11", "5", "-5", "11"],
+                a: "5" 
+            },
+            { 
+                q: "計算しなさい：\n-2³", 
+                choices: ["-6", "8", "-8", "6"],
+                a: "-8" 
+            },
+            { 
+                q: "計算しなさい：\n(-2)³", 
+                choices: ["-6", "-8", "8", "6"],
+                a: "-8" 
+            },
+            { 
+                q: "計算しなさい：\n(-2)³ × (-1)²", 
+                choices: ["8", "-8", "6", "-6"],
+                a: "-8" 
+            },
+            { 
+                q: "計算しなさい：\n1/2 - 2/3", 
+                choices: ["-1/6", "1/6", "-1/1", "1/5"],
+                a: "-1/6" 
+            },
+            { 
+                q: "計算しなさい：\n6 ÷ (-2/3)", 
+                choices: ["-4", "-9", "9", "-1/9"],
+                a: "-9" 
+            },
+            { 
+                q: "分配法則を使って計算しなさい：\n103 × (-7)\n＝ (100 + 3) × (-7)\n＝ ？", 
                 choices: ["-721", "-703", "721", "-697"],
                 a: "-721" 
             },
             { 
-                q: "分配法則の逆を利用して計算しなさい： 57 × (-12) + 43 × (-12)", 
-                choices: ["-120", "-1200", "1200", "-100"],
-                a: "-1200" 
-            },
-
-            // 4. 四則混合（計算の順序）
-            { 
-                q: "計算しなさい（順序に注意）： 5 + (-3) × 2", 
+                q: "計算しなさい（順序に注意）：\n5 + (-3) × 2", 
                 choices: ["4", "-1", "11", "-4"],
                 a: "-1" 
             },
             { 
-                q: "計算しなさい（順序に注意）： 12 - 4 ÷ (-2)", 
+                q: "計算しなさい（順序に注意）：\n12 - 4 ÷ (-2)", 
                 choices: ["-4", "10", "14", "4"],
                 a: "14" 
             },
             { 
-                q: "計算しなさい： { 3 - (-5) } × (-2)", 
-                choices: ["4", "-4", "-16", "16"],
-                a: "-16" 
-            },
-            { 
-                q: "計算しなさい： 8 + (-2)² × 3", 
+                q: "計算しなさい：\n8 + (-2)² × 3", 
                 choices: ["20", "-4", "30", "44"],
                 a: "20" 
             }
@@ -196,24 +231,44 @@
         let correctAnswers = 0;
         let hasAnswered = false;
 
+        // タイマー用変数
+        let startTime;
+        let timerInterval;
+
         function changeView(stepId) {
             document.querySelectorAll('.card').forEach(card => card.classList.remove('active'));
             document.getElementById(stepId).classList.add('active');
         }
 
+        // クイズ開始
         function startQuiz(count) {
             if (quizDatabase.length === 0) {
                 alert("問題が登録されていません。");
                 window.location.href = 'index.html';
                 return;
             }
-            // ランダムシャッフル
             const shuffled = [...quizDatabase].sort(() => 0.5 - Math.random());
             currentQuestions = shuffled.slice(0, Math.min(count, shuffled.length));
             currentIndex = 0;
             correctAnswers = 0;
+            
+            // タイマースタート
+            startTime = Date.now();
+            startTimer();
+
             changeView('step-quiz');
             showQuestion();
+        }
+
+        // タイマーのカウント制御
+        function startTimer() {
+            clearInterval(timerInterval);
+            timerInterval = setInterval(() => {
+                const elapsedTime = Math.floor((Date.now() - startTime) / 1000);
+                const minutes = String(Math.floor(elapsedTime / 60)).padStart(2, '0');
+                const seconds = String(elapsedTime % 60).padStart(2, '0');
+                document.getElementById('quiz-timer').innerText = `タイム: ${minutes}:${seconds}`;
+            }, 1000);
         }
 
         function showQuestion() {
@@ -224,9 +279,7 @@
             
             document.getElementById('next-btn-box').style.display = 'none';
 
-            // 選択肢のシャッフル
             const shuffledChoices = [...current.choices].sort(() => 0.5 - Math.random());
-            
             const choicesBox = document.getElementById('choices-box');
             choicesBox.innerHTML = ''; 
             
@@ -267,10 +320,17 @@
             if (currentIndex < currentQuestions.length) {
                 showQuestion();
             } else {
+                // クイズ終了、タイマー停止
+                clearInterval(timerInterval);
+                const totalTimeSec = Math.floor((Date.now() - startTime) / 1000);
+
                 saveStats(currentQuestions.length, correctAnswers);
+                
                 document.getElementById('result-summary').innerText = `解いた問題数：${currentQuestions.length}問`;
                 document.getElementById('correct-count').innerText = correctAnswers;
                 document.getElementById('total-count').innerText = currentQuestions.length;
+                document.getElementById('result-time').innerText = `かかった時間: ${totalTimeSec} 秒`;
+                
                 changeView('step-result');
             }
         }
