@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>数学 - 一問一答クイズ</title>
+    <title>中学1年 数学 - 一問一答クイズ</title>
     <style>
         :root {
             --bg-color: #f1f5f9;
@@ -23,12 +23,13 @@
         nav {
             width: 100%; background: var(--card-bg); border-bottom: 1px solid var(--border-color);
             padding: 1.2rem 2rem; box-sizing: border-box; display: flex; justify-content: space-between; align-items: center;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
         }
         nav a { color: #64748b; text-decoration: none; font-size: 0.95rem; font-weight: 600; }
         nav a.nav-logo { color: var(--text-color); font-size: 1.2rem; font-weight: 800; }
         header { width: 100%; text-align: center; padding: 3rem 1rem 1.5rem 1rem; }
         h1 { font-size: 2.2rem; font-weight: 800; margin: 0; color: var(--text-color); }
-        .container { width: 100%; max-width: 540px; padding: 0 1.5rem; box-sizing: border-box; }
+        .container { width: 100%; max-width: 540px; padding: 0 1.5rem; box-sizing: border-box; margin-bottom: 4rem; }
         
         .card {
             background: var(--card-bg); border-radius: 20px; padding: 3rem 2rem;
@@ -37,17 +38,17 @@
         .card.active { display: block; animation: fadeIn 0.35s ease; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
         
-        h2 { font-size: 1.30rem; margin-top: 0; margin-bottom: 2.5rem; color: #334155; font-weight: 700; }
+        h2 { font-size: 1.35rem; margin-top: 0; margin-bottom: 2.5rem; color: #334155; font-weight: 700; }
         .btn-list { display: flex; flex-direction: column; gap: 1rem; }
         
         .btn {
             background-color: var(--card-bg); border: 1px solid var(--border-color); color: var(--text-color);
             padding: 1.1rem 2rem; font-size: 1.1rem; font-weight: 600; border-radius: 14px; cursor: pointer; transition: all 0.2s ease;
-            text-align: left;
+            text-align: left; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
         }
         .btn:hover:not(:disabled) { border-color: var(--accent-color); background-color: rgba(59, 130, 246, 0.02); transform: translateY(-1px); }
         
-        /* 4択クイズの正誤演出用のスタイル */
+        /* 正誤演出 */
         .btn.correct { background-color: var(--success-color) !important; color: white !important; border-color: var(--success-color) !important; }
         .btn.wrong { background-color: var(--danger-color) !important; color: white !important; border-color: var(--danger-color) !important; }
         
@@ -69,25 +70,16 @@
     </nav>
 
     <header>
-        <h1>数学 4択クイズ</h1>
+        <h1>中学1年 数学</h1>
     </header>
 
     <div class="container">
-        <div id="step-grade" class="card active">
-            <h2>学年を選択してください</h2>
-            <div class="btn-list">
-                <button class="btn" style="text-align:center;" onclick="selectGrade(1)">中学1年</button>
-                <button class="btn" style="text-align:center;" onclick="selectGrade(2)">中学2年</button>
-                <button class="btn" style="text-align:center;" onclick="selectGrade(3)">中学3年</button>
-            </div>
-        </div>
-
-        <div id="step-count" class="card">
+        <div id="step-count" class="card active">
             <h2>解く問題数を選択してください</h2>
             <div class="btn-list">
                 <button class="btn" style="text-align:center;" onclick="startQuiz(5)">5問</button>
                 <button class="btn" style="text-align:center;" onclick="startQuiz(10)">10問</button>
-                <button class="btn" style="text-align:center;" onclick="startQuiz(20)">20問</button>
+                <button class="btn" style="text-align:center;" onclick="startQuiz(15)">15問（全問）</button>
             </div>
         </div>
 
@@ -113,60 +105,110 @@
     </div>
 
     <script>
-        // --- 4択に対応した数学問題データベース ---
-        const quizDatabase = {
-            1: [
-                { 
-                    q: "xの係数が1のとき、1xの「1」はどう表すのが正しい？", 
-                    choices: ["1xと書く", "書かない（xと書く）", "書かずに空白にする", "x1と書く"],
-                    a: "書かない（xと書く）" 
-                },
-                { 
-                    q: "yはxに比例し、x=2のときy=6である。比例定数 a を求める正しい式は？", 
-                    choices: ["2 = 6a", "6 = 2a", "a = 2 × 6", "6 = a / 2"],
-                    a: "6 = 2a" 
-                }
-            ],
-            2: [
-                { 
-                    q: "連立方程式を解く2つの代表的な方法は？「代入法」と何法？", 
-                    choices: ["加減法", "乗除法", "因数分解法", "比例法"],
-                    a: "加減法" 
-                }
-            ],
-            3: [
-                { 
-                    q: "二次方程式 ax² + bx + c = 0 の「解の公式」の分子のルートの中身は？", 
-                    choices: ["b² - 4ac", "b² + 4ac", "4ac - b²", "2a - 4bc"],
-                    a: "b² - 4ac" 
-                }
-            ]
-        };
+        // --- 中学1年 数学（正負・分数・法則・四則てんこ盛りデータベース） ---
+        const quizDatabase = [
+            // 1. 負の計算（基本・ひっかけ）
+            { 
+                q: "計算しなさい： (-3) - (-8)", 
+                choices: ["-11", "5", "-5", "11"],
+                a: "5" 
+            },
+            { 
+                q: "計算しなさい： -2³", 
+                choices: ["-6", "8", "-8", "6"],
+                a: "-8" 
+            },
+            { 
+                q: "計算しなさい： (-2)³", 
+                choices: ["-6", "-8", "8", "6"],
+                a: "-8" 
+            },
+            { 
+                q: "計算しなさい： (-2)³ × (-1)²", 
+                choices: ["8", "-8", "6", "-6"],
+                a: "-8" 
+            },
 
-        let selectedGrade = '';
+            // 2. 分数の計算（通分・逆数）
+            { 
+                q: "計算しなさい： 1/2 - 2/3", 
+                choices: ["-1/6", "1/6", "-1/1", "1/5"],
+                a: "-1/6" 
+            },
+            { 
+                q: "「-3/4」の逆数はどれ？", 
+                choices: ["3/4", "-4/3", "4/3", "-3/4"],
+                a: "-4/3" 
+            },
+            { 
+                q: "計算しなさい： 6 ÷ (-2/3)", 
+                choices: ["-4", "-9", "9", "-1/9"],
+                a: "-9" 
+            },
+
+            // 3. 交換法則・結合法則・分配法則
+            { 
+                q: "a + b = b + a のように、足し算や掛け算の順序を入れ替えても答えが同じになる法則は？", 
+                choices: ["分配法則", "結合法則", "交換法則", "反比例の法則"],
+                a: "交換法則" 
+            },
+            { 
+                q: " (a × b) × c = a × (b × c) のように、かける組み合わせを変えても答えが同じになる法則は？", 
+                choices: ["交換法則", "結合法則", "分配法則", "移動法則"],
+                a: "結合法則" 
+            },
+            { 
+                q: "分配法則を使って計算しなさい： 103 × (-7) ＝ (100 + 3) × (-7) ＝ ？", 
+                choices: ["-721", "-703", "721", "-697"],
+                a: "-721" 
+            },
+            { 
+                q: "分配法則の逆を利用して計算しなさい： 57 × (-12) + 43 × (-12)", 
+                choices: ["-120", "-1200", "1200", "-100"],
+                a: "-1200" 
+            },
+
+            // 4. 四則混合（計算の順序）
+            { 
+                q: "計算しなさい（順序に注意）： 5 + (-3) × 2", 
+                choices: ["4", "-1", "11", "-4"],
+                a: "-1" 
+            },
+            { 
+                q: "計算しなさい（順序に注意）： 12 - 4 ÷ (-2)", 
+                choices: ["-4", "10", "14", "4"],
+                a: "14" 
+            },
+            { 
+                q: "計算しなさい： { 3 - (-5) } × (-2)", 
+                choices: ["4", "-4", "-16", "16"],
+                a: "-16" 
+            },
+            { 
+                q: "計算しなさい： 8 + (-2)² × 3", 
+                choices: ["20", "-4", "30", "44"],
+                a: "20" 
+            }
+        ];
+
         let currentQuestions = [];
         let currentIndex = 0;
         let correctAnswers = 0;
-        let hasAnswered = false; // 二重クリック防止フラグ
+        let hasAnswered = false;
 
         function changeView(stepId) {
             document.querySelectorAll('.card').forEach(card => card.classList.remove('active'));
             document.getElementById(stepId).classList.add('active');
         }
 
-        function selectGrade(grade) {
-            selectedGrade = grade;
-            changeView('step-count');
-        }
-
         function startQuiz(count) {
-            const rawQuestions = quizDatabase[selectedGrade] || [];
-            if (rawQuestions.length === 0) {
-                alert("問題がまだ登録されていません。");
+            if (quizDatabase.length === 0) {
+                alert("問題が登録されていません。");
                 window.location.href = 'index.html';
                 return;
             }
-            const shuffled = [...rawQuestions].sort(() => 0.5 - Math.random());
+            // ランダムシャッフル
+            const shuffled = [...quizDatabase].sort(() => 0.5 - Math.random());
             currentQuestions = shuffled.slice(0, Math.min(count, shuffled.length));
             currentIndex = 0;
             correctAnswers = 0;
@@ -180,15 +222,13 @@
             document.getElementById('quiz-progress').innerText = `第 ${currentIndex + 1} 問 / 全 ${currentQuestions.length} 問`;
             document.getElementById('quiz-question').innerText = current.q;
             
-            // 次へボタンを隠す
             document.getElementById('next-btn-box').style.display = 'none';
 
-            // 選択肢のシャッフル（毎回ボタンの位置を変える）
+            // 選択肢のシャッフル
             const shuffledChoices = [...current.choices].sort(() => 0.5 - Math.random());
             
-            // 選択肢ボタンの動的生成
             const choicesBox = document.getElementById('choices-box');
-            choicesBox.innerHTML = ''; // クリア
+            choicesBox.innerHTML = ''; 
             
             shuffledChoices.forEach(choice => {
                 const button = document.createElement('button');
@@ -199,18 +239,15 @@
             });
         }
 
-        // 正誤判定処理
         function checkAnswer(selectedButton, selectedChoice, correctAnswer) {
-            if (hasAnswered) return; // すでに回答済みなら処理しない
+            if (hasAnswered) return; 
             hasAnswered = true;
 
             const choicesBox = document.getElementById('choices-box');
             const buttons = choicesBox.getElementsByClassName('btn');
 
-            // すべてのボタンを選択不可にする
             for (let btn of buttons) {
                 btn.disabled = true;
-                // 正解のボタンは、選んでいなくても緑にする（どこが正解か教えるため）
                 if (btn.innerText === correctAnswer) {
                     btn.classList.add('correct');
                 }
@@ -219,11 +256,9 @@
             if (selectedChoice === correctAnswer) {
                 correctAnswers++;
             } else {
-                // 間違っていた場合、選んだボタンを赤にする
                 selectedButton.classList.add('wrong');
             }
 
-            // 「次の問題へ」ボタンを表示
             document.getElementById('next-btn-box').style.display = 'block';
         }
 
