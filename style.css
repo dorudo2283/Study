@@ -689,3 +689,17 @@ header{
 }
 
 }
+body{
+    opacity:0;
+    transition:.5s;
+}
+
+.selected{
+
+    background:#d50000 !important;
+
+    color:white !important;
+
+    transform:translateY(-8px);
+
+}
