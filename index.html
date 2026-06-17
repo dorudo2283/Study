@@ -6,8 +6,8 @@
     <title>一問一答勉強サイト</title>
     <style>
         :root {
-            --bg-color: #f5f7fa;
-            --text-color: #1e293b;
+            --bg-color: #f1f5f9;
+            --text-color: #0f172a;
             --accent-color: #3b82f6;
             --card-bg: #ffffff;
             --border-color: #e2e8f0;
@@ -25,12 +25,11 @@
             min-height: 100vh;
         }
 
-        /* --- ナビゲーションバー --- */
         nav {
             width: 100%;
             background: var(--card-bg);
             border-bottom: 1px solid var(--border-color);
-            padding: 1rem;
+            padding: 1.2rem 2rem;
             box-sizing: border-box;
             display: flex;
             justify-content: space-between;
@@ -38,35 +37,26 @@
             position: sticky;
             top: 0;
             z-index: 100;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
         }
 
         .nav-logo {
             font-weight: 800;
             color: var(--text-color);
             text-decoration: none;
-            font-size: 1.1rem;
-        }
-
-        .nav-links a {
-            color: #64748b;
-            text-decoration: none;
-            font-size: 0.95rem;
-            font-weight: 600;
-        }
-
-        .nav-links a:hover {
-            color: var(--accent-color);
+            font-size: 1.2rem;
+            letter-spacing: -0.02em;
         }
 
         header {
             width: 100%;
             text-align: center;
-            padding: 3rem 1rem 1.5rem 1rem;
+            padding: 4rem 1rem 2rem 1rem;
             box-sizing: border-box;
         }
 
         h1 {
-            font-size: 2.5rem;
+            font-size: 2.8rem;
             font-weight: 800;
             margin: 0;
             background: linear-gradient(135deg, #1e293b 0%, #3b82f6 100%);
@@ -82,76 +72,85 @@
             margin-bottom: 4rem;
         }
 
+        /* カードの立体感、角丸、陰影を強化 */
         .card {
             background: var(--card-bg);
-            border-radius: 16px;
-            padding: 2.5rem 2rem;
-            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05);
+            border-radius: 20px;
+            padding: 3rem 2rem;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.05), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
             text-align: center;
-            margin-bottom: 1.5rem;
+            margin-bottom: 2rem;
+            border: 1px solid rgba(255,255,255,0.8);
         }
 
         h2 {
-            font-size: 1.3rem;
+            font-size: 1.4rem;
             margin-top: 0;
             margin-bottom: 2rem;
-            color: #475569;
-            font-weight: 600;
+            color: #334155;
+            font-weight: 700;
         }
 
-        /* --- スコア実績ボード --- */
+        /* ダッシュボード（実績表示） */
         .stats-grid {
             display: grid;
-            grid-template-columns: 1xl 1fr;
-            gap: 1rem;
-            margin-bottom: 1rem;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.2rem;
+            margin-top: 1.5rem;
         }
 
         .stat-box {
             background: #f8fafc;
             border: 1px solid var(--border-color);
-            padding: 1rem;
-            border-radius: 12px;
+            padding: 1.2rem;
+            border-radius: 16px;
+            transition: transform 0.2s ease;
+        }
+        .stat-box:hover {
+            transform: scale(1.03);
         }
 
         .stat-label {
             font-size: 0.85rem;
             color: #64748b;
             font-weight: 600;
-            margin-bottom: 0.25rem;
+            margin-bottom: 0.4rem;
         }
 
         .stat-value {
-            font-size: 1.5rem;
+            font-size: 1.8rem;
             font-weight: 800;
-            color: var(--text-color);
+            color: #0f172a;
         }
 
         .btn-list {
             display: flex;
             flex-direction: column;
-            gap: 1rem;
+            gap: 1.2rem;
         }
 
+        /* 選択ボタンのリッチ化 */
         .btn {
-            background-color: var(--card-bg);
+            background: var(--card-bg);
             border: 1px solid var(--border-color);
             color: var(--text-color);
-            padding: 1.1rem 2rem;
-            font-size: 1.1rem;
+            padding: 1.2rem 2rem;
+            font-size: 1.15rem;
             font-weight: 600;
-            border-radius: 12px;
+            border-radius: 14px;
             cursor: pointer;
-            transition: all 0.2s ease;
+            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
             text-decoration: none;
             display: block;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
         }
 
         .btn:hover {
             border-color: var(--accent-color);
             color: var(--accent-color);
             background-color: rgba(59, 130, 246, 0.04);
-            transform: translateY(-1px);
+            transform: translateY(-2px);
+            box-shadow: 0 10px 15px -3px rgba(59, 130, 246, 0.1);
         }
     </style>
 </head>
@@ -159,9 +158,6 @@
 
     <nav>
         <a href="index.html" class="nav-logo">一問一答勉強サイト</a>
-        <div class="nav-links">
-            <a href="index.html">ホーム</a>
-        </div>
     </nav>
 
     <header>
@@ -170,7 +166,7 @@
 
     <div class="container">
         <div class="card">
-            <h2 style="margin-bottom: 1rem;">あなたの勉強実績</h2>
+            <h2>ダッシュボード</h2>
             <div class="stats-grid">
                 <div class="stat-box">
                     <div class="stat-label">総解答問題数</div>
@@ -184,22 +180,18 @@
         </div>
 
         <div class="card">
-            <h2>教科を選択してください</h2>
+            <h2>教科を選択してスタート</h2>
             <div class="btn-list">
-                <a href="suugaku.html" class="btn">数学</a>
-                <a href="syakai.html" class="btn">社会</a>
+                <a href="suugaku.html" class="btn" style="border-left: 6px solid #3b82f6;">数学</a>
+                <a href="syakai.html" class="btn" style="border-left: 6px solid #f59e0b;">社会</a>
             </div>
         </div>
     </div>
 
     <script>
-        // ページが読み込まれた時に、保存されているスコアを表示する
         window.onload = function() {
-            const totalSolved = localStorage.getItem('totalSolved') || 0;
-            const bestAccuracy = localStorage.getItem('bestAccuracy') || 0;
-
-            document.getElementById('total-solved').innerText = totalSolved + '問';
-            document.getElementById('best-accuracy').innerText = bestAccuracy + '%';
+            document.getElementById('total-solved').innerText = (localStorage.getItem('totalSolved') || 0) + '問';
+            document.getElementById('best-accuracy').innerText = (localStorage.getItem('bestAccuracy') || 0) + '%';
         };
     </script>
 </body>
