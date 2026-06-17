@@ -5,20 +5,22 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>一問一答勉強サイト</title>
     <style>
-        /* --- CSS: シンプルで信頼感のあるミニマルデザイン --- */
+        /* --- CSS: スタイリッシュで信頼感のあるモダンミニマル --- */
         :root {
-            --bg-color: #f8f9fa;
-            --text-color: #212529;
-            --accent-color: #4a6fa5;
+            --bg-color: #f5f7fa;
+            --text-color: #1e293b;
+            --accent-color: #3b82f6;
+            --accent-hover: #2563eb;
+            --success-color: #10b981;
+            --danger-color: #ef4444;
             --card-bg: #ffffff;
-            --border-color: #e9ecef;
+            --border-color: #e2e8f0;
         }
 
         body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
             background-color: var(--bg-color);
             color: var(--text-color);
-            line-height: 1.6;
             margin: 0;
             padding: 0;
             display: flex;
@@ -30,50 +32,58 @@
         header {
             width: 100%;
             text-align: center;
-            padding: 3rem 1rem 1.5rem 1rem;
+            padding: 4rem 1rem 2rem 1rem;
             box-sizing: border-box;
         }
 
         h1 {
-            font-size: 2.2rem;
-            font-weight: 700;
-            letter-spacing: 0.05em;
+            font-size: 2.5rem;
+            font-weight: 800;
+            letter-spacing: -0.02em;
             margin: 0;
-            color: var(--text-color);
+            background: linear-gradient(135deg, #1e293b 0%, #3b82f6 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
         }
 
         .container {
             width: 100%;
-            max-width: 600px;
+            max-width: 540px;
             padding: 0 1.5rem;
             box-sizing: border-box;
-            margin-bottom: 3rem;
+            margin-bottom: 4rem;
         }
 
-        /* 画面の切り替え用管理 */
+        /* カードの立体感とアニメーションを強化 */
         .view-step {
             display: none;
             background: var(--card-bg);
-            border: 1px solid var(--border-color);
-            border-radius: 12px;
-            padding: 2.5rem 2rem;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.02);
+            border-radius: 16px;
+            padding: 3rem 2rem;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.05);
             text-align: center;
+            transition: transform 0.3s ease;
         }
 
         .view-step.active {
             display: block;
+            animation: fadeIn 0.4s ease forwards;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
         }
 
         h2 {
-            font-size: 1.25rem;
+            font-size: 1.4rem;
             margin-top: 0;
-            margin-bottom: 2rem;
-            color: #6c757d;
-            font-weight: 500;
+            margin-bottom: 2.5rem;
+            color: #475569;
+            font-weight: 600;
         }
 
-        /* ボタンデザイン（怪しさを排除したプレーンなスタイル） */
+        /* ボタンデザインの洗練化 */
         .btn-list {
             display: flex;
             flex-direction: column;
@@ -82,52 +92,97 @@
 
         .btn {
             background-color: var(--card-bg);
-            border: 2px solid var(--border-color);
+            border: 1px solid var(--border-color);
             color: var(--text-color);
-            padding: 1rem 2rem;
+            padding: 1.1rem 2rem;
             font-size: 1.1rem;
-            font-weight: 500;
-            border-radius: 8px;
+            font-weight: 600;
+            border-radius: 12px;
             cursor: pointer;
             transition: all 0.2s ease;
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
         }
 
         .btn:hover {
             border-color: var(--accent-color);
             color: var(--accent-color);
-            background-color: rgba(74, 111, 165, 0.03);
+            background-color: rgba(59, 130, 246, 0.04);
+            transform: translateY(-1px);
         }
 
-        /* クイズ画面専用 */
+        /* アクション用の主ボタン */
+        .btn-primary {
+            background-color: var(--accent-color);
+            color: white;
+            border: none;
+        }
+        .btn-primary:hover {
+            background-color: var(--accent-hover);
+            color: white;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.25);
+        }
+
+        /* 正誤判定ボタンの横並び用 */
+        .judge-box {
+            display: none;
+            gap: 1rem;
+        }
+        .judge-box.visible {
+            display: flex;
+        }
+        .btn-success { background-color: var(--success-color); color: white; border: none; flex: 1; }
+        .btn-danger { background-color: var(--danger-color); color: white; border: none; flex: 1; }
+
+        /* クイズ画面 */
         .quiz-text {
-            font-size: 1.3rem;
-            font-weight: 600;
+            font-size: 1.4rem;
+            font-weight: 700;
             margin-bottom: 2.5rem;
-            min-height: 80px;
+            min-height: 90px;
             display: flex;
             align-items: center;
             justify-content: center;
+            color: #0f172a;
         }
 
         .answer-box {
-            background: #f1f3f5;
+            background: #f8fafc;
+            border: 1px dashed #cbd5e1;
             padding: 1.5rem;
-            border-radius: 8px;
-            font-size: 1.2rem;
+            border-radius: 12px;
+            font-size: 1.3rem;
             font-weight: 700;
             color: var(--accent-color);
-            margin-bottom: 2rem;
+            margin-bottom: 2.5rem;
             display: none;
         }
 
         .answer-box.visible {
             display: block;
+            animation: pulse 0.3s ease;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(0.98); }
+            50% { transform: scale(1.02); }
+            100% { transform: scale(1); }
         }
 
         .progress {
-            font-size: 0.9rem;
-            color: #adb5bd;
-            margin-bottom: 1rem;
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: #94a3b8;
+            margin-bottom: 1.5rem;
+            letter-spacing: 0.05em;
+        }
+
+        /* 結果発表のスコア表示 */
+        .score-display {
+            font-size: 3.5rem;
+            font-weight: 800;
+            color: var(--accent-color);
+            margin: 1.5rem 0;
         }
     </style>
 </head>
@@ -138,7 +193,6 @@
     </header>
 
     <div class="container">
-        <!-- STEP 1: 教科選択 -->
         <div id="step-subject" class="view-step active">
             <h2>教科を選択してください</h2>
             <div class="btn-list">
@@ -147,7 +201,6 @@
             </div>
         </div>
 
-        <!-- STEP 2: 学年選択 -->
         <div id="step-grade" class="view-step">
             <h2>学年を選択してください</h2>
             <div class="btn-list">
@@ -157,7 +210,6 @@
             </div>
         </div>
 
-        <!-- STEP 3: 問題数選択 -->
         <div id="step-count" class="view-step">
             <h2>解く問題数を選択してください</h2>
             <div class="btn-list">
@@ -167,30 +219,34 @@
             </div>
         </div>
 
-        <!-- STEP 4: クイズ画面 -->
         <div id="step-quiz" class="view-step">
             <div class="progress" id="quiz-progress">1 / 5</div>
-            <div class="quiz-text" id="quiz-question">問題文がここに表示されます</div>
+            <div class="quiz-text" id="quiz-question">問題文</div>
             <div class="answer-box" id="quiz-answer">正解データ</div>
+            
             <div class="btn-list">
-                <button class="btn" id="action-btn" onclick="handleaction()">答えを見る</button>
+                <button class="btn btn-primary" id="action-btn" onclick="showAnswer()">答えを見る</button>
+                
+                <div class="judge-box" id="judge-box">
+                    <button class="btn btn-danger" onclick="submitJudgment(false)">おぼえてない</button>
+                    <button class="btn btn-success" onclick="submitJudgment(true)">おぼえてた！</button>
+                </div>
             </div>
         </div>
 
-        <!-- STEP 5: 終了画面 -->
         <div id="step-result" class="view-step">
-            <h2>お疲れ様でした！</h2>
-            <p style="font-size: 1.1rem; margin-bottom: 2rem;">選択した問題がすべて終了しました。</p>
+            <h2>結果発表</h2>
+            <p id="result-summary" style="font-size: 1.1rem; color: #64748b; margin: 0;">解いた問題数：5問</p>
+            <div class="score-display"><span id="correct-count">0</span> / <span id="total-count">5</span></div>
+            <p style="color: #64748b; margin-bottom: 2.5rem;">この調子で基礎を固めていきましょう！</p>
             <div class="btn-list">
-                <button class="btn" onclick="resetQuiz()">ホームへ戻る</button>
+                <button class="btn btn-primary" onclick="resetQuiz()">もう一度解く</button>
             </div>
         </div>
     </div>
 
     <script>
-        // --- JavaScript: 動的制御とデータ管理 ---
-
-        // 1. 問題データベース（ここを書き換えて問題を増やせます）
+        // --- クイズデータ ---
         const quizDatabase = {
             math: {
                 1: [
@@ -218,22 +274,18 @@
             }
         };
 
-        // 2. 状態管理変数
+        // --- 状態管理 ---
         let selectedSubject = '';
         let selectedGrade = '';
         let currentQuestions = [];
         let currentIndex = 0;
-        let isShowingAnswer = false;
+        let correctAnswers = 0; // 正解数をカウントする変数
 
-        // 3. 画面遷移コントロール
         function changeView(stepId) {
-            document.querySelectorAll('.view-step').forEach(view => {
-                view.classList.remove('active');
-            });
+            document.querySelectorAll('.view-step').forEach(view => view.classList.remove('active'));
             document.getElementById(stepId).classList.add('active');
         }
 
-        // 4. セレクション処理
         function selectSubject(subject) {
             selectedSubject = subject;
             changeView('step-grade');
@@ -244,9 +296,8 @@
             changeView('step-count');
         }
 
-        // 5. クイズ生成・開始
+        // クイズ開始
         function startQuiz(count) {
-            // 対象となる問題リストを取得
             const rawQuestions = quizDatabase[selectedSubject]?.[selectedGrade] || [];
             
             if (rawQuestions.length === 0) {
@@ -255,63 +306,63 @@
                 return;
             }
 
-            // 配列をランダムにシャッフル（行動経済学的な「毎回新鮮な体験」を演出）
             const shuffled = [...rawQuestions].sort(() => 0.5 - Math.random());
-            // 選択された問題数だけ切り取る
-            currentQuestions = shuffled.slice(0, count);
+            // 選んだ問題数か、存在する最大問題数の少ない方をセット
+            currentQuestions = shuffled.slice(0, Math.min(count, shuffled.length));
             
             currentIndex = 0;
-            isShowingAnswer = false;
+            correctAnswers = 0; // リセット
             
             changeView('step-quiz');
             showQuestion();
         }
 
-        // 6. 問題表示
+        // 問題表示
         function showQuestion() {
             const current = currentQuestions[currentIndex];
-            document.getElementById('quiz-progress').innerText = `${currentIndex + 1} / ${currentQuestions.length}`;
+            document.getElementById('quiz-progress').innerText = `第 ${currentIndex + 1} 問 / 全 ${currentQuestions.length} 問`;
             document.getElementById('quiz-question').innerText = current.q;
             
             const answerBox = document.getElementById('quiz-answer');
             answerBox.innerText = current.a;
             answerBox.classList.remove('visible');
             
-            document.getElementById('action-btn').innerText = "答えを見る";
-            isShowingAnswer = false;
+            // ボタンの表示切り替え
+            document.getElementById('action-btn').style.display = 'block';
+            document.getElementById('judge-box').classList.remove('visible');
         }
 
-        // 7. ボタンの挙動（答えを見る ⇔ 次へ）
-        function handleaction() {
-            const answerBox = document.getElementById('quiz-answer');
-            const actionBtn = document.getElementById('action-btn');
+        // 答えを表示
+        function showAnswer() {
+            document.getElementById('quiz-answer').classList.add('visible');
+            document.getElementById('action-btn').style.display = 'none';
+            document.getElementById('judge-box').classList.add('visible');
+        }
 
-            if (!isShowingAnswer) {
-                // 答えを表示する（テスト効果のフィードバック）
-                answerBox.classList.add('visible');
-                if (currentIndex === currentQuestions.length - 1) {
-                    actionBtn.innerText = "結果を見る";
-                } else {
-                    actionBtn.innerText = "次の問題へ";
-                }
-                isShowingAnswer = true;
+        // 正誤判定のボタンを押したときの処理
+        function submitJudgment(isCorrect) {
+            if (isCorrect) {
+                correctAnswers++;
+            }
+
+            currentIndex++;
+            if (currentIndex < currentQuestions.length) {
+                showQuestion();
             } else {
-                // 次の問題へ、または終了画面へ
-                currentIndex++;
-                if (currentIndex < currentQuestions.length) {
-                    showQuestion();
-                } else {
-                    changeView('step-result');
-                }
+                // 終了画面のデータ更新
+                document.getElementById('result-summary').innerText = `解いた問題数：${currentQuestions.length}問`;
+                document.getElementById('correct-count').innerText = correctAnswers;
+                document.getElementById('total-count').innerText = currentQuestions.length;
+                changeView('step-result');
             }
         }
 
-        // 8. リセット
         function resetQuiz() {
             selectedSubject = '';
             selectedGrade = '';
             currentQuestions = [];
             currentIndex = 0;
+            correctAnswers = 0;
             changeView('step-subject');
         }
     </script>
