@@ -2,315 +2,131 @@
 <html lang="ja">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>一問一答勉強サイト</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <link rel="stylesheet" href="style.css">
+<title>一問一答</title>
+
+<link rel="stylesheet" href="style.css">
+
 </head>
 
 <body>
 
-    <!-- ===== 背景装飾 ===== -->
+<header>
 
-    <div class="bg-circle circle1"></div>
-    <div class="bg-circle circle2"></div>
-    <div class="bg-circle circle3"></div>
+<div class="logo">
 
-    <!-- ===== ヘッダー ===== -->
+<h1>一問一答</h1>
 
-    <header>
+<p>いつでも、どこでも、学べる。</p>
 
-        <div class="logo-area">
+</div>
 
-            <h1>一問一答勉強サイト</h1>
+<nav>
 
-            <p>
-                日本最大級の一問一答学習サービス
-            </p>
+<a href="#">ホーム</a>
 
-        </div>
+<a href="#">ランキング</a>
 
-        <div class="user-menu">
+<a href="#">お知らせ</a>
 
-            <button>🔔</button>
+<a href="#">設定</a>
 
-            <button>⚙</button>
+</nav>
 
-            <div class="profile">
+</header>
 
-                <div class="icon">
-                    D
-                </div>
+<main>
 
-                <div>
+<section class="hero">
 
-                    <span class="name">
-                        DORUDO
-                    </span>
+<h2>
 
-                    <span class="level">
-                        Lv.8
-                    </span>
+今日も一歩ずつ知識を積み重ねよう。
 
-                </div>
+</h2>
 
-            </div>
+<p>
 
-        </div>
+教科・学年を選択してすぐに勉強できます。
 
-    </header>
+</p>
 
-    <!-- ===== メイン ===== -->
+<button id="startButton">
 
-    <main>
+勉強を始める
 
-        <!-- ===== ステータス ===== -->
+</button>
 
-        <section class="status">
+</section>
 
-            <div>
+<section class="status">
 
-                <span class="label">
-                    学習時間
-                </span>
+<div>
 
-                <h2>
-                    13
-                </h2>
+<span>学習時間</span>
 
-                <p>時間</p>
+<h2>13時間</h2>
 
-            </div>
+</div>
 
-            <div>
+<div>
 
-                <span class="label">
-                    解いた問題
-                </span>
+<span>解いた問題</span>
 
-                <h2>
-                    2,358
-                </h2>
+<h2>2,358問</h2>
 
-                <p>問</p>
+</div>
 
-            </div>
+<div>
 
-            <div>
+<span>ポイント</span>
 
-                <span class="label">
-                    所持ポイント
-                </span>
+<h2>18,250Pt</h2>
 
-                <h2>
-                    18,250
-                </h2>
+</div>
 
-                <p>Pt</p>
+</section>
 
-            </div>
+<section class="news">
 
-        </section>
+<h3>
 
-        <!-- ===== スタート ===== -->
+お知らせ
 
-        <section class="hero">
+</h3>
 
-            <h2>
+<ul>
 
-                勉強しよう。
+<li>新しい問題を追加しました。</li>
 
-            </h2>
+<li>ランキング機能を近日公開予定。</li>
 
-            <p>
+<li>毎日ログインでポイント獲得！</li>
 
-                今日も少しずつ知識を積み重ねよう。
+</ul>
 
-            </p>
+</section>
 
-            <button class="start">
+</main>
 
-                勉強を始める →
+<footer>
 
-            </button>
+©2026 一問一答
 
-        </section>
+</footer>
 
-        <!-- ===== 教科 ===== -->
+<script>
 
-        <section class="subjects">
+document.getElementById("startButton").onclick=function(){
 
-            <h2>
+location.href="subject.html";
 
-                教科を選択
+}
 
-            </h2>
-
-            <div class="subject-list">
-
-                <button>📖 国語</button>
-
-                <button>🧮 数学</button>
-
-                <button>🌏 社会</button>
-
-                <button>🧪 理科</button>
-
-                <button>🔤 英語</button>
-
-            </div>
-
-        </section>
-
-        <!-- ===== 最近 ===== -->
-
-        <section class="recent">
-
-            <div class="title">
-
-                最近の学習
-
-            </div>
-
-            <ul>
-
-                <li>
-
-                    <span>社会</span>
-
-                    <span>★★★★★</span>
-
-                </li>
-
-                <li>
-
-                    <span>数学</span>
-
-                    <span>★★★☆☆</span>
-
-                </li>
-
-                <li>
-
-                    <span>英語</span>
-
-                    <span>★★★★☆</span>
-
-                </li>
-
-            </ul>
-
-        </section>
-
-        <!-- ===== 今日の目標 ===== -->
-
-        <section class="goal">
-
-            <div class="title">
-
-                今日の目標
-
-            </div>
-
-            <ul>
-
-                <li>
-
-                    <input type="checkbox">
-
-                    50問解く
-
-                </li>
-
-                <li>
-
-                    <input type="checkbox">
-
-                    30分勉強する
-
-                </li>
-
-                <li>
-
-                    <input type="checkbox">
-
-                    100Pt獲得する
-
-                </li>
-
-            </ul>
-
-        </section>
-
-        <!-- ===== ランキング ===== -->
-
-        <section class="ranking">
-
-            <div class="title">
-
-                ランキング
-
-            </div>
-
-            <table>
-
-                <tr>
-
-                    <th>順位</th>
-
-                    <th>名前</th>
-
-                    <th>ポイント</th>
-
-                </tr>
-
-                <tr>
-
-                    <td>1</td>
-
-                    <td>Player_A</td>
-
-                    <td>95,200</td>
-
-                </tr>
-
-                <tr>
-
-                    <td>2</td>
-
-                    <td>DORUDO</td>
-
-                    <td>18,250</td>
-
-                </tr>
-
-                <tr>
-
-                    <td>3</td>
-
-                    <td>Player_C</td>
-
-                    <td>17,950</td>
-
-                </tr>
-
-            </table>
-
-        </section>
-
-    </main>
-
-    <!-- ===== フッター ===== -->
-
-    <footer>
-
-        © 2026 一問一答勉強サイト
-
-    </footer>
-
-    <script src="script.js"></script>
+</script>
 
 </body>
 
