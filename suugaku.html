@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>数学 - 一問一答</title>
+    <style>
+        :root {
+            --bg-color: #f5f7fa;
+            --text-color: #1e293b;
+            --accent-color: #3b82f6;
+            --accent-hover: #2563eb;
+            --success-color: #10b981;
+            --danger-color: #ef4444;
+            --card-bg: #ffffff;
+            --border-color: #e2e8f0;
+        }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background-color: var(--bg-color); color: var(--text-color); margin: 0; padding: 0;
+            display: flex; flex-direction: column; align-items: center; min-height: 100vh;
+        }
+        nav {
+            width: 100%; background: var(--card-bg); border-bottom: 1px solid var(--border-color);
+            padding: 1rem; box-sizing: border-box; display: flex; justify-content: space-between; align-items: center;
+        }
+        nav a { color: #64748b; text-decoration: none; font-size: 0.95rem; font-weight: 600; }
+        nav a.nav-logo { color: var(--text-color); font-size: 1.1rem; font-weight: 800; }
+        header { width: 100%; text-align: center; padding: 3rem 1rem 1.5rem 1rem; }
+        h1 { font-size: 2.2rem; font-weight: 800; margin: 0; color: var(--text-color); }
+        .container { width: 100%; max-width: 540px; padding: 0 1.5rem; box-sizing: border-box; }
+        .card {
+            background: var(--card-bg); border-radius: 16px; padding: 3rem 2rem;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05); text-align: center; display: none;
+        }
+        .card.active { display: block; }
+        h2 { font-size: 1.3rem; margin-top: 0; margin-bottom: 2.5rem; color: #475569; }
+        .btn-list { display: flex; flex-direction: column; gap: 1rem; }
+        .btn {
+            background-color: var(--card-bg); border: 1px solid var(--border-color); color: var(--text-color);
+            padding: 1.1rem 2rem; font-size: 1.1rem; font-weight: 600; border-radius: 12px; cursor: pointer; transition: all 0.2s ease;
+        }
+        .btn:hover { border-color: var(--accent-color); color: var(--accent-color); background-color: rgba(59, 130, 246, 0.04); }
+        .btn-primary { background-color: var(--accent-color); color: white; border: none; }
+        .btn-primary:hover { background-color: var(--accent-hover); color: white; }
+        .judge-box { display: none; gap: 1rem; }
+        .judge-box.visible { display: flex; }
+        .btn-success { background-color: var(--success-color); color: white; border: none; flex: 1; }
+        .btn-danger { background-color: var(--danger-color); color: white; border: none; flex: 1; }
+        .quiz-text { font-size: 1.4rem; font-weight: 700; margin-bottom: 2.5rem; min-height: 90px; display: flex; align-items: center; justify-content: center; }
+        .answer-box { background: #f8fafc; border: 1px dashed #cbd5e1; padding: 1.5rem; border-radius: 12px; font-size: 1.3rem; font-weight: 700; color: var(--accent-color); margin-bottom: 2.5rem; display: none; }
+        .answer-box.visible { display: block; }
+        .progress { font-size: 0.95rem; font-weight: 600; color: #94a3b8; margin-bottom: 1.5rem; }
+        .score-display { font-size: 3.5rem; font-weight: 800; color: var(--accent-color); margin: 1.5rem 0; }
+    </style>
+</head>
+<body>
+
+    <nav>
+        <a href="index.html" class="nav-logo">一問一答勉強サイト</a>
+        <div class="nav-links"><a href="index.html">← トップに戻る</a></div>
+    </nav>
+
+    <header>
+        <h1>数学 一問一答</h1>
+    </header>
+
+    <div class="container">
+        <div id="step-grade" class="card active">
+            <h2>学年を選択してください</h2>
+            <div class="btn-list">
+                <button class="btn" onclick="selectGrade(1)">中学1年</button>
+                <button class="btn" onclick="selectGrade(2)">中学2年</button>
+                <button class="btn" onclick="selectGrade(3)">中学3年</button>
+            </div>
+        </div>
+
+        <div id="step-count" class="card">
+            <h2>解く問題数を選択してください</h2>
+            <div class="btn-list">
+                <button class="btn" onclick="startQuiz(5)">5問</button>
+                <button class="btn" onclick="startQuiz(10)">10問</button>
+                <button class="btn" onclick="startQuiz(20)">20問</button>
+            </div>
+        </div>
+
+        <div id="step-quiz" class="card">
+            <div class="progress" id="quiz-progress">1 / 5</div>
+            <div class="quiz-text" id="quiz-question">問題文</div>
+            <div class="answer-box" id="quiz-answer">正解データ</div>
+            <div class="btn-list">
+                <button class="btn btn-primary" id="action-btn" onclick="showAnswer()">答えを見る</button>
+                <div class="judge-box" id="judge-box">
+                    <button class="btn btn-danger" onclick="submitJudgment(false)">おぼえてない</button>
+                    <button class="btn btn-success" onclick="submitJudgment(true)">おぼえてた！</button>
+                </div>
+            </div>
+        </div>
+
+        <div id="step-result" class="card">
+            <h2>結果発表</h2>
+            <p id="result-summary" style="font-size: 1.1rem; color: #64748b; margin: 0;">解いた問題数：5問</p>
+            <div class="score-display"><span id="correct-count">0</span> / <span id="total-count">5</span></div>
+            <div class="btn-list">
+                <a href="index.html" class="btn btn-primary">ホームに戻って実績を確認</a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 数学の問題データ
+        const quizDatabase = {
+            1: [
+                { q: "xの係数が1のとき、1xの「1」は書く？書かない？", a: "書かない（xと書く）" },
+                { q: "yはxに比例し、x=2のときy=6である。比例定数を求める式は？", a: "6 = 2a" }
+            ],
+            2: [
+                { q: "連立方程式を解く2つの代表的な方法は？「代入法」と何法？", a: "加減法" }
+            ],
+            3: [
+                { q: "二次方程式 ax² + bx + c = 0 の解の公式、x = ？", a: "(-b ± √(b² - 4ac)) / 2a" }
+            ],
+            4: [
+                { q: "うんこの形をなんという？", a: "うんこ型" }
+            ]
+        };
+
+        let selectedGrade = '';
+        let currentQuestions = [];
+        let currentIndex = 0;
+        let correctAnswers = 0;
+
+        function changeView(stepId) {
+            document.querySelectorAll('.card').forEach(card => card.classList.remove('active'));
+            document.getElementById(stepId).classList.add('active');
+        }
+
+        function selectGrade(grade) {
+            selectedGrade = grade;
+            changeView('step-count');
+        }
+
+        function startQuiz(count) {
+            const rawQuestions = quizDatabase[selectedGrade] || [];
+            if (rawQuestions.length === 0) {
+                alert("問題がまだ登録されていません。");
+                window.location.href = 'index.html';
+                return;
+            }
+            const shuffled = [...rawQuestions].sort(() => 0.5 - Math.random());
+            currentQuestions = shuffled.slice(0, Math.min(count, shuffled.length));
+            currentIndex = 0;
+            correctAnswers = 0;
+            changeView('step-quiz');
+            showQuestion();
+        }
+
+        function showQuestion() {
+            const current = currentQuestions[currentIndex];
+            document.getElementById('quiz-progress').innerText = `第 ${currentIndex + 1} 問 / 全 ${currentQuestions.length} 問`;
+            document.getElementById('quiz-question').innerText = current.q;
+            const answerBox = document.getElementById('quiz-answer');
+            answerBox.innerText = current.a;
+            answerBox.classList.remove('visible');
+            document.getElementById('action-btn').style.display = 'block';
+            document.getElementById('judge-box').classList.remove('visible');
+        }
+
+        function showAnswer() {
+            document.getElementById('quiz-answer').classList.add('visible');
+            document.getElementById('action-btn').style.display = 'none';
+            document.getElementById('judge-box').classList.add('visible');
+        }
+
+        function submitJudgment(isCorrect) {
+            if (isCorrect) correctAnswers++;
+            currentIndex++;
+
+            if (currentIndex < currentQuestions.length) {
+                showQuestion();
+            } else {
+                // クイズ終了時にローカルストレージへ保存する処理
+                saveStats(currentQuestions.length, correctAnswers);
+
+                document.getElementById('result-summary').innerText = `解いた問題数：${currentQuestions.length}問`;
+                document.getElementById('correct-count').innerText = correctAnswers;
+                document.getElementById('total-count').innerText = currentQuestions.length;
+                changeView('step-result');
+            }
+        }
+
+        // 行動経済学的アプローチ：実績をブラウザに永久保存
+        function saveStats(solvedCount, correctCount) {
+            // 総解答数の更新
+            let currentTotal = parseInt(localStorage.getItem('totalSolved') || 0);
+            localStorage.setItem('totalSolved', currentTotal + solvedCount);
+
+            // 最高正解率の更新
+            let accuracy = Math.round((correctCount / solvedCount) * 100);
+            let currentBest = parseInt(localStorage.getItem('bestAccuracy') || 0);
+            if (accuracy > currentBest) {
+                localStorage.setItem('bestAccuracy', accuracy);
+            }
+        }
+    </script>
+</body>
+</html>
