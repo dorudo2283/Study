@@ -1,180 +1,317 @@
 <!DOCTYPE html>
 <html lang="ja">
+
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>一問一答勉強サイト</title>
+    <title>一問一答勉強サイト</title>
 
-<style>
-*{
-    margin:0;
-    padding:0;
-    box-sizing:border-box;
-    font-family:"Yu Gothic UI","Meiryo",sans-serif;
-}
-
-body{
-    background:#f5f6f8;
-    color:#222;
-}
-
-/* ===== 上バー ===== */
-
-header{
-    width:100%;
-    background:white;
-    padding:30px;
-    box-shadow:0 4px 15px rgba(0,0,0,.08);
-    text-align:center;
-}
-
-header h1{
-    font-size:52px;
-    font-weight:900;
-    letter-spacing:2px;
-}
-
-/* ===== メイン ===== */
-
-main{
-    width:min(1100px,90%);
-    margin:50px auto;
-}
-
-/* ===== カード ===== */
-
-.card{
-    background:white;
-    border-radius:18px;
-    padding:40px;
-    box-shadow:0 8px 25px rgba(0,0,0,.08);
-    text-align:center;
-}
-
-.card h2{
-    font-size:38px;
-    margin-bottom:15px;
-}
-
-.card p{
-    color:#666;
-    font-size:19px;
-    margin-bottom:40px;
-}
-
-/* ===== ボタン ===== */
-
-.start-btn{
-    border:none;
-    background:#111;
-    color:white;
-    font-size:24px;
-    padding:18px 70px;
-    border-radius:15px;
-    cursor:pointer;
-    transition:.25s;
-}
-
-.start-btn:hover{
-    transform:translateY(-4px);
-    background:#2f2f2f;
-    box-shadow:0 12px 25px rgba(0,0,0,.18);
-}
-
-/* ===== 下の紹介 ===== */
-
-.grid{
-    margin-top:40px;
-    display:grid;
-    grid-template-columns:repeat(auto-fit,minmax(240px,1fr));
-    gap:25px;
-}
-
-.box{
-    background:white;
-    border-radius:15px;
-    padding:30px;
-    text-align:center;
-    box-shadow:0 6px 18px rgba(0,0,0,.08);
-}
-
-.box h3{
-    margin-bottom:12px;
-    font-size:24px;
-}
-
-.box p{
-    color:#666;
-    line-height:1.7;
-}
-
-/* ===== フッター ===== */
-
-footer{
-    text-align:center;
-    color:#888;
-    padding:40px;
-    margin-top:60px;
-}
-</style>
-
+    <link rel="stylesheet" href="style.css">
 </head>
+
 <body>
 
-<header>
-    <h1>一問一答勉強サイト</h1>
-</header>
+    <!-- ===== 背景装飾 ===== -->
 
-<main>
+    <div class="bg-circle circle1"></div>
+    <div class="bg-circle circle2"></div>
+    <div class="bg-circle circle3"></div>
 
-<div class="card">
+    <!-- ===== ヘッダー ===== -->
 
-<h2>ようこそ！</h2>
+    <header>
 
-<p>
-ゲーム感覚で楽しく学べる、一問一答形式の勉強サイトです。<br>
-社会・理科・数学・英語など、好きな教科から始めましょう。
-</p>
+        <div class="logo-area">
 
-<button class="start-btn">
-勉強を始める
-</button>
+            <h1>一問一答勉強サイト</h1>
 
-</div>
+            <p>
+                日本最大級の一問一答学習サービス
+            </p>
 
-<div class="grid">
+        </div>
 
-<div class="box">
-<h3>📚 一問一答</h3>
-<p>
-テンポよく問題を解いて知識を定着させます。
-</p>
-</div>
+        <div class="user-menu">
 
-<div class="box">
-<h3>📈 学習記録</h3>
-<p>
-正答率や学習時間を自動で保存します。
-</p>
-</div>
+            <button>🔔</button>
 
-<div class="box">
-<h3>🏆 ランキング</h3>
-<p>
-連続正解数やレベルアップを目指そう。
-</p>
-</div>
+            <button>⚙</button>
 
-</div>
+            <div class="profile">
 
-</main>
+                <div class="icon">
+                    D
+                </div>
 
-<footer>
+                <div>
 
-© 2026 一問一答勉強サイト
+                    <span class="name">
+                        DORUDO
+                    </span>
 
-</footer>
+                    <span class="level">
+                        Lv.8
+                    </span>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </header>
+
+    <!-- ===== メイン ===== -->
+
+    <main>
+
+        <!-- ===== ステータス ===== -->
+
+        <section class="status">
+
+            <div>
+
+                <span class="label">
+                    学習時間
+                </span>
+
+                <h2>
+                    13
+                </h2>
+
+                <p>時間</p>
+
+            </div>
+
+            <div>
+
+                <span class="label">
+                    解いた問題
+                </span>
+
+                <h2>
+                    2,358
+                </h2>
+
+                <p>問</p>
+
+            </div>
+
+            <div>
+
+                <span class="label">
+                    所持ポイント
+                </span>
+
+                <h2>
+                    18,250
+                </h2>
+
+                <p>Pt</p>
+
+            </div>
+
+        </section>
+
+        <!-- ===== スタート ===== -->
+
+        <section class="hero">
+
+            <h2>
+
+                勉強しよう。
+
+            </h2>
+
+            <p>
+
+                今日も少しずつ知識を積み重ねよう。
+
+            </p>
+
+            <button class="start">
+
+                勉強を始める →
+
+            </button>
+
+        </section>
+
+        <!-- ===== 教科 ===== -->
+
+        <section class="subjects">
+
+            <h2>
+
+                教科を選択
+
+            </h2>
+
+            <div class="subject-list">
+
+                <button>📖 国語</button>
+
+                <button>🧮 数学</button>
+
+                <button>🌏 社会</button>
+
+                <button>🧪 理科</button>
+
+                <button>🔤 英語</button>
+
+            </div>
+
+        </section>
+
+        <!-- ===== 最近 ===== -->
+
+        <section class="recent">
+
+            <div class="title">
+
+                最近の学習
+
+            </div>
+
+            <ul>
+
+                <li>
+
+                    <span>社会</span>
+
+                    <span>★★★★★</span>
+
+                </li>
+
+                <li>
+
+                    <span>数学</span>
+
+                    <span>★★★☆☆</span>
+
+                </li>
+
+                <li>
+
+                    <span>英語</span>
+
+                    <span>★★★★☆</span>
+
+                </li>
+
+            </ul>
+
+        </section>
+
+        <!-- ===== 今日の目標 ===== -->
+
+        <section class="goal">
+
+            <div class="title">
+
+                今日の目標
+
+            </div>
+
+            <ul>
+
+                <li>
+
+                    <input type="checkbox">
+
+                    50問解く
+
+                </li>
+
+                <li>
+
+                    <input type="checkbox">
+
+                    30分勉強する
+
+                </li>
+
+                <li>
+
+                    <input type="checkbox">
+
+                    100Pt獲得する
+
+                </li>
+
+            </ul>
+
+        </section>
+
+        <!-- ===== ランキング ===== -->
+
+        <section class="ranking">
+
+            <div class="title">
+
+                ランキング
+
+            </div>
+
+            <table>
+
+                <tr>
+
+                    <th>順位</th>
+
+                    <th>名前</th>
+
+                    <th>ポイント</th>
+
+                </tr>
+
+                <tr>
+
+                    <td>1</td>
+
+                    <td>Player_A</td>
+
+                    <td>95,200</td>
+
+                </tr>
+
+                <tr>
+
+                    <td>2</td>
+
+                    <td>DORUDO</td>
+
+                    <td>18,250</td>
+
+                </tr>
+
+                <tr>
+
+                    <td>3</td>
+
+                    <td>Player_C</td>
+
+                    <td>17,950</td>
+
+                </tr>
+
+            </table>
+
+        </section>
+
+    </main>
+
+    <!-- ===== フッター ===== -->
+
+    <footer>
+
+        © 2026 一問一答勉強サイト
+
+    </footer>
+
+    <script src="script.js"></script>
 
 </body>
+
 </html>
