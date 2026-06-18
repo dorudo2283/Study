@@ -19,8 +19,6 @@ display:block;width:100%;
 
 .btn:hover{transform:scale(1.02)}
 
-.choice{background:#fff;padding:15px;border-radius:12px;margin:10px 0;cursor:pointer;}
-
 .correct{background:#4caf50;color:#fff;}
 .wrong{background:#f44336;color:#fff;}
 
@@ -34,8 +32,14 @@ background:#fff;padding:20px;border-radius:12px;margin-top:20px;
 margin-top:10px;background:#fff;padding:10px;border-radius:10px;
 }
 
+#result{
+font-size:20px;
+margin-top:10px;
+font-weight:bold;
+}
 </style>
 </head>
+
 <body>
 
 <header>📐 数学クイズ</header>
@@ -70,19 +74,20 @@ margin-top:10px;background:#fff;padding:10px;border-radius:10px;
 let grade = 1;
 let index = 0;
 let questions = [];
+let answered = false;
 
 /* =========================
-   問題データ（拡張OK）
+   問題データ
 ========================= */
 
 const db = {
 
-1:[ // 中1（ちゃんと中学生）
+1:[ // 中1
 {
 q:"(-3) + 5 = ?",
 c:["-8","-2","2","8","-1"],
 a:2,
-ex:"符号が違うときは大きい方から小さい方を引く。5-3=2"
+ex:"符号が違うので絶対値の差。5-3=2"
 },
 {
 q:"(-4) × (-2) = ?",
@@ -94,7 +99,7 @@ ex:"マイナス×マイナスはプラス"
 q:"2(x + 3) を展開すると？",
 c:["2x+3","2x+6","x+6","2x+9","x+3"],
 a:1,
-ex:"分配法則 2×x + 2×3 = 2x+6"
+ex:"分配法則で 2x+6"
 },
 {
 q:"x + 7 = 12 の x は？",
@@ -103,16 +108,16 @@ a:2,
 ex:"12-7=5"
 },
 {
-q:"比例 y=3x のとき x=4 の y は？",
+q:"y=3x, x=4 のとき y は？",
 c:["7","10","12","14","16"],
 a:2,
 ex:"3×4=12"
 },
 {
-q:"直線上の2点(1,2),(3,6)の変化の割合は？",
+q:"変化の割合 (1,2)-(3,6)",
 c:["1","2","3","4","5"],
 a:1,
-ex:"(6-2)/(3-1)=4/2=2"
+ex:"(6-2)/(3-1)=2"
 }
 ],
 
@@ -130,10 +135,10 @@ a:3,
 ex:"10÷2=5"
 },
 {
-q:"一次関数 y=2x の傾きは？",
+q:"y=2x の傾きは？",
 c:["1","2","3","4","5"],
 a:1,
-ex:"xの係数が傾き"
+ex:"xの係数"
 }
 ],
 
@@ -148,13 +153,13 @@ ex:"3×3=9"
 q:"2x+1=7 の x は？",
 c:["2","3","4","5","6"],
 a:2,
-ex:"2x=6 → x=3"
+ex:"2x=6→x=3"
 },
 {
-q:"三平方の定理は？",
+q:"三平方の定理",
 c:["a+b=c","a²+b²=c²","a=b+c","ab=c²","a²=b²"],
 a:1,
-ex:"直角三角形の基本公式"
+ex:"直角三角形の公式"
 }
 ]
 
@@ -177,6 +182,8 @@ show();
 
 function show(){
 
+answered = false;
+
 let q = questions[index];
 
 document.getElementById("q").innerText =
@@ -196,6 +203,9 @@ document.getElementById("explain").innerHTML = "";
 }
 
 function answer(i){
+
+if(answered) return;
+answered = true;
 
 let q = questions[index];
 
@@ -227,7 +237,7 @@ localStorage.setItem("mathAnswered",
 (Number(localStorage.getItem("mathAnswered"))||0)+1);
 
 document.getElementById("explain").innerText =
-questions[index].ex;
+q.ex;
 
 }
 
