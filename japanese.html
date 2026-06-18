@@ -5,92 +5,149 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>国語 | 一問一答マスター</title>
 <style>
-    *{margin:0;padding:0;box-sizing:border-box;font-family:"Yu Gothic",sans-serif;}
-    body{background:#fdf6e3;} /* 国語らしい落ち着いた配色 */
-    header{height:60px;background:#5d4037;color:#fff;display:flex;justify-content:space-between;align-items:center;padding:0 20px;}
-    header a{color:white;text-decoration:none;font-weight:bold;}
-    .point{background:white;color:#5d4037;padding:8px 15px;border-radius:10px;font-weight:bold;}
-    main{max-width:800px;margin:25px auto;padding:20px;}
-    h1{text-align:center;margin-bottom:20px;color:#3e2723;}
-    .menu{text-align:center;background:white;padding:30px;border-radius:15px;box-shadow:0 4px 6px rgba(0,0,0,0.1);}
-    button{padding:15px 25px;border:none;border-radius:10px;cursor:pointer;background:#8d6e63;color:white;margin:10px;font-size:18px;}
-    button:hover{background:#6d4c41;}
-    #game{display:none;}
-    .question{font-size:24px;font-weight:bold;margin:20px 0;background:#fff;padding:20px;border-radius:10px;border-left:5px solid #8d6e63;}
-    .choice{display:block;width:100%;margin:10px 0;padding:15px;background:white;border:2px solid #8d6e63;border-radius:10px;cursor:pointer;text-align:left;font-size:18px;}
-    .choice:hover{background:#efebe9;}
-    .correct{background:#66bb6a!important;color:white;}
-    .wrong{background:#ef5350!important;color:white;}
-    #explain{margin-top:20px;background:#fff8e1;padding:20px;border-radius:10px;border-left:5px solid #ffca28;}
-    #next{display:block;width:100%;margin-top:20px;padding:15px;background:#5d4037;}
+*{margin:0;padding:0;box-sizing:border-box;font-family:"Yu Gothic",sans-serif;}
+body{background:#eef3f8;}
+header{height:60px;background:#1e88e5;color:#fff;display:flex;justify-content:space-between;align-items:center;padding:0 20px;}
+header a{color:white;text-decoration:none;font-weight:bold;}
+.point{background:white;color:#1e88e5;padding:8px 15px;border-radius:10px;font-weight:bold;}
+main{max-width:900px;margin:25px auto;padding:20px;}
+h1{text-align:center;margin-bottom:20px;}
+.menu{text-align:center;}
+.settings {margin-bottom: 20px;background: white;padding: 15px;border-radius: 10px;display: inline-block;}
+.settings select {padding: 5px 10px;font-size: 16px;border-radius: 5px;}
+button{padding:12px 18px;border:none;border-radius:10px;cursor:pointer;background:#1e88e5;color:white;margin:6px;font-size:17px;}
+button:hover{background:#1565c0;}
+#game, #final-result {display:none;}
+.progressText{font-weight:bold;margin-bottom:8px;}
+.progress{width:100%;height:18px;background:#cfd8dc;border-radius:20px;overflow:hidden;margin-bottom:20px;}
+#bar{width:0%;height:100%;background:#43a047;transition:.3s;}
+.question{font-size:25px;font-weight:bold;margin:20px 0;}
+.choice{display:block;width:100%;margin:10px 0;padding:14px;background:white;color:#222;border:2px solid #1e88e5;border-radius:10px;cursor:pointer;text-align:left;font-size:18px;}
+.choice:hover{background:#e3f2fd;}
+.correct{background:#43a047!important;color:white;}
+.wrong{background:#e53935!important;color:white;}
+#result{font-size:28px;font-weight:bold;margin-top:15px;}
+#explain{margin-top:15px;background:#fff;padding:15px;border-left:5px solid orange;}
+#next{display:none;width:100%;margin-top:20px;}
+#final-result {text-align: center;background: white;padding: 30px;border-radius: 10px;box-shadow: 0 4px 6px rgba(0,0,0,0.1);}
+.result-stats {font-size: 22px;margin: 15px 0;font-weight: bold;}
+.result-rate {font-size: 28px;color: #e53935;margin: 15px 0;font-weight: bold;}
+.result-point {font-size: 20px;color: #1e88e5;margin-bottom: 20px;}
 </style>
 </head>
 <body>
-<header><div>📚 国語 一問一答</div><div><span class="point">⭐ <span id="point">0</span>P</span></div></header>
+<header>
+<div>📚 一問一答マスター</div>
+<div><a href="index.html">🏠ホーム</a> <span class="point">⭐ <span id="point">0</span>P</span></div>
+</header>
 <main>
-    <h1>📖 国語</h1>
-    <div class="menu" id="menu">
-        <h2>学年を選択してスタート</h2>
-        <button onclick="start(1)">中1 国語</button>
-        <button onclick="start(2)">中2 国語</button>
-        <button onclick="start(3)">中3 国語</button>
-    </div>
+<h1>📖 国語</h1>
+<div class="menu" id="menu">
+  <div class="settings">
+    <label for="q-count"><b>出題数：</b></label>
+    <select id="q-count">
+      <option value="1">1問</option>
+      <option value="5" selected>5問</option>
+      <option value="10">10問</option>
+      <option value="20">20問</option>
+      <option value="30">30問</option>
+      <option value="40">40問</option>
+      <option value="50">50問</option>
+      <option value="75">75問</option>
+      <option value="100">100問</option>
+    </select>
+  </div>
+  <h2>学年を選択してスタート</h2>
+  <button onclick="start(1)">中1</button>
+  <button onclick="start(2)">中2</button>
+  <button onclick="start(3)">中3</button>
+</div>
 
-    <div id="game">
-        <div id="question" class="question"></div>
-        <div id="choices"></div>
-        <div id="result" style="font-size:22px;font-weight:bold;margin:15px 0;"></div>
-        <div id="explain"></div>
-        <button id="next" onclick="nextQuestion()" style="display:none;">次の問題 ▶</button>
-    </div>
+<div id="game">
+  <div class="progressText" id="progressText"></div>
+  <div class="progress"><div id="bar"></div></div>
+  <div class="question" id="question"></div>
+  <div id="choices"></div>
+  <div id="result"></div>
+  <div id="explain"></div>
+  <button id="next" onclick="nextQuestion()">次の問題 ▶</button>
+</div>
+
+<div id="final-result">
+  <h2>🎉 結果発表 🎉</h2>
+  <div class="result-stats" id="final-score">正解数: 0 / 0問</div>
+  <div class="result-rate" id="final-rate">正答率: 0%</div>
+  <div class="result-point" id="final-earned-points">獲得ポイント: +0P</div>
+  <button onclick="location.reload()">もう一回やる</button>
+  <button onclick="location.href='index.html'" style="background: #757575;">ホームへ戻る</button>
+</div>
 </main>
 
 <script>
+const pointText = document.getElementById("point");
+let point = Number(localStorage.getItem("point")) || 0;
+pointText.textContent = point;
+let current = 0, answered = false, questions = [], correctCount = 0; 
+
 const db = {
-    1: [{q:"「山月記」の作者は？", c:["芥川龍之介","中島敦","夏目漱石","太宰治"], a:1, ex:"李徴という男が虎になる話です。"}, {q:"「平家物語」の冒頭は？", c:["春はあけぼの","祇園精舎の鐘の声","月日は百代の過客にして","吾輩は猫である"], a:1, ex:"諸行無常の響きあり。"}],
-    2: [{q:"「羅生門」の作者は？", c:["芥川龍之介","中島敦","夏目漱石","太宰治"], a:0, ex:"下人の極限状態を描いています。"}, {q:"「走れメロス」の舞台は？", c:["シラクサ","ローマ","ギリシャ","パリ"], a:0, ex:"古代シラクサの王様の話。"}],
-    3: [{q:"「こころ」の作者は？", c:["夏目漱石","芥川龍之介","太宰治","森鴎外"], a:0, ex:"明治の終わりを描いた名作です。"}, {q:"「銀河鉄道の夜」の作者は？", c:["宮沢賢治","太宰治","夏目漱石","芥川龍之介"], a:0, ex:"イーハトーブが舞台です。"}]
+  1: [{q:"「山月記」の作者は？", c:["芥川龍之介","中島敦","夏目漱石"], a:1, ex:"中島敦です。李徴という男が虎になる話です。"}],
+  2: [{q:"「羅生門」の作者は？", c:["芥川龍之介","中島敦","太宰治"], a:0, ex:"芥川龍之介です。平安時代末期が舞台です。"}],
+  3: [{q:"「こころ」の作者は？", c:["夏目漱石","芥川龍之介","太宰治"], a:0, ex:"夏目漱石です。明治の終わりを描いた作品です。"}]
 };
 
-let current = 0, answered = false, questions = [], point = Number(localStorage.getItem("point")) || 0;
-document.getElementById("point").textContent = point;
-
 function start(g) {
-    questions = db[g].sort(() => Math.random() - 0.5);
-    document.getElementById("menu").style.display = "none";
-    document.getElementById("game").style.display = "block";
-    show();
+  current = 0; correctCount = 0; answered = false;
+  const count = Number(document.getElementById("q-count").value);
+  let allQuestions = [...db[g]];
+  questions = allQuestions.sort(() => Math.random() - 0.5).slice(0, Math.min(count, allQuestions.length));
+  document.getElementById("menu").style.display = "none";
+  document.getElementById("game").style.display = "block";
+  showQuestion();
 }
 
-function show() {
-    answered = false;
-    let q = questions[current];
-    document.getElementById("question").textContent = q.q;
-    document.getElementById("choices").innerHTML = q.c.map((c, i) => `<button class="choice" onclick="check(${i})">${c}</button>`).join("");
-    document.getElementById("result").textContent = "";
-    document.getElementById("explain").innerHTML = "";
-    document.getElementById("next").style.display = "none";
+function showQuestion() {
+  answered = false;
+  let q = questions[current];
+  document.getElementById("progressText").innerHTML = `問題 ${current + 1} / ${questions.length}`;
+  document.getElementById("bar").style.width = `${(current + 1) / questions.length * 100}%`;
+  document.getElementById("question").innerHTML = q.q;
+  document.getElementById("choices").innerHTML = q.c.map((c, i) => `<button class="choice" onclick="answer(${i})">${c}</button>`).join("");
+  document.getElementById("result").innerHTML = "";
+  document.getElementById("explain").innerHTML = "";
+  document.getElementById("next").style.display = "none";
 }
 
-function check(sel) {
-    if (answered) return;
-    answered = true;
-    let q = questions[current];
-    document.querySelectorAll(".choice").forEach((b, i) => {
-        b.disabled = true;
-        if(i === q.a) b.classList.add("correct");
-        else if(i === sel) b.classList.add("wrong");
-    });
-    document.getElementById("result").textContent = (sel === q.a) ? "⭕ 正解！" : "❌ 不正解";
-    document.getElementById("explain").innerHTML = "<b>解説:</b><br>" + q.ex;
-    if(sel === q.a) { point += 2; localStorage.setItem("point", point); document.getElementById("point").textContent = point; }
-    document.getElementById("next").style.display = "block";
+function answer(select) {
+  if (answered) return;
+  answered = true;
+  const q = questions[current];
+  document.querySelectorAll(".choice").forEach((btn, i) => {
+    btn.disabled = true;
+    if (i === q.a) btn.classList.add("correct");
+    else if (i === select) btn.classList.add("wrong");
+  });
+  if (select === q.a) {
+    document.getElementById("result").innerHTML = "⭕ 正解！ +2P";
+    correctCount++;
+    point += 2;
+    localStorage.setItem("point", point);
+    pointText.textContent = point;
+  } else {
+    document.getElementById("result").innerHTML = "❌ 不正解";
+  }
+  document.getElementById("explain").innerHTML = `<b>解説</b><br>${q.ex}`;
+  document.getElementById("next").style.display = "block";
 }
 
 function nextQuestion() {
-    current++;
-    if (current < questions.length) show();
-    else { alert("終了！ホームに戻ります"); location.reload(); }
+  current++;
+  if (current >= questions.length) {
+    document.getElementById("game").style.display = "none";
+    document.getElementById("final-result").style.display = "block";
+    document.getElementById("final-score").innerHTML = `正解数: ${correctCount} / ${questions.length}問`;
+    document.getElementById("final-rate").innerHTML = `正答率: ${Math.round(correctCount / questions.length * 100)}%`;
+    document.getElementById("final-earned-points").innerHTML = `獲得ポイント: +${correctCount * 2}P`;
+  } else { showQuestion(); }
 }
 </script>
 </body>
