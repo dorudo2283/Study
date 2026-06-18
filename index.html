@@ -2,34 +2,33 @@
 <html lang="ja">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>一問一答勉強WEBサイト</title>
     <style>
-        body { margin: 0; font-family: 'Helvetica Neue', Arial, sans-serif; background: #f1f5f9; color: #334155; }
-        .hero { background: white; padding: 40px 20px; text-align: center; border-bottom: 4px solid #3b82f6; }
-        h1 { color: #2563eb; margin: 0; font-size: 1.8rem; }
-        .stats-container { display: flex; justify-content: center; gap: 20px; padding: 20px; }
-        .stat-card { background: white; padding: 20px; border-radius: 16px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); width: 140px; text-align: center; }
-        .stat-val { font-size: 1.5rem; font-weight: 800; color: #1e293b; }
-        .menu { padding: 20px; max-width: 500px; margin: 0 auto; }
-        .card { background: white; padding: 20px; border-radius: 16px; margin-bottom: 15px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); text-align: center; }
-        .card a { display: block; padding: 15px; background: #3b82f6; color: white; text-decoration: none; border-radius: 12px; font-weight: bold; margin-top: 10px; }
+        body { margin: 0; padding-top: 50px; font-family: 'Helvetica Neue', Arial, sans-serif; background: #f8fafc; color: #334155; display: flex; flex-direction: column; align-items: center; }
+        header { margin-bottom: 40px; text-align: center; }
+        .card { width: 300px; padding: 30px; margin: 15px; background: white; border-radius: 16px; box-shadow: 0 4px 12px rgba(0,0,0,0.08); text-align: center; text-decoration: none; color: #334155; transition: transform 0.2s; }
+        .card:hover { transform: translateY(-5px); background: #f1f5f9; }
+        h1 { color: #0f172a; }
+        .icon { font-size: 3rem; margin-bottom: 10px; display: block; }
     </style>
 </head>
 <body>
-    <div class="hero"><h1>一問一答勉強WEBサイト</h1></div>
-    <div class="stats-container">
-        <div class="stat-card"><div>ポイント</div><div id="pts" class="stat-val">0</div></div>
-        <div class="stat-card"><div>正答率</div><div id="acc" class="stat-val">0%</div></div>
-    </div>
-    <div class="menu">
-        <div class="card"><h3>数学</h3><a href="math.html">学習スタート</a></div>
-        <div class="card"><h3>社会</h3><a href="social.html">学習スタート</a></div>
-    </div>
-    <script>
-        document.getElementById('pts').innerText = localStorage.getItem('totalPoints') || '0';
-        const t = parseInt(localStorage.getItem('totalAnswers') || 0);
-        const c = parseInt(localStorage.getItem('totalCorrect') || 0);
-        document.getElementById('acc').innerText = (t > 0 ? Math.round((c / t) * 100) : 0) + "%";
-    </script>
+    <header>
+        <h1>一問一答勉強WEBサイト</h1>
+        <p>教科を選択してください</p>
+    </header>
+
+    <a href="social.html" class="card">
+        <span class="icon">🌍</span>
+        <h2>社会科</h2>
+        <p>地理・歴史・公民（全80問）</p>
+    </a>
+
+    <a href="math.html" class="card">
+        <span class="icon">📐</span>
+        <h2>数学</h2>
+        <p>計算・関数・図形（全60問）</p>
+    </a>
 </body>
 </html>
