@@ -1,288 +1,226 @@
-
 <!DOCTYPE html>
 <html lang="ja">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>総合ガチノック - 既存ファイル連動版</title>
+    <title>一問一答 - 勉強WEBサイト</title>
+    
+    <script src="math.js"></script>
+    <script src="social.js"></script>
+
     <style>
-        :root {
-            --bg-color: #f1f5f9;
-            --text-color: #0f172a;
-            --accent-color: #6366f1;
-            --accent-hover: #4f46e5;
-            --success-color: #10b981;
-            --danger-color: #ef4444;
-            --card-bg: #ffffff;
-            --border-color: #e2e8f0;
-        }
+        /* あなたが気に入っていた以前のシンプルな基本スタイル */
         body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-            background-color: var(--bg-color); color: var(--text-color); margin: 0; padding: 0;
-            display: flex; flex-direction: column; align-items: center; min-height: 100vh;
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+            background-color: #f5f5f5;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
         }
-        nav {
-            width: 100%; background: var(--card-bg); border-bottom: 1px solid var(--border-color);
-            padding: 0 1.5rem; box-shadow: 0 1px 3px rgba(0,0,0,0.05); position: sticky; top: 0; z-index: 100; height: 65px;
-            display: flex; justify-content: space-between; align-items: center; box-sizing: border-box;
+        .container {
+            background-color: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            width: 100%;
+            max-width: 600px;
+            box-sizing: border-box;
         }
-        .nav-back { width: 25%; text-align: left; }
-        .nav-back a { color: #64748b; text-decoration: none; font-size: 0.95rem; font-weight: 700; }
-        .nav-center { width: 40%; text-align: center; }
-        .pt-badge { display: inline-block; background: #e0f2fe; color: #0369a1; padding: 0.3rem 0.8rem; border-radius: 15px; font-weight: 700; font-size: 0.9rem; border: 1px solid #bae6fd; }
-        .nav-right { width: 35%; text-align: right; }
-        .nav-next-btn { background: var(--accent-color); color: white; border: none; padding: 0.5rem 1rem; font-size: 0.9rem; font-weight: 700; border-radius: 8px; cursor: pointer; visibility: hidden; opacity: 0; transition: opacity 0.2s ease; }
-        .nav-next-btn.visible { visibility: visible; opacity: 1; }
-
-        header { width: 100%; text-align: center; padding: 2rem 1rem 1rem 1rem; box-sizing: border-box; }
-        h1 { font-size: 1.8rem; font-weight: 800; margin: 0; }
-        .container { width: 100%; max-width: 540px; padding: 0 1.5rem; margin-bottom: 4rem; box-sizing: border-box; }
-        
-        .card { background: var(--card-bg); border-radius: 20px; padding: 2.5rem 1.5rem; box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.05); text-align: center; display: none; width: 100%; box-sizing: border-box; }
-        .card.active { display: block; animation: fadeIn 0.35s ease; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
-        
-        h2 { font-size: 1.25rem; margin-top: 0; margin-bottom: 1.5rem; color: #334155; font-weight: 700; }
-        .btn-list { display: flex; flex-direction: column; gap: 0.8rem; width: 100%; box-sizing: border-box; }
-        
+        h1, h2 {
+            text-align: center;
+            color: #333;
+        }
         .btn {
-            background-color: var(--card-bg); border: 1px solid var(--border-color); color: var(--text-color);
-            padding: 1rem 1.2rem; font-size: 1.05rem; font-weight: 600; border-radius: 12px; cursor: pointer; transition: all 0.2s ease;
-            text-align: left; width: 100%; box-sizing: border-box; word-break: break-all;
+            display: block;
+            width: 100%;
+            padding: 15px;
+            margin: 10px 0;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+            text-align: left;
+            box-sizing: border-box;
         }
-        .btn:hover:not(:disabled) { border-color: var(--accent-color); }
-        .btn.correct { background-color: var(--success-color) !important; color: white !important; border-color: var(--success-color) !important; }
-        .btn.wrong { background-color: var(--danger-color) !important; color: white !important; border-color: var(--danger-color) !important; }
-        
-        .btn-primary { 
-            background-color: var(--accent-color); color: white; border: none; text-align: center; 
-            padding: 1.1rem; border-radius: 14px; font-size: 1.1rem; font-weight: 700; width: 100%; cursor: pointer;
+        .btn:hover {
+            background-color: #0056b3;
         }
-
-        .select-box {
-            width: 100%; padding: 0.8rem; font-size: 1rem; border-radius: 10px; border: 1px solid var(--border-color);
-            background-color: #f8fafc; margin-bottom: 1.5rem; font-weight: 600; color: #334155;
+        .btn-center {
+            text-align: center;
         }
-
-        .quiz-text { font-size: 1.25rem; font-weight: 700; margin-bottom: 2rem; min-height: 80px; display: flex; align-items: center; justify-content: center; color: #0f172a; white-space: pre-wrap; line-height: 1.6; text-align: left; }
-        .quiz-info { display: flex; justify-content: space-between; margin-bottom: 1.2rem; }
-        .progress, .timer { font-size: 0.85rem; font-weight: 700; color: #94a3b8; }
-        .subject-badge { background: #e2e8f0; color: #475569; padding: 0.2rem 0.6rem; border-radius: 6px; font-size: 0.8rem; font-weight: 800; margin-bottom: 0.5rem; display: inline-block; }
-
-        .judge-display { font-size: 2rem; font-weight: 900; margin: 1.2rem 0; display: none; }
-        .judge-display.is-correct { display: block; color: var(--success-color); }
-        .judge-display.is-wrong { display: block; color: var(--danger-color); }
-
-        .explain-box { display: none; background: #f8fafc; border: 1px solid var(--border-color); border-left: 5px solid var(--accent-color); padding: 1.2rem; border-radius: 12px; text-align: left; margin: 1.5rem 0; font-size: 0.95rem; line-height: 1.6; white-space: pre-wrap; }
-        .explain-box.visible { display: block; }
-        .explain-title { font-weight: 800; color: #0f172a; margin-bottom: 0.4rem; }
-
-        .score-display { font-size: 3.5rem; font-weight: 800; color: var(--accent-color); margin: 0.5rem 0 1rem 0; }
-        .time-display { font-size: 1.1rem; font-weight: 600; color: #475569; margin-bottom: 1.5rem; }
+        .quiz-info {
+            display: flex;
+            justify-content: space-between;
+            color: #666;
+            margin-bottom: 20px;
+            font-weight: bold;
+        }
+        #q-text {
+            font-size: 18px;
+            line-height: 1.6;
+            margin-bottom: 25px;
+            white-space: pre-wrap;
+        }
+        #feedback-area {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 5px;
+            display: none;
+        }
+        .correct {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        .incorrect {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        #hint-text {
+            margin-top: 10px;
+            font-size: 14px;
+            color: #555;
+            line-height: 1.5;
+        }
+        .hidden {
+            display: none !important;
+        }
     </style>
-
-    <script src="syakai1.html"></script>
-    <script src="suugaku1.html"></script>
 </head>
 <body>
 
-    <nav>
-        <div class="nav-back"><a href="#" onclick="location.reload()">🔄 やり直す</a></div>
-        <div class="nav-center"><span class="pt-badge" id="bar-points">0 pt</span></div>
-        <div class="nav-right"><button id="nav-next-btn" class="nav-next-btn" onclick="nextQuestion()">次へ ➔</button></div>
-    </nav>
+<div class="container">
+    <div id="home-screen">
+        <h1>一問一答勉強WEBサイト</h1>
+        <p style="text-align: center; color: #666;">挑戦するモードを選んでください</p>
+        <button class="btn btn-center" onclick="startQuiz('math')">数学（全50問）</button>
+        <button class="btn btn-center" onclick="startQuiz('social')">社会（全15問）</button>
+        <button class="btn btn-center" style="background-color: #28a745;" onclick="startQuiz('mix')">教科ごちゃ混ぜランダムモード</button>
+    </div>
 
-    <header>
-        <h1>教科別・総合</h1>
-    </header>
-
-    <div class="container">
-        <div id="step-setup" class="card active">
-            <h2>設定を選んでスタート！</h2>
-            
-            <div style="text-align: left; margin-bottom: 0.5rem; font-weight: 700; color: #475569;">📚 教科えらび</div>
-            <select id="subject-select" class="select-box">
-                <option value="mix">🌟 全教科</option>
-                <option value="社会">社会</option>
-                <option value="数学">数学</option>
-            </select>
-
-            <div style="text-align: left; margin-bottom: 0.5rem; font-weight: 700; color: #475569;">📝 解く問題数</div>
-            <select id="count-select" class="select-box">
-                <option value="5">5 問</option>
-                <option value="10">10 問</option>
-                <option value="30">30 問</option>
-            </select>
-
-            <button class="btn-primary" style="margin-top: 1rem;" onclick="startQuiz()">ガチノックを開始する</button>
+    <div id="quiz-screen" class="hidden">
+        <div class="quiz-info">
+            <span id="info-subject">科目</span>
+            <span id="info-progress">0 / 0</span>
         </div>
-
-        <div id="step-quiz" class="card">
-            <div class="quiz-info">
-                <div class="progress" id="quiz-progress">第 1 問 / 全 5 問</div>
-                <div class="timer" id="quiz-timer">タイム: 00:00</div>
+        <div id="q-text">問題文がここに表示されます。</div>
+        <div id="choices-area">
             </div>
-            <div style="text-align: center;"><span class="subject-badge" id="quiz-subject">社会</span></div>
-            <div class="quiz-text" id="quiz-question">問題文</div>
-            <div class="btn-list" id="choices-box"></div>
-            <div id="judge-text" class="judge-display">正解！</div>
-            <div id="explain-area" class="explain-box">
-                <div class="explain-title">💡 解説</div>
-                <div id="explain-text">解説</div>
-            </div>
-        </div>
-
-        <div id="step-result" class="card">
-            <h2>結果発表</h2>
-            <p id="result-summary" style="font-size: 1rem; color: #64748b; margin: 0;">解いた問題数</p>
-            <div class="score-display"><span id="correct-count">0</span> / <span id="total-count">5</span></div>
-            <div class="time-display" id="result-time">かかった時間</div>
-            <button onclick="location.reload()" class="btn-primary">もう一度解く</button>
+        
+        <div id="feedback-area">
+            <b id="result-msg">正解！</b>
+            <div id="hint-text">解説がここに表示されます。</div>
+            <button class="btn btn-center" style="background-color: #6c757d; margin-top: 15px;" onclick="nextQuestion()">次の問題へ</button>
         </div>
     </div>
 
-    <script>
-        // 各ファイルで定義されている配列（変数名）をここで合体させます
-        // ※ syakai1.html内が「socialQuestions」、suugaku1.html内が「mathQuestions」という変数名になっている前提です
-        const masterDatabase = [...socialQuestions, ...mathQuestions];
+    <div id="result-screen" class="hidden">
+        <h2>しゅうりょう！</h2>
+        <p id="final-score" style="text-align: center; font-size: 20px; font-weight: bold; margin: 30px 0;">0問中 0問正解</p>
+        <button class="btn btn-center" style="background-color: #ffc107; color: #333;" onclick="toHome()">ホームに戻る</button>
+    </div>
+</div>
 
-        let currentQuestions = [];
-        let currentIndex = 0;
-        let correctAnswers = 0;
-        let hasAnswered = false;
-        let startTime;
-        let timerInterval;
+<script>
+    let currentQuestions = [];
+    let currentIndex = 0;
+    let score = 0;
 
-        window.onload = function() {
-            const totalPoints = localStorage.getItem('userPoints') || 0;
-            document.getElementById('bar-points').innerText = `${totalPoints} pt`;
-        };
-
-        function changeView(stepId) {
-            document.querySelectorAll('.card').forEach(card => card.classList.remove('active'));
-            document.getElementById(stepId).classList.add('active');
+    // クイズ開始処理
+    function startQuiz(mode) {
+        if (mode === 'math') {
+            currentQuestions = [...mathQuestions];
+        } else if (mode === 'social') {
+            currentQuestions = [...socialQuestions];
+        } else if (mode === 'mix') {
+            // 数学と社会を合体させ、ランダム（ごちゃ混ぜ）にする
+            currentQuestions = [...mathQuestions, ...socialQuestions];
+            currentQuestions.sort(() => Math.random() - 0.5);
         }
 
-        function startQuiz() {
-            const selectedSubject = document.getElementById('subject-select').value;
-            const selectedCount = parseInt(document.getElementById('count-select').value);
+        currentIndex = 0;
+        score = 0;
 
-            let pool = [];
-            if (selectedSubject === 'mix') {
-                pool = [...masterDatabase];
-            } else {
-                pool = masterDatabase.filter(item => item.subject === selectedSubject);
-            }
+        document.getElementById('home-screen').classList.add('hidden');
+        document.getElementById('result-screen').classList.add('hidden');
+        document.getElementById('quiz-screen').classList.remove('hidden');
 
-            pool.sort(() => 0.5 - Math.random());
-            currentQuestions = pool.slice(0, Math.min(selectedCount, pool.length));
-            
-            if (currentQuestions.length === 0) {
-                alert("問題が見つかりませんでした。");
-                return;
-            }
+        showQuestion();
+    }
 
-            currentIndex = 0;
-            correctAnswers = 0;
-            startTime = Date.now();
-            startTimer();
+    // 問題表示
+    function showQuestion() {
+        document.getElementById('feedback-area').style.display = 'none';
 
-            changeView('step-quiz');
+        const qData = currentQuestions[currentIndex];
+
+        document.getElementById('info-subject').innerText = `【${qData.subject}・中${qData.grade}】`;
+        document.getElementById('info-progress').innerText = `${currentIndex + 1} / ${currentQuestions.length}`;
+        document.getElementById('q-text').innerText = qData.q;
+
+        const choicesArea = document.getElementById('choices-area');
+        choicesArea.innerHTML = '';
+
+        qData.choices.forEach(choice => {
+            const button = document.createElement('button');
+            button.className = 'btn';
+            button.innerText = choice;
+            button.onclick = () => checkAnswer(choice, button);
+            choicesArea.appendChild(button);
+        });
+    }
+
+    // 答え合わせ
+    function checkAnswer(selectedChoice, clickedButton) {
+        const qData = currentQuestions[currentIndex];
+        const choicesArea = document.getElementById('choices-area');
+        
+        const buttons = choicesArea.getElementsByTagName('button');
+        for (let btn of buttons) {
+            btn.disabled = true;
+        }
+
+        const feedbackArea = document.getElementById('feedback-area');
+        const resultMsg = document.getElementById('result-msg');
+        const hintText = document.getElementById('hint-text');
+
+        if (selectedChoice === qData.a) {
+            resultMsg.innerText = "◯ 正解！";
+            feedbackArea.className = "correct";
+            score++;
+        } else {
+            resultMsg.innerText = `× 不正解... （正解: ${qData.a}）`;
+            feedbackArea.className = "incorrect";
+        }
+
+        hintText.innerText = qData.hint;
+        feedbackArea.style.display = 'block';
+    }
+
+    // 次の問題へ
+    function nextQuestion() {
+        currentIndex++;
+        if (currentIndex < currentQuestions.length) {
             showQuestion();
+        } else {
+            document.getElementById('quiz-screen').classList.add('hidden');
+            document.getElementById('result-screen').classList.remove('hidden');
+            document.getElementById('final-score').innerText = `${currentQuestions.length}問中 ${score}問正解！`;
         }
+    }
 
-        function startTimer() {
-            clearInterval(timerInterval);
-            timerInterval = setInterval(() => {
-                const elapsedTime = Math.floor((Date.now() - startTime) / 1000);
-                const minutes = String(Math.floor(elapsedTime / 60)).padStart(2, '0');
-                const seconds = String(elapsedTime % 60).padStart(2, '0');
-                document.getElementById('quiz-timer').innerText = `タイム: ${minutes}:${seconds}`;
-            }, 1000);
-        }
+    // ホームに戻る
+    function toHome() {
+        document.getElementById('result-screen').classList.add('hidden');
+        document.getElementById('home-screen').classList.remove('hidden');
+    }
+</script>
 
-        function showQuestion() {
-            hasAnswered = false;
-            const current = currentQuestions[currentIndex];
-            
-            document.getElementById('quiz-progress').innerText = `第 ${currentIndex + 1} 問 / 全 ${currentQuestions.length} 問`;
-            document.getElementById('quiz-subject').innerText = current.subject;
-            document.getElementById('quiz-question').innerText = current.q;
-            
-            const nextBtn = document.getElementById('nav-next-btn');
-            nextBtn.style.visibility = 'hidden';
-            nextBtn.classList.remove('visible');
-            
-            document.getElementById('judge-text').className = 'judge-display';
-            document.getElementById('explain-area').classList.remove('visible');
-
-            const shuffledChoices = [...current.choices].sort(() => 0.5 - Math.random());
-            const choicesBox = document.getElementById('choices-box');
-            choicesBox.innerHTML = ''; 
-            
-            shuffledChoices.forEach(choice => {
-                const button = document.createElement('button');
-                button.className = 'btn';
-                button.innerText = choice;
-                button.onclick = () => checkAnswer(button, choice, current.a, current.hint);
-                choicesBox.appendChild(button);
-            });
-        }
-
-        function checkAnswer(selectedButton, selectedChoice, correctAnswer, hintText) {
-            if (hasAnswered) return; 
-            hasAnswered = true;
-
-            const buttons = document.getElementById('choices-box').getElementsByClassName('btn');
-            const judgeTextEl = document.getElementById('judge-text');
-
-            for (let btn of buttons) {
-                btn.disabled = true;
-                if (btn.innerText === correctAnswer) {
-                    btn.classList.add('correct');
-                }
-            }
-
-            if (selectedChoice === correctAnswer) {
-                correctAnswers++;
-                judgeTextEl.innerText = "⭕ 正解！ (+2pt)";
-                judgeTextEl.classList.add('is-correct');
-                
-                let totalPoints = parseInt(localStorage.getItem('userPoints') || 0);
-                totalPoints += 2;
-                localStorage.setItem('userPoints', totalPoints);
-                document.getElementById('bar-points').innerText = `${totalPoints} pt`;
-            } else {
-                selectedButton.classList.add('wrong');
-                judgeTextEl.innerText = "❌ 不正解...";
-                judgeTextEl.classList.add('is-wrong');
-            }
-
-            document.getElementById('explain-text').innerText = hintText;
-            document.getElementById('explain-area').classList.add('visible');
-
-            const nextBtn = document.getElementById('nav-next-btn');
-            nextBtn.style.visibility = 'visible';
-            nextBtn.classList.add('visible');
-        }
-
-        function nextQuestion() {
-            currentIndex++;
-            if (currentIndex < currentQuestions.length) {
-                showQuestion();
-            } else {
-                clearInterval(timerInterval);
-                const totalTimeSec = Math.floor((Date.now() - startTime) / 1000);
-                
-                document.getElementById('result-summary').innerText = `解いた問題数：${currentQuestions.length}問`;
-                document.getElementById('correct-count').innerText = correctAnswers;
-                document.getElementById('total-count').innerText = currentQuestions.length;
-                document.getElementById('result-time').innerText = `かかった時間: ${totalTimeSec} 秒`;
-                
-                document.getElementById('nav-next-btn').style.visibility = 'hidden';
-                changeView('step-result');
-            }
-        }
-    </script>
 </body>
 </html>
