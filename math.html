@@ -5,70 +5,75 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>一問一答 - 数学</title>
     <style>
-        body { font-family: sans-serif; padding: 20px; box-sizing: border-box; background: #f8fafc; }
-        .setup-area, .quiz-area { background: white; padding: 20px; border-radius: 12px; border: 1px solid #ddd; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
-        select, button { width: 100%; padding: 15px; margin: 10px 0; border-radius: 8px; font-size: 1rem; border: 1px solid #ccc; }
-        .choice-btn { background: white; border: 2px solid #2563eb; cursor: pointer; display: block; }
-        .choice-btn:active { background: #e0e7ff; }
+        body { margin: 0; padding: 60px 10px 20px; font-family: sans-serif; background: #f1f5f9; box-sizing: border-box; }
+        header { position: fixed; top: 0; left:0; width: 100%; height: 50px; background: #1e293b; color: white; display: flex; align-items: center; justify-content: space-between; padding: 0 15px; box-sizing: border-box; z-index: 100; }
+        .box { background: white; padding: 20px; border-radius: 12px; margin-bottom: 20px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        .choice-btn { display: block; width: 100%; padding: 15px; margin: 10px 0; background: white; border: 2px solid #2563eb; border-radius: 8px; font-size: 1.1rem; }
+        #next-btn { background: #22c55e; color: white; border: none; padding: 8px 15px; border-radius: 4px; font-weight: bold; cursor: pointer; }
+        #explanation { margin-top: 15px; padding: 15px; background: #f0fdf4; border-left: 4px solid #22c55e; display: none; }
     </style>
 </head>
 <body>
-    <div id="setup-area" class="setup-area">
+    <header>
+        <div>一問一答勉強WEBサイト</div>
+        <div>
+            <span id="pts" style="margin-right:10px;">Pts: 0</span>
+            <a href="index.html" style="color:white; margin-right:10px;">ホーム</a>
+            <span id="next-area"></span>
+        </div>
+    </header>
+
+    <div id="setup" class="box">
         <h3>数学 学習設定</h3>
-        学年: <select id="grade-sel">
-            <option value="1">中1</option><option value="2">中2</option><option value="3">中3</option>
-        </select>
-        問題数: <select id="count-sel">
-            <option value="5">5問</option><option value="10">10問</option>
-        </select>
-        <button onclick="startQuiz()" style="background:#2563eb; color:white;">開始</button>
+        学年: <select id="grade-sel"><option value="1">中1</option><option value="2">中2</option><option value="3">中3</option></select>
+        問題数: <select id="count-sel"><option value="5">5問</option><option value="10">10問</option></select>
+        <button onclick="startQuiz()" style="width:100%; padding:15px; margin-top:10px; background:#2563eb; color:white; border:none; border-radius:8px;">開始</button>
     </div>
 
-    <div id="quiz-area" class="quiz-area" style="display:none;">
-        <div id="q-text" style="font-size:1.2rem; margin-bottom:20px; font-weight:bold;"></div>
+    <div id="quiz" class="box" style="display:none;">
+        <div id="q-text" style="font-weight:bold; font-size:1.2rem; margin-bottom:15px;"></div>
         <div id="choices-area"></div>
-    </div>
-
-    <div id="end-area" style="display:none; text-align:center;">
-        <h3>終了！</h3>
-        <a href="index.html" style="padding:15px; display:block; background:#64748b; color:white; text-decoration:none; border-radius:8px;">ホームへ戻る</a>
+        <div id="explanation"></div>
     </div>
 
     <script>
         const db = {
-            '1': [
-                {q: "正負の計算: -5 + 8 = ?", choices: ["1", "2", "3", "4", "5"], correct: "3"},
-                {q: "文字式: 2x + 3x = ?", choices: ["5", "5x", "6x", "x", "2x"], correct: "5x"}
-            ],
-            '2': [
-                {q: "連立方程式: x+y=5, x-y=1 のxは？", choices: ["1", "2", "3", "4", "5"], correct: "3"},
-                {q: "単項式: 2a × 3b = ?", choices: ["5ab", "6ab", "6a", "6b", "23ab"], correct: "6ab"}
-            ],
-            '3': [
-                {q: "展開: (x+2)² = ?", choices: ["x²+4", "x²+2x+4", "x²+4x+4", "x²+2x+2", "x²+4x+2"], correct: "x²+4x+4"},
-                {q: "因数分解: x²-9 = ?", choices: ["(x-3)²", "(x+3)(x-3)", "(x+3)²", "x-9", "(x-9)(x+9)"], correct: "(x+3)(x-3)"}
-            ]
+            '1': [{q: "-5 + 8 = ?", choices: ["1", "2", "3", "4", "5"], correct: "3", exp: "負の数と正の数の足し算です。"}],
+            '2': [{q: "連立方程式 x+y=5, x-y=1 のxは？", choices: ["1", "2", "3", "4", "5"], correct: "3", exp: "足すと2x=6なのでx=3です。"}],
+            '3': [{q: "(x+2)²の展開は？", choices: ["x²+2x+4", "x²+4x+4", "x²+4", "x²+2x+2", "x²+4x+2"], correct: "x²+4x+4", exp: "公式 (a+b)² = a²+2ab+b² です。"}]
         };
 
-        let currentCount = 0, targetCount = 0, currentGrade = 0;
+        let currentQ, currentCount = 0, targetCount = 0;
         function startQuiz() {
-            targetCount = parseInt(document.getElementById('count-sel').value);
-            currentGrade = document.getElementById('grade-sel').value;
-            document.getElementById('setup-area').style.display = 'none';
-            document.getElementById('quiz-area').style.display = 'block';
+            targetCount = document.getElementById('count-sel').value;
+            document.getElementById('setup').style.display = 'none';
+            document.getElementById('quiz').style.display = 'block';
             showQ();
         }
         function showQ() {
-            if(currentCount >= targetCount) { document.getElementById('quiz-area').style.display = 'none'; document.getElementById('end-area').style.display = 'block'; return; }
-            const questions = db[currentGrade];
-            const q = questions[Math.floor(Math.random()*questions.length)];
-            document.getElementById('q-text').innerText = q.q;
+            if(currentCount >= targetCount) { alert("終了！"); location.href='index.html'; return; }
+            document.getElementById('next-area').innerHTML = '';
+            document.getElementById('explanation').style.display = 'none';
+            const grade = document.getElementById('grade-sel').value;
+            currentQ = db[grade][Math.floor(Math.random()*db[grade].length)];
+            document.getElementById('q-text').innerText = currentQ.q;
             const area = document.getElementById('choices-area'); area.innerHTML = '';
-            q.choices.forEach(c => {
+            currentQ.choices.forEach(c => {
                 const b = document.createElement('button'); b.className = 'choice-btn'; b.innerText = c;
-                b.onclick = () => { if(c === q.correct) localStorage.setItem('totalPoints', parseInt(localStorage.getItem('totalPoints')||0)+2); localStorage.setItem('totalAnswers', parseInt(localStorage.getItem('totalAnswers')||0)+1); currentCount++; showQ(); };
+                b.onclick = () => reveal(c);
                 area.appendChild(b);
             });
+        }
+        function reveal(ans) {
+            const exp = document.getElementById('explanation');
+            exp.style.display = 'block';
+            exp.innerText = (ans === currentQ.correct ? "正解！" : "不正解...") + " 解説: " + currentQ.exp;
+            if(ans === currentQ.correct) {
+                let p = parseInt(localStorage.getItem('totalPoints')||0) + 2;
+                localStorage.setItem('totalPoints', p);
+                document.getElementById('pts').innerText = "Pts: " + p;
+            }
+            document.getElementById('next-area').innerHTML = '<button id="next-btn" onclick="currentCount++; showQ();">次へ</button>';
         }
     </script>
 </body>
