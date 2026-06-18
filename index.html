@@ -3,13 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>一問一答 - 勉強WEBサイト</title>
+    <title>一問一答勉強WEBサイト</title>
     
-    <script src="math.js"></script>
-    <script src="social.js"></script>
+    <script src="suugaku1.html"></script>
+    <script src="syakai1.html"></script>
 
     <style>
-        /* あなたが気に入っていた以前のシンプルな基本スタイル */
         body {
             font-family: 'Helvetica Neue', Arial, sans-serif;
             background-color: #f5f5f5;
@@ -32,6 +31,29 @@
         h1, h2 {
             text-align: center;
             color: #333;
+            margin-bottom: 20px;
+        }
+        /* ダッシュボード（統計エリア）のスタイル */
+        .stats-container {
+            background-color: #f8f9fa;
+            border: 1px solid #e9ecef;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 25px;
+        }
+        .stats-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            font-size: 15px;
+            color: #495057;
+        }
+        .stats-row strong {
+            color: #212529;
+        }
+        .stats-divider {
+            border-top: 1px dashed #dee2e6;
+            margin: 10px 0;
         }
         .btn {
             display: block;
@@ -98,10 +120,34 @@
 <div class="container">
     <div id="home-screen">
         <h1>一問一答勉強WEBサイト</h1>
-        <p style="text-align: center; color: #666;">挑戦するモードを選んでください</p>
-        <button class="btn btn-center" onclick="startQuiz('math')">数学（全50問）</button>
-        <button class="btn btn-center" onclick="startQuiz('social')">社会（全15問）</button>
-        <button class="btn btn-center" style="background-color: #28a745;" onclick="startQuiz('mix')">教科ごちゃ混ぜランダムモード</button>
+        
+        <div class="stats-container">
+            <div class="stats-row">
+                <span>現在の総ポイント:</span>
+                <span id="stat-total-points"><strong>0 pt</strong></span>
+            </div>
+            <div class="stats-row">
+                <span>総合回答数:</span>
+                <span id="stat-total-answers"><strong>0 回</strong></span>
+            </div>
+            <div class="stats-row">
+                <span>総合正答率:</span>
+                <span id="stat-total-rate"><strong>0 %</strong></span>
+            </div>
+            <div class="stats-divider"></div>
+            <div class="stats-row">
+                <span>数学 正答率 (回答数):</span>
+                <span id="stat-math-detail"><strong>0 % (0回)</strong></span>
+            </div>
+            <div class="stats-row">
+                <span>社会 正答率 (回答数):</span>
+                <span id="stat-social-detail"><strong>0 % (0回)</strong></span>
+            </div>
+        </div>
+
+        <p style="text-align: center; color: #666;">挑戦する科目を選択してください</p>
+        <button class="btn btn-center" onclick="startQuiz('math')">数学を確認する</button>
+        <button class="btn btn-center" onclick="startQuiz('social')">社会を確認する</button>
     </div>
 
     <div id="quiz-screen" class="hidden">
@@ -110,38 +156,77 @@
             <span id="info-progress">0 / 0</span>
         </div>
         <div id="q-text">問題文がここに表示されます。</div>
-        <div id="choices-area">
-            </div>
+        <div id="choices-area"></div>
         
         <div id="feedback-area">
-            <b id="result-msg">正解！</b>
+            <b id="result-msg">正解</b>
             <div id="hint-text">解説がここに表示されます。</div>
             <button class="btn btn-center" style="background-color: #6c757d; margin-top: 15px;" onclick="nextQuestion()">次の問題へ</button>
         </div>
     </div>
 
     <div id="result-screen" class="hidden">
-        <h2>しゅうりょう！</h2>
-        <p id="final-score" style="text-align: center; font-size: 20px; font-weight: bold; margin: 30px 0;">0問中 0問正解</p>
+        <h2>全問終了</h2>
+        <p id="final-score" style="text-align: center; font-size: 20px; font-weight: bold; margin: 15px 0;">0問中 0問正解</p>
+        <p id="earned-points" style="text-align: center; color: #28a745; font-size: 18px; font-weight: bold; margin-bottom: 30px;">+0 pt 獲得しました！</p>
         <button class="btn btn-center" style="background-color: #ffc107; color: #333;" onclick="toHome()">ホームに戻る</button>
     </div>
 </div>
 
 <script>
+    // 統計・ポイント管理用変数
+    let stats = {
+        totalPoints: 0,
+        mathAnswers: 0,
+        mathCorrects: 0,
+        socialAnswers: 0,
+        socialCorrects: 0
+    };
+
     let currentQuestions = [];
     let currentIndex = 0;
     let score = 0;
+    let currentMode = '';
+
+    // 起動時にダッシュボードの表示を更新
+    window.onload = function() {
+        updateDashboard();
+    };
+
+    // ダッシュボード表示の更新処理
+    function updateDashboard() {
+        const totalAnswers = stats.mathAnswers + stats.socialAnswers;
+        const totalCorrects = stats.mathCorrects + stats.socialCorrects;
+        const totalRate = totalAnswers > 0 ? Math.round((totalCorrects / totalAnswers) * 100) : 0;
+
+        const mathRate = stats.mathAnswers > 0 ? Math.round((stats.mathCorrects / stats.mathAnswers) * 100) : 0;
+        const socialRate = stats.socialAnswers > 0 ? Math.round((stats.socialCorrects / stats.socialAnswers) * 100) : 0;
+
+        document.getElementById('stat-total-points').innerHTML = `<strong>${stats.totalPoints} pt</strong>`;
+        document.getElementById('stat-total-answers').innerHTML = `<strong>${totalAnswers} 回</strong>`;
+        document.getElementById('stat-total-rate').innerHTML = `<strong>${totalRate} %</strong>`;
+        
+        document.getElementById('stat-math-detail').innerHTML = `<strong>${mathRate} % (${stats.mathAnswers}回)</strong>`;
+        document.getElementById('stat-social-detail').innerHTML = `<strong>${socialRate} % (${stats.socialAnswers}回)</strong>`;
+    }
 
     // クイズ開始処理
     function startQuiz(mode) {
+        currentMode = mode;
         if (mode === 'math') {
-            currentQuestions = [...mathQuestions];
+            if (typeof mathQuestions !== 'undefined') {
+                currentQuestions = [...mathQuestions];
+            } else {
+                alert('数学のデータ（mathQuestions）が見つかりません。');
+                return;
+            }
         } else if (mode === 'social') {
-            currentQuestions = [...socialQuestions];
-        } else if (mode === 'mix') {
-            // 数学と社会を合体させ、ランダム（ごちゃ混ぜ）にする
-            currentQuestions = [...mathQuestions, ...socialQuestions];
-            currentQuestions.sort(() => Math.random() - 0.5);
+            if (typeof socialQuestions !== 'undefined') {
+                currentQuestions = [...socialQuestions];
+            } else {
+                alert('社会のデータ（socialQuestions）が見つかりません。');
+                return;
+            }
         }
 
         currentIndex = 0;
@@ -160,7 +245,7 @@
 
         const qData = currentQuestions[currentIndex];
 
-        document.getElementById('info-subject').innerText = `【${qData.subject}・中${qData.grade}】`;
+        document.getElementById('info-subject').innerText = `【${qData.subject}・中学${qData.grade}年】`;
         document.getElementById('info-progress').innerText = `${currentIndex + 1} / ${currentQuestions.length}`;
         document.getElementById('q-text').innerText = qData.q;
 
@@ -190,12 +275,28 @@
         const resultMsg = document.getElementById('result-msg');
         const hintText = document.getElementById('hint-text');
 
+        // 教科別の統計カウント
+        if (currentMode === 'math') {
+            stats.mathAnswers++;
+        } else if (currentMode === 'social') {
+            stats.socialAnswers++;
+        }
+
         if (selectedChoice === qData.a) {
-            resultMsg.innerText = "◯ 正解！";
+            resultMsg.innerText = "〇 正解";
             feedbackArea.className = "correct";
             score++;
+            
+            // 正解時にポイント加算（1問につき10ポイント）
+            stats.totalPoints += 10;
+
+            if (currentMode === 'math') {
+                stats.mathCorrects++;
+            } else if (currentMode === 'social') {
+                stats.socialCorrects++;
+            }
         } else {
-            resultMsg.innerText = `× 不正解... （正解: ${qData.a}）`;
+            resultMsg.innerText = `× 不正解（正解: ${qData.a}）`;
             feedbackArea.className = "incorrect";
         }
 
@@ -211,7 +312,11 @@
         } else {
             document.getElementById('quiz-screen').classList.add('hidden');
             document.getElementById('result-screen').classList.remove('hidden');
-            document.getElementById('final-score').innerText = `${currentQuestions.length}問中 ${score}問正解！`;
+            document.getElementById('final-score').innerText = `${currentQuestions.length}問中 ${score}問正解`;
+            document.getElementById('earned-points').innerText = `+${score * 10} pt 獲得しました！`;
+            
+            // ホームに戻る前に統計画面を更新できるようにする
+            updateDashboard();
         }
     }
 
