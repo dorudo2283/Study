@@ -3,255 +3,391 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>数学クイズ</title>
+<title>数学 | 一問一答マスター</title>
 
 <style>
-body{font-family:Yu Gothic;background:#f4f7fb;margin:0;padding:0;}
-header{background:#1e88e5;color:#fff;padding:15px;text-align:center;font-size:20px;}
-
-.container{max-width:800px;margin:auto;padding:20px;}
-
-.btn{
-padding:10px 15px;margin:5px;border:none;border-radius:10px;
-background:#fff;cursor:pointer;box-shadow:0 3px 10px rgba(0,0,0,.1);
-display:block;width:100%;
+*{margin:0;padding:0;box-sizing:border-box;font-family:"Yu Gothic",sans-serif;}
+body{background:#eef3f8;}
+header{
+height:60px;
+background:#1e88e5;
+color:#fff;
+display:flex;
+justify-content:space-between;
+align-items:center;
+padding:0 20px;
+}
+header a{
+color:white;
+text-decoration:none;
+font-weight:bold;
+}
+.point{
+background:white;
+color:#1e88e5;
+padding:8px 15px;
+border-radius:10px;
+font-weight:bold;
+}
+main{
+max-width:900px;
+margin:25px auto;
+padding:20px;
+}
+h1{
+text-align:center;
+margin-bottom:20px;
 }
 
-.btn:hover{transform:scale(1.02)}
-
-.correct{background:#4caf50;color:#fff;}
-.wrong{background:#f44336;color:#fff;}
-
-.hidden{display:none;}
-
-#questionBox{
-background:#fff;padding:20px;border-radius:12px;margin-top:20px;
+.menu{
+text-align:center;
 }
 
-#explain{
-margin-top:10px;background:#fff;padding:10px;border-radius:10px;
+button{
+padding:12px 18px;
+border:none;
+border-radius:10px;
+cursor:pointer;
+background:#1e88e5;
+color:white;
+margin:6px;
+font-size:17px;
+}
+
+button:hover{
+background:#1565c0;
+}
+
+#game{
+display:none;
+}
+
+.progressText{
+font-weight:bold;
+margin-bottom:8px;
+}
+
+.progress{
+width:100%;
+height:18px;
+background:#cfd8dc;
+border-radius:20px;
+overflow:hidden;
+margin-bottom:20px;
+}
+
+#bar{
+width:0%;
+height:100%;
+background:#43a047;
+transition:.3s;
+}
+
+.question{
+font-size:25px;
+font-weight:bold;
+margin:20px 0;
+}
+
+.choice{
+display:block;
+width:100%;
+margin:10px 0;
+padding:14px;
+background:white;
+color:#222;
+border:2px solid #1e88e5;
+border-radius:10px;
+cursor:pointer;
+text-align:left;
+font-size:18px;
+}
+
+.choice:hover{
+background:#e3f2fd;
+}
+
+.correct{
+background:#43a047!important;
+color:white;
+}
+
+.wrong{
+background:#e53935!important;
+color:white;
 }
 
 #result{
-font-size:20px;
-margin-top:10px;
+font-size:28px;
 font-weight:bold;
+margin-top:15px;
+}
+
+#explain{
+margin-top:15px;
+background:#fff;
+padding:15px;
+border-left:5px solid orange;
+}
+
+#next{
+display:none;
+width:100%;
+margin-top:20px;
 }
 </style>
-</head>
 
+</head>
 <body>
 
-<header>📐 数学クイズ</header>
+<header>
 
-<div class="container">
-
-<div id="gradeSelect">
-<h3>学年を選択</h3>
-<button class="btn" onclick="start(1)">中1</button>
-<button class="btn" onclick="start(2)">中2</button>
-<button class="btn" onclick="start(3)">中3</button>
+<div>
+📚 一問一答マスター
 </div>
 
-<div id="game" class="hidden">
+<div>
 
-<div id="questionBox">
-<div id="q"></div>
+<a href="index.html">🏠ホーム</a>
+
+<span class="point">
+⭐ <span id="point">0</span>P
+</span>
+
+</div>
+
+</header>
+
+<main>
+
+<h1>📐 数学</h1>
+
+<div class="menu" id="menu">
+
+<h2>学年を選択</h2>
+
+<button onclick="start(1)">中1</button>
+<button onclick="start(2)">中2</button>
+<button onclick="start(3)">中3</button>
+
+</div>
+
+<div id="game">
+
+<div class="progressText" id="progressText"></div>
+
+<div class="progress">
+<div id="bar"></div>
+</div>
+
+<div class="question" id="question"></div>
+
 <div id="choices"></div>
-</div>
 
 <div id="result"></div>
+
 <div id="explain"></div>
 
-<button class="btn" onclick="next()">次へ</button>
+<button id="next" onclick="nextQuestion()">
+次の問題 ▶
+</button>
 
 </div>
 
-</div>
+</main>
 
 <script>
 
-let grade = 1;
-let index = 0;
-let questions = [];
-let answered = false;
+const pointText=document.getElementById("point");
 
-/* =========================
-   問題データ
-========================= */
+let point=Number(localStorage.getItem("point"))||0;
+pointText.textContent=point;
 
-const db = {
+let current=0;
+let answered=false;
+let questions=[];
 
-1:[ // 中1
+const db={
+
+1:[
 {
-q:"(-3) + 5 = ?",
-c:["-8","-2","2","8","-1"],
-a:2,
-ex:"符号が違うので絶対値の差。5-3=2"
-},
-{
-q:"(-4) × (-2) = ?",
-c:["-8","8","-6","6","-2"],
+q:"(-5)+8=?",
+c:["2","3","4","5","6"],
 a:1,
-ex:"マイナス×マイナスはプラス"
+ex:"8-5=3"
 },
 {
-q:"2(x + 3) を展開すると？",
-c:["2x+3","2x+6","x+6","2x+9","x+3"],
-a:1,
-ex:"分配法則で 2x+6"
-},
-{
-q:"x + 7 = 12 の x は？",
-c:["3","4","5","6","7"],
-a:2,
-ex:"12-7=5"
-},
-{
-q:"y=3x, x=4 のとき y は？",
-c:["7","10","12","14","16"],
-a:2,
-ex:"3×4=12"
-},
-{
-q:"変化の割合 (1,2)-(3,6)",
-c:["1","2","3","4","5"],
-a:1,
-ex:"(6-2)/(3-1)=2"
+q:"2(x+3)を展開すると？",
+c:["2x+6","2x+3","x+6","2x+9","x+3"],
+a:0,
+ex:"分配法則で2x+6"
 }
 ],
 
-2:[ // 中2
+2:[
 {
-q:"x + 3 = 7 の x は？",
-c:["2","3","4","5","6"],
+q:"2x=18 のxは？",
+c:["7","8","9","10","11"],
 a:2,
-ex:"7-3=4"
+ex:"18÷2=9"
 },
 {
-q:"2x = 10 の x は？",
-c:["2","3","4","5","6"],
-a:3,
-ex:"10÷2=5"
-},
-{
-q:"y=2x の傾きは？",
-c:["1","2","3","4","5"],
-a:1,
+q:"y=5x の傾きは？",
+c:["3","4","5","6","7"],
+a:2,
 ex:"xの係数"
 }
 ],
 
-3:[ // 中3
+3:[
 {
-q:"√9 = ?",
-c:["1","2","3","4","5"],
+q:"√64は？",
+c:["6","7","8","9","10"],
 a:2,
-ex:"3×3=9"
+ex:"8×8=64"
 },
 {
-q:"2x+1=7 の x は？",
-c:["2","3","4","5","6"],
-a:2,
-ex:"2x=6→x=3"
-},
-{
-q:"三平方の定理",
-c:["a+b=c","a²+b²=c²","a=b+c","ab=c²","a²=b²"],
+q:"三平方の定理は？",
+c:[
+"a+b=c",
+"a²+b²=c²",
+"a=b+c",
+"ab=c²",
+"a²=b²"
+],
 a:1,
-ex:"直角三角形の公式"
+ex:"直角三角形で成り立つ公式"
 }
-]
 
 };
 
-/* ========================= */
-
-let point = Number(localStorage.getItem("point")) || 0;
-
 function start(g){
-grade = g;
-questions = db[g];
-index = 0;
 
-document.getElementById("gradeSelect").classList.add("hidden");
-document.getElementById("game").classList.remove("hidden");
+current=0;
+answered=false;
 
-show();
-}
+questions=[...db[g]];
 
-function show(){
+// ランダム
+questions.sort(()=>Math.random()-0.5);
 
-answered = false;
+document.getElementById("menu").style.display="none";
+document.getElementById("game").style.display="block";
 
-let q = questions[index];
-
-document.getElementById("q").innerText =
-"Q" + (index+1) + " " + q.q;
-
-let html = "";
-
-q.c.forEach((c,i)=>{
-html += `<button class="btn" onclick="answer(${i})">${c}</button>`;
-});
-
-document.getElementById("choices").innerHTML = html;
-
-document.getElementById("result").innerHTML = "";
-document.getElementById("explain").innerHTML = "";
+showQuestion();
 
 }
 
-function answer(i){
+function showQuestion(){
 
-if(answered) return;
-answered = true;
+answered=false;
 
-let q = questions[index];
+let q=questions[current];
 
-let buttons = document.querySelectorAll(".btn");
+document.getElementById("progressText").innerHTML=
+"問題 "+(current+1)+" / "+questions.length;
 
-buttons.forEach((b,idx)=>{
-if(idx === q.a) b.classList.add("correct");
-if(idx === i && i !== q.a) b.classList.add("wrong");
+document.getElementById("bar").style.width=
+((current+1)/questions.length*100)+"%";
+
+document.getElementById("question").innerHTML=q.q;
+
+let html="";
+
+q.c.forEach((choice,index)=>{
+
+html+=`
+<button class="choice"
+onclick="answer(${index})">
+${choice}
+</button>
+`;
+
 });
 
-if(i === q.a){
+document.getElementById("choices").innerHTML=html;
 
-document.getElementById("result").innerHTML =
-"⭕ 正解 +2P";
+document.getElementById("result").innerHTML="";
+document.getElementById("explain").innerHTML="";
+document.getElementById("next").style.display="none";
 
-point += 2;
+}
+
+function answer(select){
+
+if(answered)return;
+
+answered=true;
+
+const q=questions[current];
+
+const buttons=document.querySelectorAll(".choice");
+
+buttons.forEach((btn,index)=>{
+
+btn.disabled=true;
+
+if(index===q.a){
+btn.classList.add("correct");
+}
+
+if(index===select&&select!==q.a){
+btn.classList.add("wrong");
+}
+
+});
+
+localStorage.setItem(
+"mathAnswered",
+(Number(localStorage.getItem("mathAnswered"))||0)+1
+);
+
+if(select===q.a){
+
+document.getElementById("result").innerHTML=
+"⭕ 正解！ +2P";
+
+point+=2;
+
 localStorage.setItem("point",point);
 
-localStorage.setItem("mathCorrect",
-(Number(localStorage.getItem("mathCorrect"))||0)+1);
+pointText.textContent=point;
+
+localStorage.setItem(
+"mathCorrect",
+(Number(localStorage.getItem("mathCorrect"))||0)+1
+);
 
 }else{
 
-document.getElementById("result").innerHTML =
+document.getElementById("result").innerHTML=
 "❌ 不正解";
-}
-
-localStorage.setItem("mathAnswered",
-(Number(localStorage.getItem("mathAnswered"))||0)+1);
-
-document.getElementById("explain").innerText =
-q.ex;
 
 }
 
-function next(){
+document.getElementById("explain").innerHTML=
+"<b>解説</b><br>"+q.ex;
 
-index++;
+document.getElementById("next").style.display="block";
 
-if(index >= questions.length){
+}
+
+function nextQuestion(){
+
+current++;
+
+if(current>=questions.length){
+
 alert("終了！");
+
 location.href="index.html";
+
 return;
+
 }
 
-show();
+showQuestion();
+
 }
 
 </script>
