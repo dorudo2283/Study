@@ -5,7 +5,200 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>一問一答マスター</title>
 
-<link rel="stylesheet" href="style.css">
+<style>
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:"Yu Gothic","Meiryo",sans-serif;
+}
+
+body{
+    background:#f4f7fb;
+    color:#222;
+}
+
+.navbar{
+    width:100%;
+    height:70px;
+    background:#1e88e5;
+    color:white;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    padding:0 40px;
+    box-shadow:0 5px 15px rgba(0,0,0,.15);
+}
+
+.logo{
+    font-size:28px;
+    font-weight:bold;
+}
+
+nav{
+    display:flex;
+    align-items:center;
+    gap:20px;
+}
+
+nav a{
+    color:white;
+    text-decoration:none;
+    font-weight:bold;
+}
+
+.pointBox{
+    background:white;
+    color:#1e88e5;
+    padding:10px 18px;
+    border-radius:12px;
+    font-weight:bold;
+}
+
+.hero{
+    text-align:center;
+    padding:50px 20px;
+}
+
+.hero h1{
+    font-size:55px;
+    color:#1565c0;
+}
+
+.hero p{
+    margin-top:15px;
+    color:#666;
+}
+
+.stats{
+    width:90%;
+    max-width:900px;
+    margin:30px auto;
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:20px;
+}
+
+.card{
+    background:white;
+    border-radius:20px;
+    padding:30px;
+    text-align:center;
+    box-shadow:0 10px 20px rgba(0,0,0,.08);
+}
+
+.card h2{
+    color:#777;
+}
+
+.card p{
+    font-size:40px;
+    color:#1e88e5;
+    font-weight:bold;
+    margin-top:15px;
+}
+
+.title{
+    text-align:center;
+    color:#1565c0;
+    margin:50px 0 25px;
+    font-size:32px;
+}
+
+.subjects{
+    width:90%;
+    max-width:1100px;
+    margin:auto;
+    display:grid;
+    grid-template-columns:repeat(2,1fr);
+    gap:20px;
+}
+
+.subject{
+    background:white;
+    border-radius:20px;
+    padding:35px;
+    text-decoration:none;
+    color:#222;
+    text-align:center;
+    box-shadow:0 8px 20px rgba(0,0,0,.08);
+    transition:.2s;
+}
+
+.subject:hover{
+    transform:translateY(-5px);
+}
+
+.subject .icon{
+    font-size:50px;
+    margin-bottom:10px;
+}
+
+.math{border-top:7px solid #42a5f5;}
+.social{border-top:7px solid #66bb6a;}
+.japanese{border-top:7px solid #ef5350;}
+.science{border-top:7px solid #ffca28;}
+
+.records{
+    width:90%;
+    max-width:1100px;
+    margin:40px auto;
+    display:grid;
+    grid-template-columns:repeat(2,1fr);
+    gap:20px;
+}
+
+.record{
+    background:white;
+    border-radius:20px;
+    padding:25px;
+    box-shadow:0 8px 20px rgba(0,0,0,.08);
+}
+
+.record h3{
+    text-align:center;
+    margin-bottom:20px;
+}
+
+.info{
+    display:flex;
+    justify-content:space-around;
+    text-align:center;
+}
+
+.info span{
+    display:block;
+    color:#777;
+}
+
+.info b{
+    font-size:24px;
+    color:#1e88e5;
+}
+
+@media(max-width:700px){
+
+.navbar{
+    flex-direction:column;
+    height:auto;
+    padding:15px;
+}
+
+.stats,
+.subjects,
+.records{
+    grid-template-columns:1fr;
+}
+
+.hero h1{
+    font-size:38px;
+}
+
+}
+
+</style>
+
 </head>
 <body>
 
@@ -17,293 +210,133 @@
 
 <nav>
 
-<a href="index.html" class="active">
+<a href="index.html">
 🏠 ホーム
 </a>
 
 <div class="pointBox">
-⭐
-<span id="point">0</span>P
+⭐ <span id="point">0</span>P
 </div>
 
 </nav>
 
 </header>
 
-<main>
-
 <section class="hero">
 
-<h1>
-一問一答マスター
-</h1>
+<h1>一問一答マスター</h1>
 
-<p>
-ゲーム感覚で楽しく勉強しよう！
-</p>
+<p>ゲーム感覚で楽しく勉強しよう！</p>
 
 </section>
 
 <section class="stats">
 
 <div class="card">
-
-<h2>
-総正答率
-</h2>
-
-<p id="accuracy">
-0%
-</p>
-
+<h2>総正答率</h2>
+<p id="accuracy">0%</p>
 </div>
 
 <div class="card">
-
-<h2>
-総回答数
-</h2>
-
-<p id="answers">
-0問
-</p>
-
+<h2>総回答数</h2>
+<p id="answers">0問</p>
 </div>
 
 </section>
 
-<h2 class="title">
-勉強教科選択
-</h2>
+<h2 class="title">勉強教科選択</h2>
 
 <section class="subjects">
 
-<a href="math.html" class="subject math">
-
-<div class="icon">
-📐
-</div>
-
-<h3>
-数学
-</h3>
-
-<p>
-中1〜中3
-</p>
-
+<a class="subject math" href="math.html">
+<div class="icon">📐</div>
+<h2>数学</h2>
+<p>中1〜中3</p>
 </a>
 
-<a href="social.html" class="subject social">
-
-<div class="icon">
-🌏
-</div>
-
-<h3>
-社会
-</h3>
-
-<p>
-中1〜中3
-</p>
-
+<a class="subject social" href="social.html">
+<div class="icon">🌏</div>
+<h2>社会</h2>
+<p>中1〜中3</p>
 </a>
 
-<a href="japanese.html" class="subject japanese">
-
-<div class="icon">
-📖
-</div>
-
-<h3>
-国語
-</h3>
-
-<p>
-中1〜中3
-</p>
-
+<a class="subject japanese" href="japanese.html">
+<div class="icon">📖</div>
+<h2>国語</h2>
+<p>中1〜中3</p>
 </a>
 
-<a href="science.html" class="subject science">
-
-<div class="icon">
-🧪
-</div>
-
-<h3>
-理科
-</h3>
-
-<p>
-中1〜中3
-</p>
-
+<a class="subject science" href="science.html">
+<div class="icon">🧪</div>
+<h2>理科</h2>
+<p>中1〜中3</p>
 </a>
 
 </section>
 
-<h2 class="title">
-教科別成績
-</h2>
+<h2 class="title">教科別成績</h2>
 
 <section class="records">
-
 <div class="record">
-
-<h3>
-📐 数学
-</h3>
-
+<h3>📐 数学</h3>
 <div class="info">
-
 <div>
-
-<span>
-正答率
-</span>
-
-<b id="mathRate">
-0%
-</b>
-
+<span>正答率</span>
+<b id="mathRate">0%</b>
 </div>
-
 <div>
-
-<span>
-回答数
-</span>
-
-<b id="mathCount">
-0問
-</b>
-
+<span>回答数</span>
+<b id="mathCount">0問</b>
 </div>
-
 </div>
-
 </div>
 
 <div class="record">
-
-<h3>
-🌏 社会
-</h3>
-
+<h3>🌏 社会</h3>
 <div class="info">
-
 <div>
-
-<span>
-正答率
-</span>
-
-<b id="socialRate">
-0%
-</b>
-
+<span>正答率</span>
+<b id="socialRate">0%</b>
 </div>
-
 <div>
-
-<span>
-回答数
-</span>
-
-<b id="socialCount">
-0問
-</b>
-
+<span>回答数</span>
+<b id="socialCount">0問</b>
 </div>
-
 </div>
-
 </div>
 
 <div class="record">
-
-<h3>
-📖 国語
-</h3>
-
+<h3>📖 国語</h3>
 <div class="info">
-
 <div>
-
-<span>
-正答率
-</span>
-
-<b id="japaneseRate">
-0%
-</b>
-
+<span>正答率</span>
+<b id="japaneseRate">0%</b>
 </div>
-
 <div>
-
-<span>
-回答数
-</span>
-
-<b id="japaneseCount">
-0問
-</b>
-
+<span>回答数</span>
+<b id="japaneseCount">0問</b>
 </div>
-
 </div>
-
 </div>
 
 <div class="record">
-
-<h3>
-🧪 理科
-</h3>
-
+<h3>🧪 理科</h3>
 <div class="info">
-
 <div>
-
-<span>
-正答率
-</span>
-
-<b id="scienceRate">
-0%
-</b>
-
+<span>正答率</span>
+<b id="scienceRate">0%</b>
 </div>
-
 <div>
-
-<span>
-回答数
-</span>
-
-<b id="scienceCount">
-0問
-</b>
-
+<span>回答数</span>
+<b id="scienceCount">0問</b>
 </div>
-
 </div>
-
 </div>
 
 </section>
 
-</main>
+<script>
 
-<script src="script.js">
-// ===== ポイント =====
-let point = Number(localStorage.getItem("point")) || 0;
-document.getElementById("point").textContent = point;
-
-// ===== 教科データ =====
 const subjects = [
     "math",
     "social",
@@ -311,14 +344,33 @@ const subjects = [
     "science"
 ];
 
+// 初回のみデータ作成
+if(localStorage.getItem("initialized") === null){
+
+    localStorage.setItem("initialized","true");
+    localStorage.setItem("point","0");
+
+    subjects.forEach(subject=>{
+
+        localStorage.setItem(subject+"Correct","0");
+        localStorage.setItem(subject+"Answered","0");
+
+    });
+
+}
+
+// ポイント表示
+let point = Number(localStorage.getItem("point")) || 0;
+document.getElementById("point").textContent = point;
+
 let totalCorrect = 0;
 let totalAnswered = 0;
 
-// ===== 教科別表示 =====
-subjects.forEach(subject => {
+// 教科別表示
+subjects.forEach(subject=>{
 
-    const correct = Number(localStorage.getItem(subject + "Correct")) || 0;
-    const answered = Number(localStorage.getItem(subject + "Answered")) || 0;
+    const correct = Number(localStorage.getItem(subject+"Correct")) || 0;
+    const answered = Number(localStorage.getItem(subject+"Answered")) || 0;
 
     totalCorrect += correct;
     totalAnswered += answered;
@@ -327,34 +379,18 @@ subjects.forEach(subject => {
         ? 0
         : Math.round(correct / answered * 100);
 
-    document.getElementById(subject + "Rate").textContent = rate + "%";
-    document.getElementById(subject + "Count").textContent = answered + "問";
+    document.getElementById(subject+"Rate").textContent = rate + "%";
+    document.getElementById(subject+"Count").textContent = answered + "問";
 
 });
 
-// ===== 全体表示 =====
+// 全体表示
 const totalRate = totalAnswered === 0
     ? 0
     : Math.round(totalCorrect / totalAnswered * 100);
 
 document.getElementById("accuracy").textContent = totalRate + "%";
 document.getElementById("answers").textContent = totalAnswered + "問";
-
-// ===== 初期データ作成 =====
-if(localStorage.getItem("initialized") === null){
-
-    localStorage.setItem("initialized","true");
-
-    localStorage.setItem("point",0);
-
-    subjects.forEach(subject=>{
-
-        localStorage.setItem(subject + "Correct",0);
-        localStorage.setItem(subject + "Answered",0);
-
-    });
-
-}
 
 </script>
 
