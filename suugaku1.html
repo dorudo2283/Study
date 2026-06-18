@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>中学1年 数学 - 一問一答クイズ</title>
+    <title>中学1年 数学 - 一問一答</title>
     <style>
         :root {
             --bg-color: #f1f5f9;
@@ -20,60 +20,68 @@
             background-color: var(--bg-color); color: var(--text-color); margin: 0; padding: 0;
             display: flex; flex-direction: column; align-items: center; min-height: 100vh;
         }
+        
+        /* 上部バーの改良：ナビ、ポイント、次へボタンを集約 */
         nav {
             width: 100%; background: var(--card-bg); border-bottom: 1px solid var(--border-color);
-            padding: 1.2rem 2rem; box-sizing: border-box; display: flex; justify-content: space-between; align-items: center;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+            padding: 0.8rem 1.5rem; box-sizing: border-box; display: flex; justify-content: space-between; align-items: center;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05); position: sticky; top: 0; z-index: 100; height: 60px;
         }
-        nav a { color: #64748b; text-decoration: none; font-size: 0.95rem; font-weight: 600; }
-        nav a.nav-logo { color: var(--text-color); font-size: 1.2rem; font-weight: 800; }
-        header { width: 100%; text-align: center; padding: 3rem 1rem 1.5rem 1rem; }
-        h1 { font-size: 2.2rem; font-weight: 800; margin: 0; color: var(--text-color); }
+        nav a { color: #64748b; text-decoration: none; font-size: 0.9rem; font-weight: 600; }
+        .nav-center { display: flex; gap: 0.8rem; align-items: center; }
+        .pt-badge { background: #fef3c7; color: #d97706; padding: 0.3rem 0.8rem; border-radius: 15px; font-weight: 700; font-size: 0.85rem; border: 1px solid #fde68a; }
+        
+        /* 上部バーに配置する次へボタン */
+        .nav-next-btn { background: var(--accent-color); color: white; border: none; padding: 0.4rem 1.2rem; font-size: 0.9rem; font-weight: 700; border-radius: 8px; cursor: pointer; display: none; }
+        .nav-next-btn.visible { display: block; animation: pulse 1.5s infinite; }
+        @keyframes pulse { 0% { opacity: 0.8; } 50% { opacity: 1; transform: scale(1.03); } 100% { opacity: 0.8; } }
+
+        header { width: 100%; text-align: center; padding: 2rem 1rem 1rem 1rem; }
+        h1 { font-size: 1.8rem; font-weight: 800; margin: 0; color: var(--text-color); }
         .container { width: 100%; max-width: 540px; padding: 0 1.5rem; box-sizing: border-box; margin-bottom: 4rem; }
         
-        .card {
-            background: var(--card-bg); border-radius: 20px; padding: 3rem 2rem;
-            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.05); text-align: center; display: none;
-        }
+        .card { background: var(--card-bg); border-radius: 20px; padding: 2.5rem 1.5rem; box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.05); text-align: center; display: none; }
         .card.active { display: block; animation: fadeIn 0.35s ease; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
         
-        h2 { font-size: 1.35rem; margin-top: 0; margin-bottom: 2.5rem; color: #334155; font-weight: 700; }
-        .btn-list { display: flex; flex-direction: column; gap: 1rem; }
+        h2 { font-size: 1.25rem; margin-top: 0; margin-bottom: 2rem; color: #334155; font-weight: 700; }
+        .btn-list { display: flex; flex-direction: column; gap: 0.8rem; }
         
         .btn {
             background-color: var(--card-bg); border: 1px solid var(--border-color); color: var(--text-color);
-            padding: 1.1rem 2rem; font-size: 1.1rem; font-weight: 600; border-radius: 14px; cursor: pointer; transition: all 0.2s ease;
-            text-align: left; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+            padding: 1rem 1.2rem; font-size: 1.05rem; font-weight: 600; border-radius: 12px; cursor: pointer; transition: all 0.2s ease;
+            text-align: left; box-shadow: 0 2px 4px rgba(0,0,0,0.02);
         }
-        .btn:hover:not(:disabled) { border-color: var(--accent-color); background-color: rgba(59, 130, 246, 0.02); transform: translateY(-1px); }
-        
-        /* 正誤演出 */
+        .btn:hover:not(:disabled) { border-color: var(--accent-color); background-color: rgba(59, 130, 246, 0.01); }
         .btn.correct { background-color: var(--success-color) !important; color: white !important; border-color: var(--success-color) !important; }
         .btn.wrong { background-color: var(--danger-color) !important; color: white !important; border-color: var(--danger-color) !important; }
         
-        .btn-primary { background-color: var(--accent-color); color: white; border: none; text-align: center; }
-        .btn-primary:hover { background-color: var(--accent-hover); }
+        .btn-primary { background-color: var(--accent-color); color: white; border: none; text-align: center; padding: 1.1rem; border-radius: 14px; font-size: 1.1rem; font-weight: 700; width: 100%; display: block; text-decoration: none; box-shadow: 0 4px 6px -1px rgba(59, 130, 246, 0.2); }
+
+        .quiz-text { font-size: 1.3rem; font-weight: 700; margin-bottom: 2rem; min-height: 70px; display: flex; align-items: center; justify-content: center; color: #0f172a; white-space: pre-wrap; line-height: 1.5; }
+        .quiz-info { display: flex; justify-content: space-between; margin-bottom: 1.2rem; }
+        .progress, .timer { font-size: 0.85rem; font-weight: 700; color: #94a3b8; letter-spacing: 0.05em; }
         
-        /* 問題文エリア（改行対応のために white-space: pre-wrap を追加） */
-        .quiz-text { font-size: 1.4rem; font-weight: 700; margin-bottom: 2.5rem; min-height: 80px; display: flex; align-items: center; justify-content: center; color: #0f172a; white-space: pre-wrap; line-height: 1.5; }
-        
-        /* タイマーとプログレスのレイアウト */
-        .quiz-info { display: flex; justify-content: space-between; margin-bottom: 1.5rem; }
-        .progress, .timer { font-size: 0.95rem; font-weight: 700; color: #94a3b8; letter-spacing: 0.05em; }
-        .timer { color: #64748b; }
-        
-        .score-display { font-size: 4rem; font-weight: 800; color: var(--accent-color); margin: 0.5rem 0 1.5rem 0; }
-        .time-display { font-size: 1.2rem; font-weight: 600; color: #475569; margin-bottom: 2rem; }
-        
-        #next-btn-box { display: none; margin-top: 2rem; }
+        .judge-display { font-size: 2rem; font-weight: 900; margin: 1.2rem 0; display: none; }
+        .judge-display.is-correct { display: block; color: var(--success-color); }
+        .judge-display.is-wrong { display: block; color: var(--danger-color); }
+
+        .explain-box { display: none; background: #f8fafc; border: 1px solid var(--border-color); border-left: 5px solid var(--accent-color); padding: 1.2rem; border-radius: 12px; text-align: left; margin: 1.5rem 0; font-size: 0.95rem; line-height: 1.6; color: #334155; white-space: pre-wrap; }
+        .explain-box.visible { display: block; animation: fadeIn 0.3s ease; }
+        .explain-title { font-weight: 800; color: #0f172a; margin-bottom: 0.4rem; }
+
+        .score-display { font-size: 3.5rem; font-weight: 800; color: var(--accent-color); margin: 0.5rem 0 1rem 0; }
+        .time-display { font-size: 1.1rem; font-weight: 600; color: #475569; margin-bottom: 1.5rem; }
     </style>
 </head>
 <body>
 
     <nav>
-        <a href="index.html" class="nav-logo">一問一答勉強サイト</a>
-        <div><a href="index.html">← トップに戻る</a></div>
+        <a href="index.html">← 戻る</a>
+        <div class="nav-center">
+            <span class="pt-badge" id="bar-points">0 pt</span>
+        </div>
+        <button id="nav-next-btn" class="nav-next-btn" onclick="nextQuestion()">次へ ➔</button>
     </nav>
 
     <header>
@@ -86,7 +94,8 @@
             <div class="btn-list">
                 <button class="btn" style="text-align:center;" onclick="startQuiz(5)">5問</button>
                 <button class="btn" style="text-align:center;" onclick="startQuiz(10)">10問</button>
-                <button class="btn" style="text-align:center;" onclick="startQuiz(20)">20問（全問）</button>
+                <button class="btn" style="text-align:center;" onclick="startQuiz(25)">25問</button>
+                <button class="btn" style="text-align:center;" onclick="startQuiz(50)">50問（全問ノック）</button>
             </div>
         </div>
 
@@ -96,163 +105,111 @@
                 <div class="timer" id="quiz-timer">タイム: 00:00</div>
             </div>
             <div class="quiz-text" id="quiz-question">問題文</div>
-            
             <div class="btn-list" id="choices-box"></div>
-            
-            <div id="next-btn-box">
-                <button class="btn btn-primary" style="width:100%;" onclick="nextQuestion()">次の問題へ</button>
+            <div id="judge-text" class="judge-display">正解！</div>
+            <div id="explain-area" class="explain-box">
+                <div class="explain-title">💡 解説</div>
+                <div id="explain-text">解説</div>
             </div>
         </div>
 
         <div id="step-result" class="card">
             <h2>結果発表</h2>
-            <p id="result-summary" style="font-size: 1.1rem; color: #64748b; margin: 0;">解いた問題数：5問</p>
+            <p id="result-summary" style="font-size: 1rem; color: #64748b; margin: 0;">解いた問題数</p>
             <div class="score-display"><span id="correct-count">0</span> / <span id="total-count">5</span></div>
-            <div class="time-display" id="result-time">かかった時間: 0秒</div>
-            <div class="btn-list">
-                <a href="index.html" class="btn btn-primary">ホームに戻って実績を確認</a>
-            </div>
+            <div class="time-display" id="result-time">かかった時間</div>
+            <a href="index.html" class="btn-primary">ホームに戻る</a>
         </div>
     </div>
 
     <script>
-        // --- 中学1年 数学（基本知識＋計算てんこ盛りデータベース） ---
-        // 式の途中で改行したい場所に \n を入れています。
+        // --- 数学 限界突破の50問データベース ---
         const quizDatabase = [
-            // === 基本知識・用語（テストの穴埋め対策） ===
-            { 
-                q: "正の整数のことを、別名で何というか？", 
-                choices: ["自然数", "絶対値", "有限数", "素数"],
-                a: "自然数" 
-            },
-            { 
-                q: "0は「自然数」に含まれる？含まれない？", 
-                choices: ["含まれる", "含まれない", "問題によって変わる", "小数に含まれる"],
-                a: "含まれない" 
-            },
-            { 
-                q: "数直線上で、ある数に対応する点と「原点」との距離のことを何というか？", 
-                choices: ["符号", "絶対値", "項", "係数"],
-                a: "絶対値" 
-            },
-            { 
-                q: "式 3x - 5y において、+3x や -5y のように、+や-の符号で区切られた1つひとつの要素を何というか？", 
-                choices: ["項", "係数", "定数", "文字式"],
-                a: "項" 
-            },
-            { 
-                q: "文字の前にかかっている数字（例：5x の「5」）を何というか？", 
-                choices: ["項", "係数", "次数", "定数"],
-                a: "係数" 
-            },
-            { 
-                q: "1つの文字だけをかけ合わせた、最もシンプルな文字式（例：3x や -5ab）を何というか？", 
-                choices: ["単項式", "多項式", "一次式", "方程式"],
-                a: "単項式" 
-            },
-            { 
-                q: "2つ以上の項が足し合わされている式（例：2x + 3y）を何というか？", 
-                choices: ["単項式", "多項式", "等式", "因数"],
-                a: "多項式" 
-            },
+            // 正負の数：基本概念 (1-10)
+            { q: "正の整数のことを、別名で何というか？", choices: ["自然数", "絶対値", "有限数", "素数"], a: "自然数", hint: "物の個数を1, 2, 3...と数える自然な数なので「自然数」です。「0」や負の数は含みません。" },
+            { q: "0は「自然数」に含まれる？含まれない？", choices: ["含まれる", "含まれない", "問題によって変わる", "小数に含まれる"], a: "含まれない", hint: "自然数は「正の整数」のみ。0は正でも負でもない特別な数なので、含まれません。テスト頻出！" },
+            { q: "数直線上で、ある数に対応する点と「原点」との距離のことを何というか？", choices: ["符号", "絶対値", "項", "係数"], a: "absolute", a: "絶対値", hint: "原点(0)からの「純粋な距離」のこと。距離にマイナスはないので、絶対値は必ずプラスか0になります。" },
+            { q: "「絶対値が5以下になる整数」は全部で何個あるか？", choices: ["5個", "10個", "11個", "9個"], a: "11個", hint: "プラス側（1〜5の5個）、マイナス側（-1〜-5の5個）、そして「0」の1個。合わせて 5 + 5 + 1 = 11個です。0を忘れる罠！" },
+            { q: "「絶対値が3より小さい整数」をすべて足し合わせると、答えはいくつになるか？", choices: ["6", "-6", "0", "3"], a: "0", hint: "該当するのは -2, -1, 0, 1, 2。これらをすべて足すと、プラスとマイナスが綺麗に打ち消し合って「0」になります。" },
+            { q: "現在の気温から「-4℃低い」とは、通常の表現に直すとどういうことか？", choices: ["4℃低い", "4℃高い", "マイナス4℃のまま", "変化なし"], a: "4℃高い", hint: "「負の数で低い」は逆の逆となり、「プラス4℃高い」という意味になります。日本語のひっかけ対策に。" },
+            { q: "数直線上で、-3 から右に 7 だけ進んだ位置にある数は何か？", choices: ["-10", "4", "-4", "10"], a: "4", hint: "式に直すと：-3 + 7 = 4。借金が3円ある状態から、7円もらったと考えましょう。" },
+            { q: "数直線上で、2 から左に 6 だけ進んだ位置にある数は何か？", choices: ["-4", "4", "-8", "8"], a: "-4", hint: "式に直すと：2 - 6 = -4。2円しか持っていないのに6円使うと、4円の赤字（マイナス）になります。" },
+            { q: "2数 a, b があり、a > 0, b < 0 である。このとき、2数の積 a × b の符号は必ずどうなるか？", choices: ["必ず正", "必ず負", "0になる", "場合による"], a: "必ず負", hint: "（プラス）×（マイナス）の計算です。異符号同士のかけ算の答えは、必ず「負（マイナス）」になります。" },
+            { q: "2数 a, b がどちらも負の数（a < 0, b < 0）のとき、a + b の符号は必ずどうなるか？", choices: ["必ず正", "必ず負", "0になる", "プラスになることもある"], a: "必ず負", hint: "マイナスの数に、さらにマイナスの数を足し算（借金の重ねがけ）するので、答えは必ずさらに深い「負（マイナス）」になります。" },
 
-            // === 計算の法則・ルール ===
-            { 
-                q: "a + b = b + a のように、足し算や掛け算の順序を入れ替えても答えが同じになる法則は？", 
-                choices: ["分配法則", "結合法則", "交換法則", "反比例の法則"],
-                a: "交換法則" 
-            },
-            { 
-                q: " (a × b) × c = a × (b × c) のように、かける組み合わせを変えても答えが同じになる法則は？", 
-                choices: ["交換法則", "結合法則", "分配法則", "移動法則"],
-                a: "結合法則" 
-            },
-            { 
-                q: "「-3/4」の逆数はどれ？", 
-                choices: ["3/4", "-4/3", "4/3", "-3/4"],
-                a: "-4/3" 
-            },
+            // 加減・乗除・四則混合 (11-25)
+            { q: "計算しなさい：\n(-12) + (-8)", choices: ["-4", "-20", "20", "4"], a: "-20", hint: "-12にさらに-8を合わせるので、同じ符号のまま数字を足します。12 + 8 = 20 にマイナスをつけて -20。" },
+            { q: "計算しなさい：\n(-7) - (-15)", choices: ["-22", "8", "-8", "22"], a: "8", hint: "マイナスを引くときは、符号がプラスに化けます！\n式：-7 + 15 = 8" },
+            { q: "計算しなさい：\n-5 - 8", choices: ["-13", "3", "-3", "13"], choices: ["-13", "3", "-3", "13"], a: "-13", hint: "「-5 から 8 を引く」ので、さらにマイナス方向へ進みます。式：-5 + (-8) = -13 です。符号間違いに注意。" },
+            { q: "計算しなさい：\n(-3) × (-4) × (-2)", choices: ["24", "-24", "12", "-12"], a: "-24", hint: "かけ算のマイナスの個数を数えましょう。3個（奇数個）あるので答えの符号は「マイナス」。あとは数字をかけます。3×4×2=24 なので -24。" },
+            { q: "計算しなさい：\n-3²", choices: ["9", "-9", "6", "-6"], a: "-9", hint: "超重要！カッコがないので、マイナスはそのままにして「3だけを2回」かけます。\n式：-(3 × 3) = -9" },
+            { q: "計算しなさい：\n(-3)²", choices: ["9", "-9", "6", "-6"], a: "9", hint: "今度はカッコがついているので、「-3を丸ごと2回」かけ算します。\n式：(-3) × (-3) = 9（マイナス×マイナスでプラス）。" },
+            { q: "計算しなさい：\n-2⁴", choices: ["16", "-16", "8", "-8"], a: "-16", hint: "カッコがないため、4乗されるのは2だけ。マイナスは最後にポツンと残ります。\n式：-(2×2×2×2) = -16。" },
+            { q: "計算しなさい：\n(-1)⁵⁰", choices: ["1", "-1", "50", "-50"], a: "1", hint: "カッコつきの-1を50回（偶数回）かけています。マイナスが偶数個集まると符号はプラスになるため、答えは「1」です。" },
+            { q: "計算しなさい：\n(-1)⁵³", choices: ["1", "-1", "53", "-53"], a: "-1", hint: "カッコつきの-1を53回（奇数回）かけています。マイナスが奇数個なので、全体の符号は「マイナス」となり、答えは「-1」です。" },
+            { q: "計算しなさい：\n(-2)³ × (-1)⁴", choices: ["8", "-8", "6", "-6"], a: "-8", hint: "まず累乗をバラします。\n(-2)³ = -8\n(-1)⁴ = 1\n式：(-8) × 1 = -8 となります。" },
+            { q: "計算しなさい（順序に注意）：\n7 + (-3) × 4", choices: ["16", "-5", "5", "-16"], a: "-5", hint: "足し算よりも「かけ算が先」です！\n式：7 + (-12) = -5。左から 7-3=4 にしては絶対にダメ！" },
+            { q: "計算しなさい（順序に注意）：\n16 - 8 ÷ (-2)", choices: ["-4", "12", "20", "4"], a: "20", hint: "後ろの割り算が先。`-8 ÷ (-2)` をひとかたまりと見ると `+4` になります。\n式：16 + 4 = 20。" },
+            { q: "計算しなさい：\n6 × (-2) - (-15) ÷ 3", choices: ["-7", "-17", "7", "-9"], a: "-7", hint: "前半のかけ算と、後半の割り算をそれぞれ先に行います。\n前半：6 × (-2) = -12\n後半：(-15) ÷ 3 = -5\n式：-12 - (-5) = -12 + 5 = -7。" },
+            { q: "計算しなさい：\n5 - 3 × ( -2 )²", choices: ["8", "-7", "7", "4"], a: "-7", hint: "「累乗」が最優先、次に「かけ算」、最後に「引き算」です。\n1番目：(-2)² = 4\n2番目：3 × 4 = 12\n3番目：5 - 12 = -7。" },
+            { q: "計算しなさい：\n{ 4 - (-6) } ÷ (-2)", choices: ["-1", "-5", "5", "1"], a: "-5", hint: "中カッコ { } の中を一番最初に計算します。\nカッコ内：4 + 6 = 10\n全体式：10 ÷ (-2) = -5。" },
 
-            // === 計算問題（\n で改行） ===
-            { 
-                q: "計算しなさい：\n(-3) - (-8)", 
-                choices: ["-11", "5", "-5", "11"],
-                a: "5" 
-            },
-            { 
-                q: "計算しなさい：\n-2³", 
-                choices: ["-6", "8", "-8", "6"],
-                a: "-8" 
-            },
-            { 
-                q: "計算しなさい：\n(-2)³", 
-                choices: ["-6", "-8", "8", "6"],
-                a: "-8" 
-            },
-            { 
-                q: "計算しなさい：\n(-2)³ × (-1)²", 
-                choices: ["8", "-8", "6", "-6"],
-                a: "-8" 
-            },
-            { 
-                q: "計算しなさい：\n1/2 - 2/3", 
-                choices: ["-1/6", "1/6", "-1/1", "1/5"],
-                a: "-1/6" 
-            },
-            { 
-                q: "計算しなさい：\n6 ÷ (-2/3)", 
-                choices: ["-4", "-9", "9", "-1/9"],
-                a: "-9" 
-            },
-            { 
-                q: "分配法則を使って計算しなさい：\n103 × (-7)\n＝ (100 + 3) × (-7)\n＝ ？", 
-                choices: ["-721", "-703", "721", "-697"],
-                a: "-721" 
-            },
-            { 
-                q: "計算しなさい（順序に注意）：\n5 + (-3) × 2", 
-                choices: ["4", "-1", "11", "-4"],
-                a: "-1" 
-            },
-            { 
-                q: "計算しなさい（順序に注意）：\n12 - 4 ÷ (-2)", 
-                choices: ["-4", "10", "14", "4"],
-                a: "14" 
-            },
-            { 
-                q: "計算しなさい：\n8 + (-2)² × 3", 
-                choices: ["20", "-4", "30", "44"],
-                a: "20" 
-            }
+            // 分数・逆数・法則 (26-35)
+            { q: "「-0.7」の逆数はどれか？", choices: ["0.7", "-7/10", "-10/7", "10/7"], a: "-10/7", hint: "-0.7 をまず分数に直すと「-7/10」です。逆数は分母と分子をひっくり返したものなので、符号そのままで「-10/7」になります。" },
+            { q: "計算しなさい：\n2/3 - 4/5", choices: ["-2/2", "-2/15", "2/15", "-2/5"], a: "-2/15", hint: "分母を15に通分します。\n式：10/15 - 12/15 = -2/15。小さい数から大きい数を引くのでマイナス！" },
+            { q: "計算しなさい：\n(-9) ÷ 5/2", choices: ["-45/2", "-18/5", "18/5", "-5/18"], a: "-18/5", hint: "分数の割り算は「かける逆数」にします。\n式：(-9) × 2/5 = -18/5。" },
+            { q: "計算しなさい：\n3/4 ÷ (-6/7)", choices: ["-9/14", "-7/8", "7/8", "-24/21"], a: "-7/8", hint: "逆数のかけ算に直して、途中でしっかり約分します。\n式：3/4 × (-7/6) = (3×-7)/(4×6) = -7/8。" },
+            { q: "分配法則を使って計算しなさい：\n( 1/2 - 1/3 ) × 12", choices: ["1", "2", "-2", "5"], a: "2", hint: "カッコ内を通分するより、12を両方に配る（かける）方が圧倒的に早いです！\n式：1/2×12 - 1/3×12 = 6 - 4 = 2。" },
+            { q: "分配法則の逆を利用して計算しなさい：\n74 × (-9) + 26 × (-9)", choices: ["-90", "-900", "900", "-100"], a: "-900", hint: "共通している「×(-9)」を外に出して、残りを先に足します。\n式：(74 + 26) × (-9) = 100 × (-9) = -900。計算ミスの確率を下げるプロの技。" },
+            { q: "次の計算で使われている法則は何か？\n3 × (-5) ＝ (-5) × 3", choices: ["交換法則", "結合法則", "分配法則", "消去法則"], a: "交換法則", hint: "前後を入れ「交換」しても答えが変わらない、これが交換法則です。たし算・かけ算で使えます。" },
+            { q: "次の計算で使われている法則は何か？\n(5 × 2) × 7 ＝ 5 × (2 × 7)", choices: ["交換法則", "結合法則", "分配法則", "結合の逆"], a: "結合法則", hint: "計算するグループ（組み合わせ）を変えて「結合」させても答えが同じになる、これが結合法則です。" },
+            { q: "「a - b ＝ b - a」 のように、引き算では交換法則は成り立つか？", choices: ["いつでも成り立つ", "成り立たない", "aとbが0の時だけ成り立つ", "分数なら成り立つ"], a: "成り立たない", hint: "例えば 5 - 3 = 2 ですが、入れ替えると 3 - 5 = -2 になり、答えが変わってしまいます。引き算・割り算に交換法則はありません！" },
+            { q: "計算しなさい：\n(-2)³ ÷ 4/3 × (-1/2)", choices: ["3", "-3", "1", "-1"], a: "3", hint: "まずは累乗：(-2)³ = -8\n次に割り算を逆数に：-8 × 3/4 × (-1/2)\n全体でマイナスが2個あるので符号はプラス。約分すると：2 × 3 × 1/2 = 3。" },
+
+            // 文字と式：ルール・代入・簡単化 (36-50)
+            { q: "文字式のルールに従って表しなさい：\na × 3 × b", choices: ["ab3", "3ab", "3ba", "a3b"], a: "3ab", hint: "ルール：①数字が絶対先頭、②文字はアルファベット順（a → b）に並べる。よって「3ab」です。" },
+            { q: "文字式のルールに従って表しなさい：\nx × (-1) × y", choices: ["-1xy", "-xy", "xy-1", "-x1y"], a: "-xy", hint: "文字式の最重要ルール：数字の「1」は完全に省略します！マイナス符号だけ残して「-xy」が正解。" },
+            { q: "文字式のルールに従って表しなさい：\nx × x × y × 5", choices: ["5x²y", "5xy²", "x²y5", "5x2y"], a: "5x²y", hint: "数字を先頭にし、同じ文字のかけ算は「累乗（二乗など）」の形にまとめます。よって 5x²y 。" },
+            { q: "文字式のルールに従って表しなさい：\n(a - b) ÷ 5", choices: ["5/(a-b)", "(a-b)/5", "a-b/5", "5a-5b"], a: "(a-b)/5", hint: "割り算は記号を使わず分数で表します。カッコがついた多項式は丸ごと分子に乗せ、カッコを外します。よって (a-b)/5 。" },
+            { q: "x ＝ -4 のとき、代数式 -3x の値を求めなさい。", choices: ["-12", "12", "-7", "7"], a: "12", hint: "-3x とは `-3 × x` のこと。ここに -4 を代入します。\n式：(-3) × (-4) = 12（マイナス同士でプラス）。" },
+            { q: "a ＝ -2 のとき、式の値「a²」を求めなさい。", choices: ["-4", "4", "-2", "2"], a: "4", hint: "負の数を代入して二乗するときは、カッコをつけた状態にして計算します。\n式：(-2)² = (-2) × (-2) = 4。" },
+            { q: "a ＝ -3 のとき、式の値「-a²」を求めなさい。", choices: ["9", "-9", "6", "-6"], a: "-9", hint: "テスト作成者が最も喜ぶひっかけ問題。マイナスはそのままに、aの二乗だけを先に処理します。\n式：- ( (-3)² ) = - (9) = -9。" },
+            { q: "x ＝ 2, y ＝ -3 のとき、式の値「3x + 2y」を求めなさい。", choices: ["12", "0", "1", "-0"], a: "0", hint: "それぞれに数字を代入して掛け算します。\n式：3×2 + 2×(-3) = 6 + (-6) = 0。" },
+            { q: "文字式 4x の「4」のように、文字の前についている数字の係数を何というか？", choices: ["項", "係数", "次数", "定数"], a: "係数", hint: "文字にかかっている数字の塊を「係数（けいすう）」と言います。ちなみに -x の係数は「-1」です。" },
+            { q: "式 5x - 3y において、符号で区切られた「5x」や「-3y」の要素を何というか？", choices: ["項", "係数", "次数", "定数"], a: "項", hint: "足し算・引き算の符号の前で区切った、式の1つひとつのパーツのことを「項（こう）」と呼びます。" },
+            { q: "計算しなさい：\n3x - 7x", choices: ["-4", "-4x", "4x", "-10x"], a: "-4x", hint: "同じ文字の項は、係数（数字）同士を普通に計算して文字をくっつけます。\n式：(3 - 7)x = -4x。" },
+            { q: "計算しなさい：\n4x - 3 - 7x + 8", choices: ["-3x + 5", "3x + 5", "-3x - 5", "11x + 5"], a: "-3x + 5", hint: "文字の項（4x と -7x）と、ただの数字の項（-3 と +8）を完全に分けて計算します。\n4x-7x = -3x\n-3+8 = 5\nよって -3x + 5。" },
+            { q: "計算しなさい：\n(3x - 5) - (x - 2)", choices: ["2x - 7", "2x - 3", "4x - 7", "2x + 3"], a: "2x - 3", hint: "引き算のカッコを開けるときは、後ろのカッコ内のすべての符号が逆転します！\n式：3x - 5 - x + 2 = 2x - 3。超重要！" },
+            { q: "計算しなさい：\n-4(2x - 3)", choices: ["-8x - 12", "-8x + 12", "-8x - 3", "-8x + 3"], a: "-8x + 12", hint: "分配法則で、-4 をカッコの中の「両方」に掛け算します。後ろの項のマイナス符号の反転に注意！\n式：-4×2x + (-4)×(-3) = -8x + 12。" },
+            { q: "計算しなさい：\n(15x - 10) ÷ 5", choices: ["3x - 2", "3x - 10", "15x - 2", "3x + 2"], a: "3x - 2", hint: "割り算も分配法則と同じです。15x と -10 の「両方」を 5 で割り算します。\n式：15x÷5 + (-10)÷5 = 3x - 2。" }
         ];
 
         let currentQuestions = [];
         let currentIndex = 0;
         let correctAnswers = 0;
         let hasAnswered = false;
-
-        // タイマー用変数
         let startTime;
         let timerInterval;
+        let currentQuizSessionPoints = 0; // 今回のセッションで稼いだポイント
 
         function changeView(stepId) {
             document.querySelectorAll('.card').forEach(card => card.classList.remove('active'));
             document.getElementById(stepId).classList.add('active');
         }
 
-        // クイズ開始
+        // ページ読み込み時に保存された総ポイントを表示
+        window.onload = function() {
+            const totalPoints = localStorage.getItem('userPoints') || 0;
+            document.getElementById('bar-points').innerText = `${totalPoints} pt`;
+        };
+
         function startQuiz(count) {
-            if (quizDatabase.length === 0) {
-                alert("問題が登録されていません。");
-                window.location.href = 'index.html';
-                return;
-            }
             const shuffled = [...quizDatabase].sort(() => 0.5 - Math.random());
             currentQuestions = shuffled.slice(0, Math.min(count, shuffled.length));
             currentIndex = 0;
             correctAnswers = 0;
+            currentQuizSessionPoints = 0;
             
-            // タイマースタート
             startTime = Date.now();
             startTimer();
 
@@ -260,7 +217,6 @@
             showQuestion();
         }
 
-        // タイマーのカウント制御
         function startTimer() {
             clearInterval(timerInterval);
             timerInterval = setInterval(() => {
@@ -277,7 +233,10 @@
             document.getElementById('quiz-progress').innerText = `第 ${currentIndex + 1} 問 / 全 ${currentQuestions.length} 問`;
             document.getElementById('quiz-question').innerText = current.q;
             
-            document.getElementById('next-btn-box').style.display = 'none';
+            // 上のバーの次へボタンを隠す
+            document.getElementById('nav-next-btn').classList.remove('visible');
+            document.getElementById('judge-text').className = 'judge-display';
+            document.getElementById('explain-area').classList.remove('visible');
 
             const shuffledChoices = [...current.choices].sort(() => 0.5 - Math.random());
             const choicesBox = document.getElementById('choices-box');
@@ -287,17 +246,17 @@
                 const button = document.createElement('button');
                 button.className = 'btn';
                 button.innerText = choice;
-                button.onclick = () => checkAnswer(button, choice, current.a);
+                button.onclick = () => checkAnswer(button, choice, current.a, current.hint);
                 choicesBox.appendChild(button);
             });
         }
 
-        function checkAnswer(selectedButton, selectedChoice, correctAnswer) {
+        function checkAnswer(selectedButton, selectedChoice, correctAnswer, hintText) {
             if (hasAnswered) return; 
             hasAnswered = true;
 
-            const choicesBox = document.getElementById('choices-box');
-            const buttons = choicesBox.getElementsByClassName('btn');
+            const buttons = document.getElementById('choices-box').getElementsByClassName('btn');
+            const judgeTextEl = document.getElementById('judge-text');
 
             for (let btn of buttons) {
                 btn.disabled = true;
@@ -308,11 +267,25 @@
 
             if (selectedChoice === correctAnswer) {
                 correctAnswers++;
+                judgeTextEl.innerText = "⭕ 正解！ (+2pt)";
+                judgeTextEl.classList.add('is-correct');
+                
+                // 【追加】1問正解につき2pt加算して即セーブ
+                let totalPoints = parseInt(localStorage.getItem('userPoints') || 0);
+                totalPoints += 2;
+                localStorage.setItem('userPoints', totalPoints);
+                document.getElementById('bar-points').innerText = `${totalPoints} pt`;
             } else {
                 selectedButton.classList.add('wrong');
+                judgeTextEl.innerText = "❌ 不正解...";
+                judgeTextEl.classList.add('is-wrong');
             }
 
-            document.getElementById('next-btn-box').style.display = 'block';
+            document.getElementById('explain-text').innerText = hintText;
+            document.getElementById('explain-area').classList.add('visible');
+
+            // 【変更】解答したら上のバーにある「次へ」ボタンを点滅出現させる
+            document.getElementById('nav-next-btn').classList.add('visible');
         }
 
         function nextQuestion() {
@@ -320,7 +293,6 @@
             if (currentIndex < currentQuestions.length) {
                 showQuestion();
             } else {
-                // クイズ終了、タイマー停止
                 clearInterval(timerInterval);
                 const totalTimeSec = Math.floor((Date.now() - startTime) / 1000);
 
@@ -331,18 +303,21 @@
                 document.getElementById('total-count').innerText = currentQuestions.length;
                 document.getElementById('result-time').innerText = `かかった時間: ${totalTimeSec} 秒`;
                 
+                // 次へボタンを消す
+                document.getElementById('nav-next-btn').classList.remove('visible');
                 changeView('step-result');
             }
         }
 
+        // 数学用の統計データを個別セーブ
         function saveStats(solvedCount, correctCount) {
-            let currentTotal = parseInt(localStorage.getItem('totalSolved') || 0);
-            localStorage.setItem('totalSolved', currentTotal + solvedCount);
+            let currentTotal = parseInt(localStorage.getItem('math_solved') || 0);
+            localStorage.setItem('math_solved', currentTotal + solvedCount);
 
             let accuracy = Math.round((correctCount / solvedCount) * 100);
-            let currentBest = parseInt(localStorage.getItem('bestAccuracy') || 0);
+            let currentBest = parseInt(localStorage.getItem('math_bestAccuracy') || 0);
             if (accuracy > currentBest) {
-                localStorage.setItem('bestAccuracy', accuracy);
+                localStorage.setItem('math_bestAccuracy', accuracy);
             }
         }
     </script>
