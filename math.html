@@ -1,184 +1,250 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>数学 一問一答（全60問）</title>
-    <style>
-        body { margin: 0; padding-top: 70px; font-family: 'Helvetica Neue', Arial, sans-serif; background: #f1f5f9; color: #1e293b; }
-        header { position: fixed; top: 0; width: 100%; height: 60px; background: #0f172a; color: white; display: flex; align-items: center; justify-content: space-between; padding: 0 20px; box-sizing: border-box; z-index: 1000; }
-        .main-box { margin: 20px auto; max-width: 600px; background: white; padding: 25px; border-radius: 16px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
-        .status-bar { display: flex; align-items: center; gap: 10px; margin-bottom: 20px; }
-        .progress-container { flex-grow: 1; height: 12px; background: #e2e8f0; border-radius: 6px; overflow: hidden; }
-        #score-bar { height: 100%; background: #ef4444; width: 0%; transition: width 0.3s; }
-        .choice-btn { display: block; width: 100%; padding: 18px; margin: 10px 0; border: 2px solid #e2e8f0; border-radius: 12px; background: white; font-size: 1.1rem; cursor: pointer; transition: 0.2s; }
-        .choice-btn:hover { background: #f1f5f9; }
-        .choice-btn.correct { background-color: #d1fae5 !important; border-color: #10b981 !important; color: #065f46; cursor: default; }
-        .choice-btn.incorrect { background-color: #fee2e2 !important; border-color: #ef4444 !important; color: #991b1b; cursor: default; }
-        #feedback-area { display: none; margin-top: 20px; padding: 20px; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 12px; }
-        .exp-box { font-size: 1rem; margin-top: 10px; padding: 15px; background: white; border-radius: 8px; border-left: 4px solid #ef4444; }
-        .btn-home { background: #475569; color: white; border: none; padding: 8px 15px; border-radius: 6px; cursor: pointer; font-size: 0.9rem; }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>数学クイズ</title>
+
+<style>
+body{font-family:Yu Gothic;background:#f4f7fb;margin:0;padding:0;}
+header{background:#1e88e5;color:#fff;padding:15px;text-align:center;font-size:20px;}
+
+.container{max-width:800px;margin:auto;padding:20px;}
+
+.btn{
+padding:10px 15px;margin:5px;border:none;border-radius:10px;
+background:#fff;cursor:pointer;box-shadow:0 3px 10px rgba(0,0,0,.1);
+display:block;width:100%;
+}
+
+.btn:hover{transform:scale(1.02)}
+
+.choice{background:#fff;padding:15px;border-radius:12px;margin:10px 0;cursor:pointer;}
+
+.correct{background:#4caf50;color:#fff;}
+.wrong{background:#f44336;color:#fff;}
+
+.hidden{display:none;}
+
+#questionBox{
+background:#fff;padding:20px;border-radius:12px;margin-top:20px;
+}
+
+#explain{
+margin-top:10px;background:#fff;padding:10px;border-radius:10px;
+}
+
+</style>
 </head>
 <body>
-    <header>
-        <div>数学 一問一答</div>
-        <button class="btn-home" onclick="location.reload()">ホームに戻る</button>
-    </header>
-    
-    <div id="setup" class="main-box">
-        <h3>学年を選択してスタート</h3>
-        <button onclick="start('1')" style="width:100%; padding:15px; margin-bottom:10px; background:#1e293b; color:white; border:none; border-radius:8px; cursor:pointer;">中1（正負の数・方程式・比例）</button>
-        <button onclick="start('2')" style="width:100%; padding:15px; margin-bottom:10px; background:#334155; color:white; border:none; border-radius:8px; cursor:pointer;">中2（式の計算・連立方程式・関数）</button>
-        <button onclick="start('3')" style="width:100%; padding:15px; background:#475569; color:white; border:none; border-radius:8px; cursor:pointer;">中3（展開・因数分解・二次関数）</button>
-    </div>
 
-    <div id="quiz" class="main-box" style="display:none;">
-        <div class="status-bar">
-            <span id="progress-text">0 / 0 問</span>
-            <div class="progress-container"><div id="score-bar"></div></div>
-        </div>
-        <div id="q-text" style="font-size:1.3rem; font-weight:bold; margin-bottom:20px;"></div>
-        <div id="choices-area"></div>
-        <div id="feedback-area">
-            <div id="res-text" style="font-size:1.5rem; font-weight:800; text-align:center;"></div>
-            <div id="exp-text" class="exp-box"></div>
-            <button id="next-btn" onclick="nextQ()" style="width:100%; padding:15px; margin-top:20px; background:#ef4444; color:white; border:none; border-radius:8px; cursor:pointer;">次へ進む</button>
-        </div>
-    </div>
+<header>📐 数学クイズ</header>
 
-    <script>
-        const db = {
-            '1': [
-                {q: "-5 + 8 の計算結果は？", choices: ["3", "-3", "13", "-13"], correct: "3", exp: "5引いて8足す、つまりプラス3です。"},
-                {q: "-4 × (-3) の計算結果は？", choices: ["12", "-12", "7", "-7"], correct: "12", exp: "負×負は正になります。"},
-                {q: "x + 5 = 12 を解け。", choices: ["x=7", "x=17", "x=-7", "x=60"], correct: "x=7", exp: "両辺から5を引きます。"},
-                {q: "2x = 10 を解け。", choices: ["x=5", "x=8", "x=20", "x=12"], correct: "x=5", exp: "両辺を2で割ります。"},
-                {q: "yがxに比例し、x=2のときy=6である。比例定数は？", choices: ["3", "2", "6", "12"], correct: "3", exp: "y=axより、6=a×2となりa=3。"},
-                {q: "絶対値が5である数は？", choices: ["5と-5", "5", "-5", "0"], correct: "5と-5", exp: "0からの距離が5である数です。"},
-                {q: "3x + 2 = 11 を解け。", choices: ["x=3", "x=4", "x=2", "x=5"], correct: "x=3", exp: "3x=9、x=3です。"},
-                {q: "円の面積を求める公式は？", choices: ["半径×半径×円周率", "直径×円周率", "底辺×高さ", "半径×2"], correct: "半径×半径×円周率", exp: "S = πr^2 です。"},
-                {q: "角柱の体積の求め方は？", choices: ["底面積×高さ", "底面積×高さ÷3", "底面×周の長さ", "表面積×2"], correct: "底面積×高さ", exp: "錐体は1/3しますが、柱体はそのままです。"},
-                {q: "0.1 + 0.2 は？", choices: ["0.3", "0.2", "0.12", "1.2"], correct: "0.3", exp: "位を揃えて足します。"},
-                {q: "2x - 4 = x + 3 を解け。", choices: ["x=7", "x=1", "x=-1", "x=6"], correct: "x=7", exp: "xを左辺、数を右辺に移項します。"},
-                {q: "-3^2 の値は？", choices: ["-9", "9", "6", "-6"], correct: "-9", exp: "-(3×3)です。"},
-                {q: "(-3)^2 の値は？", choices: ["9", "-9", "6", "-6"], correct: "9", exp: "(-3)×(-3)です。"},
-                {q: "100円の3割は何円？", choices: ["30円", "3円", "300円", "10円"], correct: "30円", exp: "0.3を掛けます。"},
-                {q: "四角形の内角の和は？", choices: ["360度", "180度", "540度", "720度"], correct: "360度", exp: "三角形二つ分です。"},
-                {q: "x : 4 = 3 : 2 を解け。", choices: ["x=6", "x=2", "x=8", "x=12"], correct: "x=6", exp: "2x=12よりx=6。"},
-                {q: "自然数の中で最小の数は？", choices: ["1", "0", "-1", "2"], correct: "1", exp: "自然数は1以上の整数です。"},
-                {q: "変域が -2 ≦ x < 3 のとき、整数の個数は？", choices: ["5個", "4個", "6個", "3個"], correct: "5個", exp: "-2, -1, 0, 1, 2の5個。"},
-                {q: "等式の性質で、両辺に同じ数を足しても？", choices: ["成り立つ", "成り立たない", "2倍になる", "半分になる"], correct: "成り立つ", exp: "等式の基本性質です。"},
-                {q: "「xの3倍は15」という文を式にすると？", choices: ["3x=15", "x+3=15", "x/3=15", "3x-15=0"], correct: "3x=15", exp: "掛け算は省略します。"}
-            ],
-            '2': [
-                {q: "2a + 3b - a - b を計算せよ。", choices: ["a + 2b", "a + 4b", "3a + 2b", "a - 2b"], correct: "a + 2b", exp: "同類項をまとめます。"},
-                {q: "x + y = 5, x - y = 1 のとき x は？", choices: ["3", "2", "4", "1"], correct: "3", exp: "足すと2x=6になります。"},
-                {q: "傾き3、切片-2の直線の式は？", choices: ["y=3x-2", "y=3x+2", "y=-2x+3", "y=x+3"], correct: "y=3x-2", exp: "y=ax+bの形です。"},
-                {q: "確率で、絶対起こらない事象の確率は？", choices: ["0", "1", "0.5", "100%"], correct: "0", exp: "確率の定義です。"},
-                {q: "サイコロを1回振って、3以上の目が出る確率は？", choices: ["2/3", "1/3", "1/2", "1/6"], correct: "2/3", exp: "3,4,5,6の4通り/6。"},
-                {q: "三角形の合同条件で「3組の辺が…」の続きは？", choices: ["それぞれ等しい", "すべて等しい", "合致する", "同じ"], correct: "それぞれ等しい", exp: "三辺合同です。"},
-                {q: "平行四辺形の定義は？", choices: ["2組の対辺が平行", "対角線が等しい", "4つの角が直角", "辺がすべて等しい"], correct: "2組の対辺が平行", exp: "定義を覚えましょう。"},
-                {q: "a^2 × a^3 は？", choices: ["a^5", "a^6", "2a^5", "a"], correct: "a^5", exp: "指数は足します。"},
-                {q: "一次関数の変化の割合は？", choices: ["傾きと一致", "切片と一致", "常に一定", "xの値に依存"], correct: "傾きと一致", exp: "変化の割合=傾きです。"},
-                {q: "内角の和が1800度となる多角形は？", choices: ["12角形", "10角形", "14角形", "8角形"], correct: "12角形", exp: "(n-2)×180=1800よりn=12。"},
-                {q: "2(x + 3) を展開せよ。", choices: ["2x + 6", "2x + 3", "2x + 5", "x + 6"], correct: "2x + 6", exp: "分配法則を使います。"},
-                {q: "x + 2y = 4 で y=1 のとき x は？", choices: ["2", "3", "1", "0"], correct: "2", exp: "x + 2 = 4 です。"},
-                {q: "三角形の外角は、それと隣り合わない二つの内角の？", choices: ["和に等しい", "差に等しい", "積に等しい", "半分"], correct: "和に等しい", exp: "外角の定理です。"},
-                {q: "連立方程式の解法で、一つの文字を消去する法は？", choices: ["加減法", "代入法", "因数分解法", "グラフ法"], correct: "加減法", exp: "文字を足したり引いたり。"},
-                {q: "二等辺三角形の二つの底角は？", choices: ["等しい", "足すと90度", "足すと180度", "違う"], correct: "等しい", exp: "二等辺三角形の性質です。"},
-                {q: "確率の全事象の確率は？", choices: ["1", "0", "0.5", "100"], correct: "1", exp: "必ず起こる確率は1です。"},
-                {q: "(a + b)^2 を展開せよ。", choices: ["a^2+2ab+b^2", "a^2+b^2", "a^2-2ab+b^2", "a^2+ab+b^2"], correct: "a^2+2ab+b^2", exp: "乗法公式です。"},
-                {q: "直線の式の傾きとは？", choices: ["yの増加量/xの増加量", "切片", "yの値", "xの値"], correct: "yの増加量/xの増加量", exp: "変化の割合の定義です。"},
-                {q: "平行線と線分の比の定理は？", choices: ["成立する", "成立しない", "相似のみ成立", "面積のみ成立"], correct: "成立する", exp: "中2の幾何の基本です。"},
-                {q: "四角形が平行四辺形になる条件は何個？", choices: ["5個", "3個", "4個", "6個"], correct: "5個", exp: "すべて言えるようにしましょう。"}
-            ],
-            '3': [
-                {q: "(x + 3)(x - 3) を展開せよ。", choices: ["x^2 - 9", "x^2 + 9", "x^2 - 6x + 9", "x^2 + 6x - 9"], correct: "x^2 - 9", exp: "和と差の積の公式です。"},
-                {q: "x^2 + 5x + 6 を因数分解せよ。", choices: ["(x+2)(x+3)", "(x+1)(x+6)", "(x+5)(x+1)", "(x+6)(x-1)"], correct: "(x+2)(x+3)", exp: "足して5、掛けて6になる組。"},
-                {q: "√2 × √8 は？", choices: ["4", "16", "2", "√16"], correct: "4", exp: "√16=4です。"},
-                {q: "二次方程式 x^2 - 4 = 0 の解は？", choices: ["x=±2", "x=2", "x=-2", "x=4"], correct: "x=±2", exp: "x^2=4より。"},
-                {q: "二次関数 y = ax^2 のグラフの形は？", choices: ["放物線", "直線", "双曲線", "円"], correct: "放物線", exp: "対称な曲線です。"},
-                {q: "三平方の定理(ピタゴラスの定理)は？", choices: ["a^2+b^2=c^2", "a+b=c", "a^2-b^2=c^2", "a+b^2=c^2"], correct: "a^2+b^2=c^2", exp: "直角三角形の辺の関係。"},
-                {q: "円周角の定理で、円周角と中心角の関係は？", choices: ["円周角は中心角の半分", "円周角は中心角の2倍", "等しい", "関係ない"], correct: "円周角は中心角の半分", exp: "重要な定理です。"},
-                {q: "√12 を簡単にせよ。", choices: ["2√3", "3√2", "4√3", "√6"], correct: "2√3", exp: "√4×√3です。"},
-                {q: "二次方程式の解の公式で分母は？", choices: ["2a", "a", "2", "b"], correct: "2a", exp: "x = (-b±√(b^2-4ac))/2a です。"},
-                {q: "相似な図形で、面積比が4:9のとき、辺の比は？", choices: ["2:3", "4:9", "16:81", "√2:√3"], correct: "2:3", exp: "面積比は辺の比の2乗です。"},
-                {q: "y=ax^2 で a > 0 のとき、グラフは？", choices: ["下に凸", "上に凸", "直線", "右下がり"], correct: "下に凸", exp: "正の値の時は下に凸。"},
-                {q: "x^2 - 10x + 25 を因数分解せよ。", choices: ["(x-5)^2", "(x+5)^2", "(x-5)(x+5)", "(x-25)(x+1)"], correct: "(x-5)^2", exp: "平方の公式です。"},
-                {q: "√50 + √18 は？", choices: ["8√2", "√68", "2√25", "5√2"], correct: "8√2", exp: "5√2 + 3√2 = 8√2。"},
-                {q: "点(2, 4)を通る y=ax^2 の a は？", choices: ["1", "2", "4", "0.5"], correct: "1", exp: "4 = a × 2^2 より a=1。"},
-                {q: "円に内接する四角形の対角の和は？", choices: ["180度", "360度", "90度", "270度"], correct: "180度", exp: "円周角の性質から。"},
-                {q: "相似な図形において、対応する角は？", choices: ["等しい", "半分", "2倍", "違う"], correct: "等しい", exp: "相似の定義です。"},
-                {q: "三次方程式の解は最大でいくつ？", choices: ["3個", "2個", "1個", "無数"], correct: "3個", exp: "次数と一致します。"},
-                {q: "二次関数の頂点を通る直線を何軸という？", choices: ["軸", "対称軸", "中心軸", "放物軸"], correct: "軸", exp: "放物線の軸です。"},
-                {q: "√a / √b は？", choices: ["√(a/b)", "√a/b", "a/√b", "a/b"], correct: "√(a/b)", exp: "ルートの性質です。"},
-                {q: "球の体積の公式で r^3 の係数は？", choices: ["4/3π", "4π", "π", "2/3π"], correct: "4/3π", exp: "V = 4/3πr^3 です。"}
-            ]
-        };
+<div class="container">
 
-        let currentQ, currentIdx = 0, currentGrade = '1', score = 0;
+<div id="gradeSelect">
+<h3>学年を選択</h3>
+<button class="btn" onclick="start(1)">中1</button>
+<button class="btn" onclick="start(2)">中2</button>
+<button class="btn" onclick="start(3)">中3</button>
+</div>
 
-        function start(grade) {
-            currentGrade = grade;
-            currentIdx = 0;
-            score = 0;
-            document.getElementById('setup').style.display = 'none';
-            document.getElementById('quiz').style.display = 'block';
-            nextQ();
-        }
+<div id="game" class="hidden">
 
-        function nextQ() {
-            const list = db[currentGrade];
-            if(currentIdx >= list.length) {
-                showResult();
-                return;
-            }
-            document.getElementById('feedback-area').style.display = 'none';
-            document.getElementById('progress-text').innerText = `${currentIdx + 1} / ${list.length} 問`;
-            const percent = (currentIdx / list.length) * 100;
-            document.getElementById('score-bar').style.width = percent + "%";
-            
-            currentQ = list[currentIdx];
-            document.getElementById('q-text').innerText = currentQ.q;
-            const area = document.getElementById('choices-area'); area.innerHTML = '';
-            currentQ.choices.forEach(c => {
-                const b = document.createElement('button'); b.className = 'choice-btn'; b.innerText = c;
-                b.onclick = () => check(b, c); area.appendChild(b);
-            });
-        }
+<div id="questionBox">
+<div id="q"></div>
+<div id="choices"></div>
+</div>
 
-        function check(btn, ans) {
-            const btns = document.querySelectorAll('.choice-btn');
-            btns.forEach(b => b.disabled = true); 
-            if(ans === currentQ.correct) {
-                score++;
-                btn.classList.add('correct');
-                document.getElementById('res-text').innerText = "正解！";
-                document.getElementById('res-text').style.color = "#10b981";
-            } else {
-                btn.classList.add('incorrect');
-                document.getElementById('res-text').innerText = "不正解...";
-                document.getElementById('res-text').style.color = "#ef4444";
-                btns.forEach(b => { if(b.innerText === currentQ.correct) b.classList.add('correct'); });
-            }
-            document.getElementById('exp-text').innerHTML = "<strong>解説:</strong><br>" + currentQ.exp;
-            document.getElementById('feedback-area').style.display = 'block';
-            currentIdx++;
-        }
+<div id="result"></div>
+<div id="explain"></div>
 
-        function showResult() {
-            const total = db[currentGrade].length;
-            const rate = Math.round((score / total) * 100);
-            document.getElementById('quiz').innerHTML = `
-                <div style="text-align:center;">
-                    <h2>終了！</h2>
-                    <div style="font-size:3rem; font-weight:bold;">${score} / ${total}</div>
-                    <div style="font-size:1.5rem; color:#64748b; margin-bottom:20px;">正答率: ${rate}%</div>
-                    <button class="btn-home" style="padding:15px 30px; font-size:1rem;" onclick="location.reload()">ホームに戻る</button>
-                </div>
-            `;
-        }
-    </script>
+<button class="btn" onclick="next()">次へ</button>
+
+</div>
+
+</div>
+
+<script>
+
+let grade = 1;
+let index = 0;
+let questions = [];
+
+/* =========================
+   問題データ（拡張OK）
+========================= */
+
+const db = {
+
+1:[ // 中1（ちゃんと中学生）
+{
+q:"(-3) + 5 = ?",
+c:["-8","-2","2","8","-1"],
+a:2,
+ex:"符号が違うときは大きい方から小さい方を引く。5-3=2"
+},
+{
+q:"(-4) × (-2) = ?",
+c:["-8","8","-6","6","-2"],
+a:1,
+ex:"マイナス×マイナスはプラス"
+},
+{
+q:"2(x + 3) を展開すると？",
+c:["2x+3","2x+6","x+6","2x+9","x+3"],
+a:1,
+ex:"分配法則 2×x + 2×3 = 2x+6"
+},
+{
+q:"x + 7 = 12 の x は？",
+c:["3","4","5","6","7"],
+a:2,
+ex:"12-7=5"
+},
+{
+q:"比例 y=3x のとき x=4 の y は？",
+c:["7","10","12","14","16"],
+a:2,
+ex:"3×4=12"
+},
+{
+q:"直線上の2点(1,2),(3,6)の変化の割合は？",
+c:["1","2","3","4","5"],
+a:1,
+ex:"(6-2)/(3-1)=4/2=2"
+}
+],
+
+2:[ // 中2
+{
+q:"x + 3 = 7 の x は？",
+c:["2","3","4","5","6"],
+a:2,
+ex:"7-3=4"
+},
+{
+q:"2x = 10 の x は？",
+c:["2","3","4","5","6"],
+a:3,
+ex:"10÷2=5"
+},
+{
+q:"一次関数 y=2x の傾きは？",
+c:["1","2","3","4","5"],
+a:1,
+ex:"xの係数が傾き"
+}
+],
+
+3:[ // 中3
+{
+q:"√9 = ?",
+c:["1","2","3","4","5"],
+a:2,
+ex:"3×3=9"
+},
+{
+q:"2x+1=7 の x は？",
+c:["2","3","4","5","6"],
+a:2,
+ex:"2x=6 → x=3"
+},
+{
+q:"三平方の定理は？",
+c:["a+b=c","a²+b²=c²","a=b+c","ab=c²","a²=b²"],
+a:1,
+ex:"直角三角形の基本公式"
+}
+]
+
+};
+
+/* ========================= */
+
+let point = Number(localStorage.getItem("point")) || 0;
+
+function start(g){
+grade = g;
+questions = db[g];
+index = 0;
+
+document.getElementById("gradeSelect").classList.add("hidden");
+document.getElementById("game").classList.remove("hidden");
+
+show();
+}
+
+function show(){
+
+let q = questions[index];
+
+document.getElementById("q").innerText =
+"Q" + (index+1) + " " + q.q;
+
+let html = "";
+
+q.c.forEach((c,i)=>{
+html += `<button class="btn" onclick="answer(${i})">${c}</button>`;
+});
+
+document.getElementById("choices").innerHTML = html;
+
+document.getElementById("result").innerHTML = "";
+document.getElementById("explain").innerHTML = "";
+
+}
+
+function answer(i){
+
+let q = questions[index];
+
+let buttons = document.querySelectorAll(".btn");
+
+buttons.forEach((b,idx)=>{
+if(idx === q.a) b.classList.add("correct");
+if(idx === i && i !== q.a) b.classList.add("wrong");
+});
+
+if(i === q.a){
+
+document.getElementById("result").innerHTML =
+"⭕ 正解 +2P";
+
+point += 2;
+localStorage.setItem("point",point);
+
+localStorage.setItem("mathCorrect",
+(Number(localStorage.getItem("mathCorrect"))||0)+1);
+
+}else{
+
+document.getElementById("result").innerHTML =
+"❌ 不正解";
+}
+
+localStorage.setItem("mathAnswered",
+(Number(localStorage.getItem("mathAnswered"))||0)+1);
+
+document.getElementById("explain").innerText =
+questions[index].ex;
+
+}
+
+function next(){
+
+index++;
+
+if(index >= questions.length){
+alert("終了！");
+location.href="index.html";
+return;
+}
+
+show();
+}
+
+</script>
+
 </body>
 </html>
