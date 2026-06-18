@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <title>数学 - 一問一答</title>
+    <style>
+        /* CSSはそのまま使用 */
+        body { font-family: sans-serif; background: #f8fafc; padding-top: 70px; }
+        header { position: fixed; top: 0; width: 100%; height: 60px; background: #fff; display: flex; justify-content: space-around; align-items: center; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+        .container { max-width: 500px; margin: 20px auto; padding: 20px; background: white; border-radius: 12px; }
+        .btn { display: block; width: 100%; padding: 15px; margin: 10px 0; background: #2563eb; color: white; border: none; border-radius: 8px; cursor: pointer; }
+        #quiz-area { display: none; }
+    </style>
+</head>
+<body>
+
+<header>
+    <div>総合ポイント: <span id="points">0</span></div>
+    <a href="index.html">ホームに戻る</a>
+</header>
+
+<div class="container">
+    <div id="grade-selection">
+        <h1>学年を選択</h1>
+        <button class="btn" onclick="startQuiz(1)">中学1年生</button>
+        <button class="btn" onclick="startQuiz(2)">中学2年生</button>
+        <button class="btn" onclick="startQuiz(3)">中学3年生</button>
+    </div>
+
+    <div id="quiz-area">
+        <h2 id="q-text">問題文</h2>
+        <button class="btn" onclick="showAnswer()">答えを表示</button>
+        <div id="a-area" style="display:none;">
+            <p id="a-text">解説</p>
+            <button class="btn" onclick="nextQuestion()">次の問題へ (+2pt)</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    // 各学年ごとの独立した問題リスト
+    const questions = {
+        1: [
+            {q: "正の数と負の数: -5 + 8 = ?", a: "3"},
+            {q: "文字式: 3a + 5a = ?", a: "8a"}
+        ],
+        2: [
+            {q: "連立方程式: x+y=5, x-y=1 のxは?", a: "3"},
+            {q: "単項式の計算: 4x^2 * 2x = ?", a: "8x^3"}
+        ],
+        3: [
+            {q: "展開: (x+2)^2 = ?", a: "x^2 + 4x + 4"},
+            {q: "因数分解: x^2 - 9 = ?", a: "(x+3)(x-3)"}
+        ]
+    };
+
+    let currentGrade = null;
+    let pts = parseInt(localStorage.getItem('totalPoints')) || 0;
+    document.getElementById('points').innerText = pts;
+
+    function startQuiz(grade) {
+        currentGrade = grade;
+        document.getElementById('grade-selection').style.display = 'none';
+        document.getElementById('quiz-area').style.display = 'block';
+        showNext();
+    }
+
+    function showNext() {
+        const list = questions[currentGrade];
+        const randomQ = list[Math.floor(Math.random() * list.length)];
+        
+        // 問題セットを画面に適用
+        document.getElementById('q-text').innerText = randomQ.q;
+        document.getElementById('a-text').innerText = "答え: " + randomQ.a;
+        
+        document.getElementById('a-area').style.display = 'none';
+    }
+
+    function showAnswer() {
+        document.getElementById('a-area').style.display = 'block';
+    }
+
+    function nextQuestion() {
+        // ポイント加算
+        pts += 2;
+        localStorage.setItem('totalPoints', pts);
+        document.getElementById('points').innerText = pts;
+        
+        showNext(); // 同じ学年の中から次の問題をランダム抽出
+    }
+</script>
+</body>
+</html>
