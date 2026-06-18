@@ -2,74 +2,64 @@
 <html lang="ja">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>一問一答 - 学習中</title>
+    <title>一問一答 - 数学</title>
     <style>
         body { font-family: sans-serif; background: #f8fafc; padding: 20px; }
-        .header-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; font-weight: bold; }
-        .question-box { background: white; padding: 40px 20px; border-radius: 16px; font-size: 1.5rem; text-align: center; box-shadow: 0 4px 6px rgba(0,0,0,0.1); margin-bottom: 20px; }
-        .choice-btn { display: block; width: 100%; padding: 20px; margin: 15px 0; background: white; border: 2px solid #cbd5e1; border-radius: 12px; font-size: 1.2rem; cursor: pointer; }
+        .header { display: flex; justify-content: space-between; margin-bottom: 20px; }
+        .question-box { background: white; padding: 30px; border-radius: 12px; font-size: 1.2rem; box-shadow: 0 2px 4px rgba(0,0,0,0.1); margin-bottom: 20px; }
+        .choice-btn { display: block; width: 100%; padding: 15px; margin: 10px 0; background: white; border: 1px solid #94a3b8; border-radius: 8px; font-size: 1.1rem; cursor: pointer; }
     </style>
 </head>
 <body>
-    <div class="header-bar">
-        <a href="index.html">← 戻る</a>
+    <div class="header">
+        <a href="index.html">← ホームに戻る</a>
         <div>Pt: <span id="pts">0</span></div>
     </div>
 
-    <div class="question-box" id="q-text">問題読み込み中...</div>
+    <div class="question-box" id="q-text">読み込み中...</div>
     <div id="choices-area"></div>
 
     <script>
-        // 1. 学年ごとのデータ (ここを充実させていく)
+        // 学年別データ (ここに問題を追加してください)
         const db = {
-            1: [{q: "1年: 正の数と負の数 -5 + 8 = ?", choices: ["2", "3", "4", "5", "6"], correct: "3"}],
-            2: [{q: "2年: 連立方程式 x+y=5, x-y=1 のxは?", choices: ["1", "2", "3", "4", "5"], correct: "3"}],
-            3: [{q: "3年: 展開 (x+2)^2 = ?", choices: ["x²+2x+4", "x²+4x+4", "x²+2x+2", "x²+4x+2", "x²+4"], correct: "x²+4x+4"}]
+            '1': [{q: "1年：-5 + 8 = ?", choices: ["1", "2", "3", "4", "5"], correct: "3"}],
+            '2': [{q: "2年：x+y=5, x-y=1 のxは？", choices: ["1", "2", "3", "4", "5"], correct: "3"}],
+            '3': [{q: "3年：(x+2)²を展開せよ", choices: ["x²+2x+4", "x²+4x+4", "x²+4", "x²+2x+2", "x²+4x+2"], correct: "x²+4x+4"}]
         };
 
-        // 2. ホーム画面から選ばれた学年を取得
-        const grade = localStorage.getItem('targetGrade') || 1;
+        const grade = localStorage.getItem('targetGrade') || '1';
         const questions = db[grade];
-        let currentQ = questions[Math.floor(Math.random() * questions.length)];
 
-        // ポイント表示初期化
-        document.getElementById('pts').innerText = localStorage.getItem('totalPoints') || 0;
-
-        // 問題描画
-        function render() {
+        if (!questions) {
+            document.getElementById('q-text').innerText = "学年データが選択されていません。";
+        } else {
+            const currentQ = questions[Math.floor(Math.random() * questions.length)];
             document.getElementById('q-text').innerText = currentQ.q;
+            
             const area = document.getElementById('choices-area');
-            area.innerHTML = '';
             currentQ.choices.forEach(c => {
                 const btn = document.createElement('button');
                 btn.className = 'choice-btn';
                 btn.innerText = c;
-                btn.onclick = () => check(c);
+                btn.onclick = () => check(c, currentQ.correct);
                 area.appendChild(btn);
             });
         }
 
-        // 回答チェック
-        function check(ans) {
-            if(ans === currentQ.correct) {
+        document.getElementById('pts').innerText = localStorage.getItem('totalPoints') || 0;
+
+        function check(ans, correct) {
+            if(ans === correct) {
+                let pts = parseInt(localStorage.getItem('totalPoints') || 0) + 2;
+                localStorage.setItem('totalPoints', pts);
                 alert("正解！");
-                updateScore(true);
             } else {
                 alert("不正解...");
-                updateScore(false);
             }
-            location.reload(); // 次の問題へ
+            let total = parseInt(localStorage.getItem('totalAnswers') || 0) + 1;
+            localStorage.setItem('totalAnswers', total);
+            location.reload();
         }
-
-        function updateScore(isCorrect) {
-            let pts = parseInt(localStorage.getItem('totalPoints') || 0);
-            let total = parseInt(localStorage.getItem('totalAnswers') || 0);
-            localStorage.setItem('totalAnswers', total + 1);
-            if(isCorrect) localStorage.setItem('totalPoints', pts + 2);
-        }
-
-        render();
     </script>
 </body>
 </html>
