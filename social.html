@@ -3,150 +3,176 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>社会一問一答</title>
+    <title>社会科 一問一答（学年別）</title>
     <style>
         body { margin: 0; padding-top: 70px; font-family: 'Helvetica Neue', Arial, sans-serif; background: #f8fafc; color: #334155; }
-        header { position: fixed; top: 0; width: 100%; height: 60px; background: #1e293b; color: white; display: flex; align-items: center; padding: 0 20px; box-sizing: border-box; justify-content: space-between; z-index: 1000; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
-        .main-box { margin: 20px; background: white; padding: 25px; border-radius: 16px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
+        header { position: fixed; top: 0; width: 100%; height: 60px; background: #0f172a; color: white; display: flex; align-items: center; padding: 0 20px; box-sizing: border-box; z-index: 1000; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        .main-box { margin: 20px auto; max-width: 600px; background: white; padding: 25px; border-radius: 16px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
+        .progress { font-size: 1rem; color: #64748b; margin-bottom: 10px; font-weight: bold; }
         .choice-btn { display: block; width: 100%; padding: 18px; margin: 10px 0; border: 2px solid #e2e8f0; border-radius: 12px; background: white; font-size: 1.1rem; cursor: pointer; transition: 0.2s; }
-        .choice-btn:active { background: #eff6ff; border-color: #3b82f6; }
-        #feedback-area { display: none; text-align: center; margin-top: 20px; padding: 20px; border-radius: 12px; }
-        .result-text { font-size: 3rem; font-weight: 900; margin: 10px 0; }
-        #next-btn { width: 100%; padding: 18px; background: #3b82f6; color: white; border: none; border-radius: 12px; font-weight: bold; font-size: 1.2rem; cursor: pointer; }
+        .choice-btn:hover { background: #f1f5f9; }
+        .choice-btn.correct { background-color: #d1fae5 !important; border-color: #10b981 !important; color: #065f46; cursor: default; }
+        .choice-btn.incorrect { background-color: #fee2e2 !important; border-color: #ef4444 !important; color: #991b1b; cursor: default; }
+        #feedback-area { display: none; margin-top: 20px; padding: 20px; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 12px; }
+        .res-text { font-size: 2rem; font-weight: 800; text-align: center; margin-bottom: 15px; }
+        .exp-box { font-size: 1rem; color: #334155; line-height: 1.6; padding: 15px; background: white; border-radius: 8px; border-left: 4px solid #3b82f6; }
     </style>
 </head>
 <body>
-    <header>
-        <div style="font-weight:bold; font-size:1.1rem;">社会 一問一答</div>
-        <a href="index.html" style="color:#bfdbfe; text-decoration:none; font-size:0.9rem;">ホームへ</a>
-    </header>
+    <header>社会科 一問一答（学年別）</header>
     
     <div id="setup" class="main-box">
-        <h3>学習設定</h3>
-        <p>学年を選択してください</p>
-        <select id="grade-sel" style="width:100%; padding:15px; margin-bottom:20px; border-radius:8px; border:1px solid #cbd5e1; font-size:1rem;">
-            <option value="1">中1：地理（世界・日本）</option>
-            <option value="2">中2：歴史（中世・近世）・地理</option>
-            <option value="3">中3：歴史（近代）・公民</option>
-        </select>
-        <button onclick="start()" style="width:100%; padding:15px; background:#1e293b; color:white; border:none; border-radius:8px; font-size:1rem; font-weight:bold;">開始</button>
+        <h3>学年を選択</h3>
+        <button onclick="start('1')" style="width:100%; padding:15px; margin-bottom:10px; background:#1e293b; color:white; border:none; border-radius:8px; cursor:pointer;">中1（地理・古代歴史）</button>
+        <button onclick="start('2')" style="width:100%; padding:15px; margin-bottom:10px; background:#334155; color:white; border:none; border-radius:8px; cursor:pointer;">中2（歴史：平安〜近代）</button>
+        <button onclick="start('3')" style="width:100%; padding:15px; background:#475569; color:white; border:none; border-radius:8px; cursor:pointer;">中3（歴史：現代・公民）</button>
     </div>
 
     <div id="quiz" class="main-box" style="display:none;">
-        <div id="q-text" style="font-size:1.4rem; font-weight:bold; margin-bottom:20px; line-height:1.4;"></div>
+        <div id="progress" class="progress"></div>
+        <div id="q-text" style="font-size:1.3rem; font-weight:bold; margin-bottom:20px;"></div>
         <div id="choices-area"></div>
         <div id="feedback-area">
-            <div id="res-text" class="result-text"></div>
-            <div id="exp-text" style="font-size:1.1rem; color:#475569; margin:20px 0; line-height:1.6; text-align:left; padding:15px; background:#f8fafc; border-radius:8px;"></div>
-            <button id="next-btn" onclick="nextQ()">次へ進む</button>
+            <div id="res-text" class="res-text"></div>
+            <div id="exp-text" class="exp-box"></div>
+            <button id="next-btn" onclick="nextQ()" style="width:100%; padding:15px; margin-top:20px; background:#3b82f6; color:white; border:none; border-radius:8px; cursor:pointer;">次へ</button>
         </div>
     </div>
 
     <script>
         const db = {
             '1': [
-                {q: "日本の首都は？", choices: ["大阪", "京都", "東京", "福岡"], correct: "東京", exp: "日本の政治経済の中心地です。"},
-                {q: "世界最大の面積を持つ国は？", choices: ["アメリカ", "中国", "ロシア", "カナダ"], correct: "ロシア", exp: "ユーラシア大陸北部に位置します。"},
-                {q: "赤道の緯度は？", choices: ["0度", "90度", "23.4度", "180度"], correct: "0度", exp: "地球を南北に分ける線です。"},
-                {q: "日本が属する大陸は？", choices: ["アフリカ", "ユーラシア", "北アメリカ", "オーストラリア"], correct: "ユーラシア", exp: "アジア大陸とも呼ばれます。"},
-                {q: "本初子午線が通る都市は？", choices: ["パリ", "ロンドン", "ニューヨーク", "東京"], correct: "ロンドン", exp: "旧グリニッジ天文台が基準です。"},
-                {q: "世界で最も長い河川は？", choices: ["アマゾン川", "ナイル川", "長江", "ミシシッピ川"], correct: "ナイル川", exp: "アフリカ大陸を流れます。"},
-                {q: "日本の都道府県の数は？", choices: ["45", "46", "47", "48"], correct: "47", exp: "1都1道2府43県です。"},
-                {q: "冷帯の気候を示す記号は？", choices: ["A", "B", "C", "D"], correct: "D", exp: "ケッペンの気候区分です。"},
-                {q: "地球の表面の約何％が海？", choices: ["50％", "60％", "70％", "80％"], correct: "70％", exp: "地球は水の惑星です。"},
-                {q: "人口が世界最大の国は？", choices: ["中国", "インド", "アメリカ", "ロシア"], correct: "インド", exp: "近年中国を抜いて世界一となりました。"},
-                {q: "緯度23.4度の線は？", choices: ["赤道", "北回帰線", "南極圏", "北極圏"], correct: "北回帰線", exp: "熱帯の境界線です。"},
-                {q: "砂漠が多い気候帯は？", choices: ["乾燥帯", "温帯", "寒帯", "熱帯"], correct: "乾燥帯", exp: "降水量が極端に少ない地域です。"},
-                {q: "日本アルプスは何山脈？", choices: ["奥羽山脈", "飛騨山脈", "北上山脈", "中国山脈"], correct: "飛騨山脈", exp: "中央アルプス、南アルプスも含まれます。"},
-                {q: "世界地図の投影法で角度が正しいものは？", choices: ["メルカトル図法", "モルワイデ図法", "グード図法", "正距方位図法"], correct: "メルカトル図法", exp: "航海で重宝されます。"},
-                {q: "日本に最も近い外国は？", choices: ["アメリカ", "中国", "韓国", "ロシア"], correct: "韓国", exp: "対馬海峡を挟んで隣接しています。"},
-                {q: "温帯で四季がある気候を何というか？", choices: ["地中海性気候", "温暖湿潤気候", "西岸海洋性気候", "サバナ気候"], correct: "温暖湿潤気候", exp: "日本の大部分が含まれます。"},
-                {q: "世界で2番目に面積が広い国は？", choices: ["カナダ", "アメリカ", "中国", "ブラジル"], correct: "カナダ", exp: "北アメリカ大陸の北部に位置します。"},
-                {q: "経度差15度で時差は何時間？", choices: ["1時間", "15分", "30分", "2時間"], correct: "1時間", exp: "地球は1日で360度回転するためです。"},
-                {q: "日本の領土の最東端は？", choices: ["南鳥島", "沖ノ鳥島", "択捉島", "与那国島"], correct: "南鳥島", exp: "東京都小笠原村に属します。"},
-                {q: "標高が上がるほど気温は？", choices: ["上がる", "下がる", "変わらない", "急激に上がる"], correct: "下がる", exp: "100mで約0.6度下がります。"}
+                {q: "地球の緯度0度の線を何というか？", choices: ["北回帰線", "赤道", "本初子午線", "南極圏"], correct: "赤道", exp: "赤道が緯度の基準です。"},
+                {q: "時差は経度15度で何時間か？", choices: ["30分", "1時間", "2時間", "15分"], correct: "1時間", exp: "の計算の通り、15度で1時間です。"},
+                {q: "日本の領海は何海里か？", choices: ["3", "12", "200", "50"], correct: "12", exp: "領海は12海里です。"},
+                {q: "エジプト文明はどの川の流域？", choices: ["ナイル", "黄河", "インダス", "メコン"], correct: "ナイル", exp: "より、ナイル川流域です。"},
+                {q: "モヘンジョ・ダロはどの文明？", choices: ["インダス", "メソポタミア", "中国", "エジプト"], correct: "インダス", exp: "参照。"},
+                {q: "始皇帝が統一した王朝は？", choices: ["周", "殷", "秦", "漢"], correct: "秦", exp: "にて秦の始皇帝が登場。"},
+                {q: "女王卑弥呼が治めた国は？", choices: ["邪馬台国", "大和政権", "倭国", "百済"], correct: "邪馬台国", exp: "より。"},
+                {q: "世界最大級の古墳は？", choices: ["大仙古墳", "石舞台古墳", "稲荷山古墳", "高松塚古墳"], correct: "大仙古墳", exp: "にある前方後円墳です。"},
+                {q: "聖徳太子が定めたのは？", choices: ["十七条の憲法", "大宝律令", "御成敗式目", "武家諸法度"], correct: "十七条の憲法", exp: "等で歴史学習。"},
+                {q: "710年の都は？", choices: ["平城京", "平安京", "藤原京", "奈良"], correct: "平城京", exp: "奈良時代が始まりました。"},
+                {q: "仏教が伝わったのは何世紀？", choices: ["5世紀", "6世紀", "7世紀", "8世紀"], correct: "6世紀", exp: "欽明天皇の頃です。"},
+                {q: "大化の改新は何年？", choices: ["645", "710", "794", "1192"], correct: "645", exp: "蘇我氏を倒した事件です。"},
+                {q: "縄文時代の石器は？", choices: ["打製", "磨製", "青銅", "鉄"], correct: "打製", exp: "縄文時代は打製石器が主です。"},
+                {q: "シルクロードが発展した王朝は？", choices: ["漢", "秦", "唐", "宋"], correct: "漢", exp: "参照。"},
+                {q: "ギリシャのポリスで民主政治は？", choices: ["アテネ", "スパルタ", "ローマ", "マケドニア"], correct: "アテネ", exp: "参照。"},
+                {q: "コロッセオがあるのは？", choices: ["ローマ", "アテネ", "エジプト", "インド"], correct: "ローマ", exp: "参照。"},
+                {q: "メソポタミアの文字は？", choices: ["くさび形", "甲骨", "漢字", "アルファベット"], correct: "くさび形", exp: "参照。"},
+                {q: "日本の最東端の島は？", choices: ["南鳥島", "沖ノ鳥島", "与那国島", "択捉島"], correct: "南鳥島", exp: "参照。"},
+                {q: "季節風を何というか？", choices: ["モンスーン", "偏西風", "貿易風", "極風"], correct: "モンスーン", exp: "日本の気候に影響を与えます。"},
+                {q: "経度135度はどこを通る？", choices: ["明石", "東京", "大阪", "札幌"], correct: "明石", exp: "日本の標準時です。"},
+                {q: "朝鮮半島で漢字を伝えたのは？", choices: ["百済", "新羅", "高句麗", "日本"], correct: "百済", exp: "文化の伝来に貢献しました。"},
+                {q: "古墳に置かれた土製品は？", choices: ["埴輪", "土偶", "銅鐸", "鏡"], correct: "埴輪", exp: "にある古墳の話。"},
+                {q: "魏志倭人伝に書かれた女王は？", choices: ["卑弥呼", "推古天皇", "持統天皇", "額田王"], correct: "卑弥呼", exp: "参照。"},
+                {q: "大和政権の別名は？", choices: ["倭の五王", "邪馬台国", "飛鳥", "平城"], correct: "倭の五王", exp: "参照。"},
+                {q: "仏教が伝わった国は？", choices: ["百済", "新羅", "中国", "インド"], correct: "百済", exp: "6世紀のことです。"},
+                {q: "794年の遷都先は？", choices: ["平安京", "平城京", "長岡京", "藤原京"], correct: "平安京", exp: "桓武天皇です。"},
+                {q: "東大寺を建てた天皇は？", choices: ["聖武天皇", "桓武天皇", "天武天皇", "推古天皇"], correct: "聖武天皇", exp: "仏教による国守護。"},
+                {q: "日本に一番近い国は？", choices: ["韓国", "中国", "ロシア", "アメリカ"], correct: "韓国", exp: "地理的な関係。"},
+                {q: "時差計算：日本が10時の時、東経45度の時刻は？", choices: ["4時", "16時", "12時", "8時"], correct: "16時", exp: "画像の問題を考慮。"},
+                {q: "領空の範囲は？", choices: ["領土・領海の上空", "大気圏外すべて", "接続水域の上空", "公海の上空"], correct: "領土・領海の上空", exp: "参照。"}
             ],
             '2': [
-                {q: "江戸幕府を開いたのは？", choices: ["徳川家康", "織田信長", "豊臣秀吉", "足利義満"], correct: "徳川家康", exp: "1603年に開かれました。"},
-                {q: "産業革命が最初に起きた国は？", choices: ["フランス", "ドイツ", "イギリス", "アメリカ"], correct: "イギリス", exp: "18世紀後半のことです。"},
-                {q: "大政奉還は何年？", choices: ["1867", "1868", "1870", "1875"], correct: "1867", exp: "江戸幕府が政権を返上しました。"},
-                {q: "江戸時代の身分制度は？", choices: ["士農工商", "四民平等", "貴族平民", "カースト制"], correct: "士農工商", exp: "厳格な身分区分でした。"},
-                {q: "アメリカ独立宣言は何年？", choices: ["1776", "1789", "1800", "1850"], correct: "1776", exp: "アメリカ合衆国が誕生しました。"},
-                {q: "フランス革命の年号は？", choices: ["1776", "1789", "1790", "1800"], correct: "1789", exp: "自由・平等・博愛が掲げられました。"},
-                {q: "鎖国を完成させた将軍は？", choices: ["家康", "家光", "綱吉", "吉宗"], correct: "家光", exp: "1639年のことです。"},
-                {q: "ペリーが来航したのは何年？", choices: ["1850", "1853", "1858", "1860"], correct: "1853", exp: "浦賀に来航しました。"},
-                {q: "日米修好通商条約を結んだ大老は？", choices: ["井伊直弼", "徳川慶喜", "松平定信", "勝海舟"], correct: "井伊直弼", exp: "安政の大獄も有名です。"},
-                {q: "江戸の商業の中心地は？", choices: ["江戸", "京都", "大阪", "長崎"], correct: "大阪", exp: "「天下の台所」と呼ばれました。"},
-                {q: "元寇で襲来した国は？", choices: ["清", "元", "明", "金"], correct: "元", exp: "フビライ・ハンの軍です。"},
-                {q: "応仁の乱のきっかけとなった将軍は？", choices: ["義満", "義政", "義教", "義経"], correct: "義政", exp: "室町時代の終わりを告げる乱です。"},
-                {q: "大航海時代を切り開いた国は？", choices: ["イギリス", "スペイン", "オランダ", "ロシア"], correct: "スペイン", exp: "コロンブスらの探検です。"},
-                {q: "キリスト教を日本に伝えたのは？", choices: ["ザビエル", "マテオ・リッチ", "ルター", "カルヴァン"], correct: "ザビエル", exp: "1549年に伝来しました。"},
-                {q: "江戸時代の農業技術進歩で重要な肥料は？", choices: ["干鰯", "化成肥料", "堆肥", "油粕"], correct: "干鰯", exp: "商品作物の栽培に使われました。"},
-                {q: "島原・天草一揆の時の幕府の対応は？", choices: ["和解", "武力鎮圧", "黙認", "交渉"], correct: "武力鎮圧", exp: "幕府権力の強化につながりました。"},
-                {q: "江戸幕府の最初の都市政策は？", choices: ["参勤交代", "五街道の整備", "新田開発", "貨幣統一"], correct: "五街道の整備", exp: "東海道などが整備されました。"},
-                {q: "浮世絵で有名な画家の1人は？", choices: ["葛飾北斎", "狩野永徳", "雪舟", "尾形光琳"], correct: "葛飾北斎", exp: "富嶽三十六景が有名です。"},
-                {q: "明治維新以前の日本の政治体制は？", choices: ["封建制", "民主制", "共和制", "独裁制"], correct: "封建制", exp: "武士が支配する社会でした。"},
-                {q: "18世紀に蒸気機関を改良したのは？", choices: ["ワット", "エジソン", "ベル", "ニュートン"], correct: "ワット", exp: "産業革命を加速させました。"}
+                {q: "平安時代、藤原氏が権力を握った政治は？", choices: ["摂関政治", "院政", "武家政治", "専制政治"], correct: "摂関政治", exp: "藤原道長が有名です。"},
+                {q: "白河上皇が始めた政治は？", choices: ["院政", "摂関政治", "幕府政治", "公家政治"], correct: "院政", exp: "天皇ではなく上皇が実権を握りました。"},
+                {q: "源頼朝が幕府を開いた場所は？", choices: ["鎌倉", "京都", "平泉", "江戸"], correct: "鎌倉", exp: "武士の世の始まりです。"},
+                {q: "御恩と奉公の関係を何というか？", choices: ["封建制度", "律令制度", "天皇制", "絶対王政"], correct: "封建制度", exp: "主従関係に基づいています。"},
+                {q: "北条泰時が制定した法は？", choices: ["御成敗式目", "武家諸法度", "公事方御定書", "十七条の憲法"], correct: "御成敗式目", exp: "武士のための最初の法です。"},
+                {q: "元寇で襲来した国の中心は？", choices: ["モンゴル", "中国", "朝鮮", "日本"], correct: "モンゴル", exp: "フビライ・ハンの軍勢です。"},
+                {q: "室町幕府を開いたのは？", choices: ["足利尊氏", "足利義満", "足利義政", "源頼朝"], correct: "足利尊氏", exp: "京都に幕府を開きました。"},
+                {q: "日明貿易で使われた証明書は？", choices: ["勘合", "朱印状", "通行手形", "パスポート"], correct: "勘合", exp: "倭寇の取り締まりのため。"},
+                {q: "応仁の乱は何時代？", choices: ["室町", "鎌倉", "戦国", "安土桃山"], correct: "室町", exp: "これにより幕府の権威が失墜しました。"},
+                {q: "織田信長が桶狭間で倒したのは？", choices: ["今川義元", "武田信玄", "上杉謙信", "毛利元就"], correct: "今川義元", exp: "ここから天下統一が始まりました。"},
+                {q: "豊臣秀吉が全国で行った測量は？", choices: ["太閤検地", "刀狩", "石高制", "兵農分離"], correct: "太閤検地", exp: "土地を統一的に調べました。"},
+                {q: "1603年に江戸幕府を開いたのは？", choices: ["徳川家康", "徳川家光", "徳川綱吉", "徳川慶喜"], correct: "徳川家康", exp: "関ヶ原の戦いのあとです。"},
+                {q: "参勤交代は誰が義務付けた？", choices: ["徳川家光", "徳川家康", "徳川吉宗", "徳川綱吉"], correct: "徳川家光", exp: "大名を江戸に縛り付けました。"},
+                {q: "鎖国を完成させたのは？", choices: ["徳川家光", "徳川家康", "徳川吉宗", "徳川綱吉"], correct: "徳川家光", exp: "キリスト教禁止を徹底。"},
+                {q: "ペリーが来航したのは何年？", choices: ["1853", "1854", "1867", "1868"], correct: "1853", exp: "日米和親条約へつながります。"},
+                {q: "大政奉還は何年？", choices: ["1867", "1868", "1853", "1860"], correct: "1867", exp: "江戸幕府の終わり。"},
+                {q: "五箇条の御誓文で示されたのは？", choices: ["近代化", "鎖国", "幕府存続", "士族維持"], correct: "近代化", exp: "明治政府の基本方針。"},
+                {q: "地租改正で何が確定した？", choices: ["土地所有権", "米の価格", "士族の特権", "貨幣の価値"], correct: "土地所有権", exp: "地券を発行しました。"},
+                {q: "文明開化の象徴的な建物は？", choices: ["鹿鳴館", "東大寺", "ピラミッド", "コロッセオ"], correct: "鹿鳴館", exp: "西洋文化の受容。"},
+                {q: "日清戦争の講和条約は？", choices: ["下関条約", "ポーツマス条約", "南京条約", "日米修好通商条約"], correct: "下関条約", exp: "台湾などが割譲されました。"},
+                {q: "日露戦争の講和条約は？", choices: ["ポーツマス条約", "下関条約", "パリ条約", "ベルサイユ条約"], correct: "ポーツマス条約", exp: "賠償金が得られず暴動が起きました。"},
+                {q: "明治時代の近代産業の育成策は？", choices: ["殖産興業", "富国強兵", "大政奉還", "明治維新"], correct: "殖産興業", exp: "官営模範工場を建設。"},
+                {q: "大正デモクラシーで活躍した人は？", choices: ["吉野作造", "福沢諭吉", "伊藤博文", "板垣退助"], correct: "吉野作造", exp: "民本主義を唱えました。"},
+                {q: "治安維持法が制定されたのは？", choices: ["1925", "1914", "1929", "1945"], correct: "1925", exp: "社会主義運動を弾圧。"},
+                {q: "産業革命の中心となったのは？", choices: ["イギリス", "フランス", "日本", "アメリカ"], correct: "イギリス", exp: "蒸気機関の発明から。"}
             ],
             '3': [
-                {q: "明治維新の年は？", choices: ["1867", "1868", "1870", "1889"], correct: "1868", exp: "慶応4年＝明治元年です。"},
-                {q: "日本国憲法が施行されたのは？", choices: ["1945", "1946", "1947", "1952"], correct: "1947", exp: "5月3日に施行されました。"},
-                {q: "国会の主な役割は？", choices: ["立法", "行政", "司法", "軍事"], correct: "立法", exp: "国権の最高機関です。"},
-                {q: "国連本部はどこ？", choices: ["ジュネーブ", "ニューヨーク", "ロンドン", "パリ"], correct: "ニューヨーク", exp: "国際連合の拠点です。"},
-                {q: "三権分立の3つの機関は？", choices: ["国会・内閣・裁判所", "天皇・国会・内閣", "警察・軍・裁判所", "政党・マスコミ・国会"], correct: "国会・内閣・裁判所", exp: "権力の集中を防ぎます。"},
-                {q: "第一次世界大戦の開始は？", choices: ["1910", "1914", "1918", "1920"], correct: "1914", exp: "サラエボ事件がきっかけです。"},
-                {q: "第二次世界大戦の終結は？", choices: ["1941", "1945", "1947", "1950"], correct: "1945", exp: "8月15日に終戦を迎えました。"},
-                {q: "日本国憲法の平和主義は第何条？", choices: ["第8条", "第9条", "第10条", "第1条"], correct: "第9条", exp: "戦争放棄を規定しています。"},
-                {q: "衆議院の任期は？", choices: ["3年", "4年", "5年", "6年"], correct: "4年", exp: "解散があるため短くなることもあります。"},
-                {q: "裁判員制度の対象は？", choices: ["すべての裁判", "刑事裁判", "民事裁判", "家庭裁判"], correct: "刑事裁判", exp: "重大な刑事事件が対象です。"},
-                {q: "所得税は？", choices: ["直接税", "間接税", "消費税", "法人税"], correct: "直接税", exp: "所得に直接かかる税です。"},
-                {q: "GDPの意味は？", choices: ["国民総生産", "国内総生産", "国民総所得", "国内総所得"], correct: "国内総生産", exp: "国全体の経済活動の規模です。"},
-                {q: "参政権に含まれないものは？", choices: ["選挙権", "被選挙権", "国民審査権", "納税の義務"], correct: "納税の義務", exp: "納税は国民の三大義務です。"},
-                {q: "政党政治とは？", choices: ["政党が競い合う", "一党独裁", "王政", "軍事政権"], correct: "政党が競い合う", exp: "現代の民主主義の基本です。"},
-                {q: "地球温暖化の主な原因は？", choices: ["酸素", "二酸化炭素", "窒素", "ヘリウム"], correct: "二酸化炭素", exp: "温室効果ガスの一つです。"},
-                {q: "日清戦争は何年？", choices: ["1890", "1894", "1900", "1904"], correct: "1894", exp: "朝鮮半島を巡る争いです。"},
-                {q: "冷戦とは何と何の対立？", choices: ["米・ソ", "日・中", "英・独", "仏・伊"], correct: "米・ソ", exp: "資本主義と社会主義の対立です。"},
-                {q: "基本的人権を保障するのは？", choices: ["法律", "道徳", "憲法", "慣習"], correct: "憲法", exp: "最高法規です。"},
-                {q: "地方自治の本旨は？", choices: ["住民自治・団体自治", "中央集権", "独裁", "軍事"], correct: "住民自治・団体自治", exp: "地方自治の原則です。"},
-                {q: "市場価格は何によって決まる？", choices: ["政府", "企業", "需要と供給", "消費者"], correct: "需要と供給", exp: "市場メカニズムの基本です。"}
+                {q: "世界恐慌は何年に始まった？", choices: ["1929", "1914", "1939", "1945"], correct: "1929", exp: "アメリカ株暴落から。"},
+                {q: "第一次世界大戦は何年から？", choices: ["1914", "1939", "1945", "1918"], correct: "1914", exp: "サラエボ事件がきっかけ。"},
+                {q: "第二次世界大戦で、日本が降伏したのは何年？", choices: ["1945", "1941", "1947", "1952"], correct: "1945", exp: "8月15日に玉音放送。"},
+                {q: "日本国憲法の公布は？", choices: ["1946", "1947", "1945", "1952"], correct: "1946", exp: "11月3日に公布。"},
+                {q: "日本国憲法の施行は？", choices: ["1947", "1946", "1945", "1952"], correct: "1947", exp: "5月3日に施行。"},
+                {q: "憲法9条が定めるのは？", choices: ["平和主義", "国民主権", "基本的人権", "民主政治"], correct: "平和主義", exp: "戦争放棄です。"},
+                {q: "衆議院と参議院のどちらが優越するか？", choices: ["衆議院", "参議院", "対等", "天皇"], correct: "衆議院", exp: "予算や条約などで優越します。"},
+                {q: "裁判官を国民が審査する制度は？", choices: ["国民審査", "裁判員制度", "陪審制", "弾劾裁判"], correct: "国民審査", exp: "最高裁判所裁判官が対象。"},
+                {q: "GDPの意味は？", choices: ["国内総生産", "国民総所得", "世界総生産", "経済成長"], correct: "国内総生産", exp: "国の経済規模。"},
+                {q: "環境を守る3Rの最後は？", choices: ["リサイクル", "リフォーム", "リペア", "リバース"], correct: "リサイクル", exp: "Reduce, Reuse, Recycle。"},
+                {q: "国連本部がある都市は？", choices: ["ニューヨーク", "ジュネーブ", "ロンドン", "パリ"], correct: "ニューヨーク", exp: "国際協調の場です。"},
+                {q: "住民自治と団体自治は何の原則？", choices: ["地方自治", "中央集権", "独裁制", "君主制"], correct: "地方自治", exp: "地方政治の基盤。"},
+                {q: "18歳から認められたのは？", choices: ["選挙権", "成人年齢", "結婚", "労働"], correct: "選挙権", exp: "現在は18歳から。"},
+                {q: "マスメディアの役割は？", choices: ["情報提供", "政治批判", "娯楽", "独裁"], correct: "情報提供", exp: "世論形成に重要。"},
+                {q: "所得税は直接税か間接税か？", choices: ["直接税", "間接税", "消費税", "固定資産税"], correct: "直接税", exp: "稼いだ所得にかかる。"},
+                {q: "市場価格は何と何のバランスで決まる？", choices: ["需要と供給", "企業と政府", "労働者と企業", "国と国"], correct: "需要と供給", exp: "市場メカニズム。"},
+                {q: "冷戦は何と何の対立？", choices: ["米ソ", "日英", "仏独", "中韓"], correct: "米ソ", exp: "資本主義と社会主義。"},
+                {q: "日本が国際連合に加盟したのは何年？", choices: ["1956", "1945", "1952", "1964"], correct: "1956", exp: "鳩山一郎内閣の時。"},
+                {q: "三権分立で行政権を持つのは？", choices: ["内閣", "国会", "裁判所", "天皇"], correct: "内閣", exp: "法律を執行する。"},
+                {q: "衆議院の解散権を持つのは？", choices: ["内閣", "天皇", "国会", "最高裁判所"], correct: "内閣", exp: "総理大臣が解散を決定。"},
+                {q: "地方税の例は？", choices: ["住民税", "消費税", "法人税", "関税"], correct: "住民税", exp: "市町村に納める税。"},
+                {q: "現代の国際社会の課題は？", choices: ["環境問題", "戦争", "貧困", "すべて"], correct: "すべて", exp: "グローバルな課題。"},
+                {q: "日本が高度経済成長期を迎えたのは？", choices: ["1950年代後半", "1920年代", "1980年代", "1990年代"], correct: "1950年代後半", exp: "戦後の復興から成長へ。"},
+                {q: "バブル経済が崩壊したのは？", choices: ["1990年代初頭", "1980年代", "2000年代", "1970年代"], correct: "1990年代初頭", exp: "好景気の終わり。"},
+                {q: "SDGsの目標数は？", choices: ["17", "10", "20", "5"], correct: "17", exp: "持続可能な開発目標。"}
             ]
         };
 
-        let currentQ, count = 0, targetGrade = '1';
-        function start() {
-            targetGrade = document.getElementById('grade-sel').value;
+        let currentQ, currentIdx = 0, currentGrade = '1';
+
+        function start(grade) {
+            currentGrade = grade;
+            currentIdx = 0;
             document.getElementById('setup').style.display = 'none';
             document.getElementById('quiz').style.display = 'block';
             nextQ();
         }
+
         function nextQ() {
+            const list = db[currentGrade];
+            if(currentIdx >= list.length) { alert("終了！お疲れ様でした。"); location.reload(); return; }
             document.getElementById('feedback-area').style.display = 'none';
-            const qList = db[targetGrade];
-            currentQ = qList[Math.floor(Math.random()*qList.length)];
+            document.getElementById('progress').innerText = `${currentIdx + 1} / ${list.length} 問`;
+            
+            currentQ = list[currentIdx];
             document.getElementById('q-text').innerText = currentQ.q;
+            
             const area = document.getElementById('choices-area'); area.innerHTML = '';
             currentQ.choices.forEach(c => {
                 const b = document.createElement('button'); b.className = 'choice-btn'; b.innerText = c;
-                b.onclick = () => check(c); area.appendChild(b);
+                b.onclick = () => check(b, c); area.appendChild(b);
             });
         }
-        function check(ans) {
-            document.getElementById('feedback-area').style.display = 'block';
-            document.getElementById('choices-area').innerHTML = '';
+
+        function check(btn, ans) {
+            const btns = document.querySelectorAll('.choice-btn');
+            btns.forEach(b => b.disabled = true); 
+
             const res = document.getElementById('res-text');
             const exp = document.getElementById('exp-text');
-            
-            let t = parseInt(localStorage.getItem('totalAnswers')||0) + 1;
-            localStorage.setItem('totalAnswers', t);
+            document.getElementById('feedback-area').style.display = 'block';
 
             if(ans === currentQ.correct) {
+                btn.classList.add('correct');
                 res.innerText = "正解"; res.style.color = "#10b981";
-                localStorage.setItem('totalPoints', parseInt(localStorage.getItem('totalPoints')||0)+2);
-                localStorage.setItem('totalCorrect', parseInt(localStorage.getItem('totalCorrect')||0)+1);
             } else {
+                btn.classList.add('incorrect');
                 res.innerText = "不正解"; res.style.color = "#ef4444";
+                btns.forEach(b => { if(b.innerText === currentQ.correct) b.classList.add('correct'); });
             }
-            exp.innerText = "解説: " + currentQ.exp;
+            exp.innerHTML = "<strong>解説:</strong><br>" + currentQ.exp;
+            currentIdx++;
         }
     </script>
 </body>
