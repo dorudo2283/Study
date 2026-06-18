@@ -3,33 +3,31 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>一問一答 勉強WEBサイト</title>
+    <title>一問一答勉強WEBサイト</title>
     <style>
-        body { font-family: sans-serif; background: #f1f5f9; margin: 0; padding: 20px; box-sizing: border-box; }
-        .dashboard { background: #1e293b; color: white; padding: 20px; border-radius: 12px; margin-bottom: 20px; }
-        .stat-val { font-size: 1.5rem; font-weight: bold; }
-        .card { background: white; padding: 20px; border-radius: 12px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); margin-bottom: 15px; }
+        body { margin: 0; padding: 60px 10px 20px; font-family: sans-serif; background: #f1f5f9; box-sizing: border-box; }
+        header { position: fixed; top: 0; left:0; width: 100%; height: 50px; background: #1e293b; color: white; display: flex; align-items: center; justify-content: space-between; padding: 0 15px; box-sizing: border-box; z-index: 100; box-shadow: 0 2px 5px rgba(0,0,0,0.2); }
+        .box { background: white; padding: 20px; border-radius: 12px; margin-bottom: 20px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
         a { display: block; text-align: center; padding: 15px; background: #2563eb; color: white; text-decoration: none; border-radius: 8px; font-weight: bold; }
     </style>
 </head>
 <body>
-    <div class="dashboard">
-        <div>総回答数: <span id="total-answers" class="stat-val">0</span></div>
-        <div>総合ポイント: <span id="total-points" class="stat-val">0</span> pt</div>
-    </div>
+    <header>
+        <div>一問一答勉強WEBサイト</div>
+        <div id="pts-display">Pts: 0</div>
+    </header>
 
-    <div class="card">
+    <div class="box">
         <h3>数学</h3>
-        <a href="math.html">選択する</a>
+        <a href="math.html">学習開始</a>
     </div>
-    <div class="card">
+    <div class="box">
         <h3>社会</h3>
-        <a href="social.html">選択する</a>
+        <a href="social.html">学習開始</a>
     </div>
 
     <script>
-        document.getElementById('total-points').innerText = localStorage.getItem('totalPoints') || '0';
-        document.getElementById('total-answers').innerText = localStorage.getItem('totalAnswers') || '0';
+        document.getElementById('pts-display').innerText = "Pts: " + (localStorage.getItem('totalPoints') || '0');
     </script>
 </body>
 </html>
