@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>中学1年 社会 - 一問一答クイズ</title>
+    <style>
+        :root {
+            --bg-color: #f1f5f9;
+            --text-color: #0f172a;
+            --accent-color: #f59e0b; /* 社会はオレンジ・ゴールド系 */
+            --accent-hover: #d97706;
+            --success-color: #10b981;
+            --danger-color: #ef4444;
+            --card-bg: #ffffff;
+            --border-color: #e2e8f0;
+        }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background-color: var(--bg-color); color: var(--text-color); margin: 0; padding: 0;
+            display: flex; flex-direction: column; align-items: center; min-height: 100vh;
+        }
+        nav {
+            width: 100%; background: var(--card-bg); border-bottom: 1px solid var(--border-color);
+            padding: 1.2rem 2rem; box-sizing: border-box; display: flex; justify-content: space-between; align-items: center;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+        }
+        nav a { color: #64748b; text-decoration: none; font-size: 0.95rem; font-weight: 600; }
+        nav a.nav-logo { color: var(--text-color); font-size: 1.2rem; font-weight: 800; }
+        header { width: 100%; text-align: center; padding: 3rem 1rem 1.5rem 1rem; }
+        h1 { font-size: 2.2rem; font-weight: 800; margin: 0; color: var(--text-color); }
+        .container { width: 100%; max-width: 540px; padding: 0 1.5rem; box-sizing: border-box; margin-bottom: 4rem; }
+        
+        .card {
+            background: var(--card-bg); border-radius: 20px; padding: 3rem 2rem;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.05); text-align: center; display: none;
+        }
+        .card.active { display: block; animation: fadeIn 0.35s ease; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+        
+        h2 { font-size: 1.35rem; margin-top: 0; margin-bottom: 2.5rem; color: #334155; font-weight: 700; }
+        .btn-list { display: flex; flex-direction: column; gap: 1rem; }
+        
+        .btn {
+            background-color: var(--card-bg); border: 1px solid var(--border-color); color: var(--text-color);
+            padding: 1.1rem 2rem; font-size: 1.1rem; font-weight: 600; border-radius: 14px; cursor: pointer; transition: all 0.2s ease;
+            text-align: left; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+        }
+        .btn:hover:not(:disabled) { border-color: var(--accent-color); background-color: rgba(245, 158, 11, 0.02); transform: translateY(-1px); }
+        
+        /* 正誤演出 */
+        .btn.correct { background-color: var(--success-color) !important; color: white !important; border-color: var(--success-color) !important; }
+        .btn.wrong { background-color: var(--danger-color) !important; color: white !important; border-color: var(--danger-color) !important; }
+        
+        .btn-primary { background-color: var(--accent-color); color: white; border: none; text-align: center; }
+        .btn-primary:hover { background-color: var(--accent-hover); }
+        
+        .quiz-text { font-size: 1.4rem; font-weight: 700; margin-bottom: 2.5rem; min-height: 80px; display: flex; align-items: center; justify-content: center; color: #0f172a; white-space: pre-wrap; line-height: 1.5; }
+        
+        .quiz-info { display: flex; justify-content: space-between; margin-bottom: 1.5rem; }
+        .progress, .timer { font-size: 0.95rem; font-weight: 700; color: #94a3b8; letter-spacing: 0.05em; }
+        .timer { color: #64748b; }
+        
+        .judge-display { font-size: 2.2rem; font-weight: 900; margin: 1.5rem 0; display: none; }
+        .judge-display.is-correct { display: block; color: var(--success-color); }
+        .judge-display.is-wrong { display: block; color: var(--danger-color); }
+
+        .explain-box { display: none; background: #f8fafc; border: 1px solid var(--border-color); border-left: 5px solid var(--accent-color); padding: 1.5rem; border-radius: 12px; text-align: left; margin: 2rem 0; font-size: 1rem; line-height: 1.6; color: #334155; white-space: pre-wrap; }
+        .explain-box.visible { display: block; animation: fadeIn 0.3s ease; }
+        .explain-title { font-weight: 800; color: #0f172a; margin-bottom: 0.5rem; font-size: 1.05rem; }
+
+        .score-display { font-size: 4rem; font-weight: 800; color: var(--accent-color); margin: 0.5rem 0 1.5rem 0; }
+        .time-display { font-size: 1.2rem; font-weight: 600; color: #475569; margin-bottom: 2rem; }
+        
+        #next-btn-box { display: none; margin-top: 2rem; }
+    </style>
+</head>
+<body>
+
+    <nav>
+        <a href="index.html" class="nav-logo">一問一答勉強サイト</a>
+        <div><a href="index.html">← トップに戻る</a></div>
+    </nav>
+
+    <header>
+        <h1>中学1年 社会</h1>
+    </header>
+
+    <div class="container">
+        <div id="step-count" class="card active">
+            <h2>解く問題数を選択してください</h2>
+            <div class="btn-list">
+                <button class="btn" style="text-align:center;" onclick="startQuiz(5)">5問</button>
+                <button class="btn" style="text-align:center;" onclick="startQuiz(10)">10問</button>
+                <button class="btn" style="text-align:center;" onclick="startQuiz(12)">12問（全問）</button>
+            </div>
+        </div>
+
+        <div id="step-quiz" class="card">
+            <div class="quiz-info">
+                <div class="progress" id="quiz-progress">第 1 問 / 全 5 問</div>
+                <div class="timer" id="quiz-timer">タイム: 00:00</div>
+            </div>
+            <div class="quiz-text" id="quiz-question">問題文</div>
+            
+            <div class="btn-list" id="choices-box"></div>
+            
+            <div id="judge-text" class="judge-display">正解！</div>
+
+            <div id="explain-area" class="explain-box">
+                <div class="explain-title">💡 解説</div>
+                <div id="explain-text">ここに解説が入ります。</div>
+            </div>
+
+            <div id="next-btn-box">
+                <button class="btn btn-primary" style="width:100%;" onclick="nextQuestion()">次の問題へ</button>
+            </div>
+        </div>
+
+        <div id="step-result" class="card">
+            <h2>結果発表</h2>
+            <p id="result-summary" style="font-size: 1.1rem; color: #64748b; margin: 0;">解いた問題数：5問</p>
+            <div class="score-display"><span id="correct-count">0</span> / <span id="total-count">5</span></div>
+            <div class="time-display" id="result-time">かかった時間: 0秒</div>
+            <div class="btn-list">
+                <a href="index.html" class="btn btn-primary">ホームに戻って実績を確認</a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // --- 中学1年 社会（地理・歴史ごちゃまぜデータベース） ---
+        const quizDatabase = [
+            // === 地理セクション ===
+            { 
+                q: "地球上の位置を表すとき、ロンドンの旧グリニッジ天文台を通る「本初子午線」を基準にした横の線を何というか？", 
+                choices: ["緯線", "経線", "赤道", "日付変更線"],
+                a: "経線",
+                hint: "「経（たて）線」と「緯（よこ）線」の覚え方！経線の『経』の字には『糸（縦糸）』が入っているから縦の線！本初子午線は経度0度の基準線だよ。"
+            },
+            { 
+                q: "地球の赤道の全周は、およそ何万キロメートルか？", 
+                choices: ["約2万km", "約4万km", "約6万km", "約10万km"],
+                a: "約4万km",
+                hint: "地球1周は約4万km！ちなみに日本の新幹線で休まず走り続けても約5日かかる距離だよ。"
+            },
+            { 
+                q: "経度が15度離れると、時間の差（時差）は何時間生まれるか？", 
+                choices: ["1時間", "2時間", "15時間", "24時間"],
+                a: "1時間",
+                hint: "地球は1周360度で、24時間かけて1回転（自転）するよね。\n360度 ÷ 24時間 ＝ 15度\nつまり、15度ずれるごとに1時間の時差が生まれる！"
+            },
+            { 
+                q: "日本の標準時子午線（時間の基準）が通る、兵庫県の都市はどこか？", 
+                choices: ["神戸市", "明石市", "姫路市", "西宮市"],
+                a: "明石市",
+                hint: "兵庫県明石市を通る「東経135度」の経線が、日本の時間の基準（標準時子午線）に定められているよ。"
+            },
+            { 
+                q: "面積が世界で最も小さい、イタリアのローマ市内にある国はどこか？", 
+                choices: ["モナコ", "サンマリノ", "バチカン市国", "モルディブ"],
+                a: "バチカン市国",
+                hint: "バチカン市国は世界最小の国。広さは東京ディズニーランドより少し狭いくらいだよ。"
+            },
+            { 
+                q: "オーストラリアのように、まわりを全て海に囲まれた国を何というか？", 
+                choices: ["内陸国", "海国（島国）", "半島国", "大陸国"],
+                a: "海国（島国）",
+                hint: "日本やオーストラリアのように、領土がすべて島からなる国を「島国（海国）」と呼ぶよ。逆に海に面していない国は「内陸国」。"
+            },
+
+            // === 歴史セクション ===
+            { 
+                q: "エジプト文明で使われ、のちにロゼッタ・ストーンの解読で有名になった象形文字を何というか？", 
+                choices: ["楔形文字", "神聖文字（ヒエログリフ）", "甲骨文字", "漢字"],
+                a: "神聖文字（ヒエログリフ）",
+                hint: "エジプト文明＝神聖文字（ヒエログリフ）。\nメソポタミア文明＝楔形（くさびがた）文字。この2つの区別はテストにめちゃくちゃ出る！"
+            },
+            { 
+                q: "メソポタミア文明の「目には目を、歯には歯を」で有名な、世界最古級の法律を何というか？", 
+                choices: ["十戒", "ハムラビ法典", "大宝律令", "ローマ法"],
+                a: "ハムラビ法典",
+                hint: "ハムラビ王が定めた「ハムラビ法典」。「やられたら同じ分だけやり返してよい（ただし身分による）」という復讐法の原則が書かれているよ。"
+            },
+            { 
+                q: "中国の黄河文明で使われた、亀の甲羅や動物の骨に刻まれた、漢字の原型となった文字は何か？", 
+                choices: ["楔形文字", "甲骨文字", "金文", "ヒエログリフ"],
+                a: "甲骨文字",
+                hint: "甲羅（甲）や骨（骨）に刻んだから「甲骨（こうこつ）文字」。占いの結果を記録するために使われていたよ。"
+            },
+            { 
+                q: "シャカ（釈迦）が開いた、すべての人が平等であると説き、アジア各地に広まった宗教は何か？", 
+                choices: ["仏教", "キリスト教", "イスラム教", "ヒンドゥー教"],
+                a: "仏教",
+                hint: "紀元前5世紀ごろにインドでシャカが開いたのが仏教。のちに日本にも伝わって、歴史に大きな影響を与えることになるよ。"
+            },
+            { 
+                q: "パレスチナ地方でイエスが興し、のちにローマ帝国の国教となった宗教は何か？", 
+                choices: ["イスラム教", "キリスト教", "ユダヤ教", "仏教"],
+                a: "キリスト教",
+                hint: "神の前の平愛を説いたイエスが興したのがキリスト教。世界の暦（西暦）の基準にもなっているよ。"
+            },
+            { 
+                q: "7世紀にムハンマドがアラビア半島で開き、唯一神「アッラー」を信仰する宗教は何か？", 
+                choices: ["ヒンドゥー教", "ユダヤ教", "イスラム教", "キリスト教"],
+                a: "イスラム教",
+                hint: "ムハンマドが開いたのがイスラム教。聖典は「コーラン」。これに仏教・キリスト教を合わせて「世界三大宗教」と呼ぶよ。"
+            }
+        ];
+
+        let currentQuestions = [];
+        let currentIndex = 0;
+        let correctAnswers = 0;
+        let hasAnswered = false;
+        let startTime;
+        let timerInterval;
+
+        function changeView(stepId) {
+            document.querySelectorAll('.card').forEach(card => card.classList.remove('active'));
+            document.getElementById(stepId).classList.add('active');
+        }
+
+        function startQuiz(count) {
+            if (quizDatabase.length === 0) {
+                alert("問題が登録されていません。");
+                window.location.href = 'index.html';
+                return;
+            }
+            const shuffled = [...quizDatabase].sort(() => 0.5 - Math.random());
+            currentQuestions = shuffled.slice(0, Math.min(count, shuffled.length));
+            currentIndex = 0;
+            correctAnswers = 0;
+            
+            startTime = Date.now();
+            startTimer();
+
+            changeView('step-quiz');
+            showQuestion();
+        }
+
+        function startTimer() {
+            clearInterval(timerInterval);
+            timerInterval = setInterval(() => {
+                const elapsedTime = Math.floor((Date.now() - startTime) / 1000);
+                const minutes = String(Math.floor(elapsedTime / 60)).padStart(2, '0');
+                const seconds = String(elapsedTime % 60).padStart(2, '0');
+                document.getElementById('quiz-timer').innerText = `タイム: ${minutes}:${seconds}`;
+            }, 1000);
+        }
+
+        function showQuestion() {
+            hasAnswered = false;
+            const current = currentQuestions[currentIndex];
+            document.getElementById('quiz-progress').innerText = `第 ${currentIndex + 1} 問 / 全 ${currentQuestions.length} 問`;
+            document.getElementById('quiz-question').innerText = current.q;
+            
+            document.getElementById('next-btn-box').style.display = 'none';
+            document.getElementById('judge-text').className = 'judge-display';
+            document.getElementById('explain-area').classList.remove('visible');
+
+            const shuffledChoices = [...current.choices].sort(() => 0.5 - Math.random());
+            const choicesBox = document.getElementById('choices-box');
+            choicesBox.innerHTML = ''; 
+            
+            shuffledChoices.forEach(choice => {
+                const button = document.createElement('button');
+                button.className = 'btn';
+                button.innerText = choice;
+                button.onclick = () => checkAnswer(button, choice, current.a, current.hint);
+                choicesBox.appendChild(button);
+            });
+        }
+
+        function checkAnswer(selectedButton, selectedChoice, correctAnswer, hintText) {
+            if (hasAnswered) return; 
+            hasAnswered = true;
+
+            const choicesBox = document.getElementById('choices-box');
+            const buttons = choicesBox.getElementsByClassName('btn');
+            const judgeTextEl = document.getElementById('judge-text');
+
+            for (let btn of buttons) {
+                btn.disabled = true;
+                if (btn.innerText === correctAnswer) {
+                    btn.classList.add('correct');
+                }
+            }
+
+            if (selectedChoice === correctAnswer) {
+                correctAnswers++;
+                judgeTextEl.innerText = "⭕ 正解！";
+                judgeTextEl.classList.add('is-correct');
+            } else {
+                selectedButton.classList.add('wrong');
+                judgeTextEl.innerText = "❌ 不正解...";
+                judgeTextEl.classList.add('is-wrong');
+            }
+
+            document.getElementById('explain-text').innerText = hintText;
+            document.getElementById('explain-area').classList.add('visible');
+
+            document.getElementById('next-btn-box').style.display = 'block';
+        }
+
+        function nextQuestion() {
+            currentIndex++;
+            if (currentIndex < currentQuestions.length) {
+                showQuestion();
+            } else {
+                clearInterval(timerInterval);
+                const totalTimeSec = Math.floor((Date.now() - startTime) / 1000);
+
+                saveStats(currentQuestions.length, correctAnswers);
+                
+                document.getElementById('result-summary').innerText = `解いた問題数：${currentQuestions.length}問`;
+                document.getElementById('correct-count').innerText = correctAnswers;
+                document.getElementById('total-count').innerText = currentQuestions.length;
+                document.getElementById('result-time').innerText = `かかった時間: ${totalTimeSec} 秒`;
+                
+                changeView('step-result');
+            }
+        }
+
+        function saveStats(solvedCount, correctCount) {
+            let currentTotal = parseInt(localStorage.getItem('totalSolved') || 0);
+            localStorage.setItem('totalSolved', currentTotal + solvedCount);
+
+            let accuracy = Math.round((correctCount / solvedCount) * 100);
+            let currentBest = parseInt(localStorage.getItem('bestAccuracy') || 0);
+            if (accuracy > currentBest) {
+                localStorage.setItem('bestAccuracy', accuracy);
+            }
+        }
+    </script>
+</body>
+</html>
