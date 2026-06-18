@@ -1,106 +1,152 @@
-
 <!DOCTYPE html>
 <html lang="ja">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>一問一答 - 社会</title>
+    <title>社会一問一答</title>
     <style>
-        body { margin: 0; padding-top: 80px; font-family: sans-serif; background: #f1f5f9; box-sizing: border-box; }
-        header { position: fixed; top: 0; width: 100%; height: 70px; background: #1e293b; color: white; display: flex; align-items: center; justify-content: space-between; padding: 0 20px; box-sizing: border-box; z-index: 100; box-shadow: 0 2px 5px rgba(0,0,0,0.2); }
-        .header-stats { text-align: right; font-size: 0.85rem; }
-        .box { background: white; padding: 25px; border-radius: 16px; margin: 0 15px 20px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
-        .choice-btn { display: block; width: 100%; padding: 18px; margin: 12px 0; background: white; border: 2px solid #2563eb; border-radius: 12px; font-size: 1.1rem; cursor: pointer; }
-        #next-btn { background: #22c55e; color: white; border: none; padding: 10px 20px; border-radius: 8px; font-weight: bold; cursor: pointer; }
-        #explanation { margin-top: 20px; padding: 20px; background: #f0fdf4; border-left: 6px solid #22c55e; display: none; border-radius: 4px; }
+        body { margin: 0; padding-top: 70px; font-family: 'Helvetica Neue', Arial, sans-serif; background: #f8fafc; color: #334155; }
+        header { position: fixed; top: 0; width: 100%; height: 60px; background: #1e293b; color: white; display: flex; align-items: center; padding: 0 20px; box-sizing: border-box; justify-content: space-between; z-index: 1000; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        .main-box { margin: 20px; background: white; padding: 25px; border-radius: 16px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
+        .choice-btn { display: block; width: 100%; padding: 18px; margin: 10px 0; border: 2px solid #e2e8f0; border-radius: 12px; background: white; font-size: 1.1rem; cursor: pointer; transition: 0.2s; }
+        .choice-btn:active { background: #eff6ff; border-color: #3b82f6; }
+        #feedback-area { display: none; text-align: center; margin-top: 20px; padding: 20px; border-radius: 12px; }
+        .result-text { font-size: 3rem; font-weight: 900; margin: 10px 0; }
+        #next-btn { width: 100%; padding: 18px; background: #3b82f6; color: white; border: none; border-radius: 12px; font-weight: bold; font-size: 1.2rem; cursor: pointer; }
     </style>
 </head>
 <body>
     <header>
-        <div style="font-weight:bold;">一問一答勉強WEBサイト</div>
-        <div class="header-stats">
-            <span id="pts-display">ポイント: 0</span> | <span id="acc-display">正答率: 0%</span><br>
-            <a href="index.html" style="color:#bfdbfe;">ホーム</a> <span id="next-area"></span>
-        </div>
+        <div style="font-weight:bold; font-size:1.1rem;">社会 一問一答</div>
+        <a href="index.html" style="color:#bfdbfe; text-decoration:none; font-size:0.9rem;">ホームへ</a>
     </header>
-
-    <div id="setup" class="box">
-        <h3>社会 学習設定</h3>
-        学年: <select id="grade-sel" style="width:100%; padding:10px; margin:10px 0;"><option value="1">中1</option><option value="2">中2</option><option value="3">中3</option></select>
-        問題数: <select id="count-sel" style="width:100%; padding:10px; margin:10px 0;"><option value="5">5問</option><option value="10">10問</option></select>
-        <button onclick="startQuiz()" style="width:100%; padding:15px; margin-top:10px; background:#2563eb; color:white; border:none; border-radius:12px; font-weight:bold;">学習開始</button>
+    
+    <div id="setup" class="main-box">
+        <h3>学習設定</h3>
+        <p>学年を選択してください</p>
+        <select id="grade-sel" style="width:100%; padding:15px; margin-bottom:20px; border-radius:8px; border:1px solid #cbd5e1; font-size:1rem;">
+            <option value="1">中1：地理（世界・日本）</option>
+            <option value="2">中2：歴史（中世・近世）・地理</option>
+            <option value="3">中3：歴史（近代）・公民</option>
+        </select>
+        <button onclick="start()" style="width:100%; padding:15px; background:#1e293b; color:white; border:none; border-radius:8px; font-size:1rem; font-weight:bold;">開始</button>
     </div>
 
-    <div id="quiz" class="box" style="display:none;">
-        <div id="q-text" style="font-weight:bold; font-size:1.3rem; margin-bottom:20px;"></div>
+    <div id="quiz" class="main-box" style="display:none;">
+        <div id="q-text" style="font-size:1.4rem; font-weight:bold; margin-bottom:20px; line-height:1.4;"></div>
         <div id="choices-area"></div>
-        <div id="explanation"></div>
+        <div id="feedback-area">
+            <div id="res-text" class="result-text"></div>
+            <div id="exp-text" style="font-size:1.1rem; color:#475569; margin:20px 0; line-height:1.6; text-align:left; padding:15px; background:#f8fafc; border-radius:8px;"></div>
+            <button id="next-btn" onclick="nextQ()">次へ進む</button>
+        </div>
     </div>
 
     <script>
-        // 問題データをここに追加してください
         const db = {
             '1': [
-                {q: "日本の首都は？", choices: ["大阪", "京都", "東京", "福岡", "札幌"], correct: "東京", exp: "日本の政治・経済の中心地です。"},
-                {q: "ユーラシア大陸の西側にある地域は？", choices: ["アフリカ", "ヨーロッパ", "アメリカ", "オーストラリア"], correct: "ヨーロッパ", exp: "ユーラシア大陸の西側はヨーロッパです。"}
+                {q: "日本の首都は？", choices: ["大阪", "京都", "東京", "福岡"], correct: "東京", exp: "日本の政治経済の中心地です。"},
+                {q: "世界最大の面積を持つ国は？", choices: ["アメリカ", "中国", "ロシア", "カナダ"], correct: "ロシア", exp: "ユーラシア大陸北部に位置します。"},
+                {q: "赤道の緯度は？", choices: ["0度", "90度", "23.4度", "180度"], correct: "0度", exp: "地球を南北に分ける線です。"},
+                {q: "日本が属する大陸は？", choices: ["アフリカ", "ユーラシア", "北アメリカ", "オーストラリア"], correct: "ユーラシア", exp: "アジア大陸とも呼ばれます。"},
+                {q: "本初子午線が通る都市は？", choices: ["パリ", "ロンドン", "ニューヨーク", "東京"], correct: "ロンドン", exp: "旧グリニッジ天文台が基準です。"},
+                {q: "世界で最も長い河川は？", choices: ["アマゾン川", "ナイル川", "長江", "ミシシッピ川"], correct: "ナイル川", exp: "アフリカ大陸を流れます。"},
+                {q: "日本の都道府県の数は？", choices: ["45", "46", "47", "48"], correct: "47", exp: "1都1道2府43県です。"},
+                {q: "冷帯の気候を示す記号は？", choices: ["A", "B", "C", "D"], correct: "D", exp: "ケッペンの気候区分です。"},
+                {q: "地球の表面の約何％が海？", choices: ["50％", "60％", "70％", "80％"], correct: "70％", exp: "地球は水の惑星です。"},
+                {q: "人口が世界最大の国は？", choices: ["中国", "インド", "アメリカ", "ロシア"], correct: "インド", exp: "近年中国を抜いて世界一となりました。"},
+                {q: "緯度23.4度の線は？", choices: ["赤道", "北回帰線", "南極圏", "北極圏"], correct: "北回帰線", exp: "熱帯の境界線です。"},
+                {q: "砂漠が多い気候帯は？", choices: ["乾燥帯", "温帯", "寒帯", "熱帯"], correct: "乾燥帯", exp: "降水量が極端に少ない地域です。"},
+                {q: "日本アルプスは何山脈？", choices: ["奥羽山脈", "飛騨山脈", "北上山脈", "中国山脈"], correct: "飛騨山脈", exp: "中央アルプス、南アルプスも含まれます。"},
+                {q: "世界地図の投影法で角度が正しいものは？", choices: ["メルカトル図法", "モルワイデ図法", "グード図法", "正距方位図法"], correct: "メルカトル図法", exp: "航海で重宝されます。"},
+                {q: "日本に最も近い外国は？", choices: ["アメリカ", "中国", "韓国", "ロシア"], correct: "韓国", exp: "対馬海峡を挟んで隣接しています。"},
+                {q: "温帯で四季がある気候を何というか？", choices: ["地中海性気候", "温暖湿潤気候", "西岸海洋性気候", "サバナ気候"], correct: "温暖湿潤気候", exp: "日本の大部分が含まれます。"},
+                {q: "世界で2番目に面積が広い国は？", choices: ["カナダ", "アメリカ", "中国", "ブラジル"], correct: "カナダ", exp: "北アメリカ大陸の北部に位置します。"},
+                {q: "経度差15度で時差は何時間？", choices: ["1時間", "15分", "30分", "2時間"], correct: "1時間", exp: "地球は1日で360度回転するためです。"},
+                {q: "日本の領土の最東端は？", choices: ["南鳥島", "沖ノ鳥島", "択捉島", "与那国島"], correct: "南鳥島", exp: "東京都小笠原村に属します。"},
+                {q: "標高が上がるほど気温は？", choices: ["上がる", "下がる", "変わらない", "急激に上がる"], correct: "下がる", exp: "100mで約0.6度下がります。"}
             ],
             '2': [
-                {q: "世界で最も面積が広い国は？", choices: ["アメリカ", "中国", "ロシア", "カナダ", "ブラジル"], correct: "ロシア", exp: "世界最大の面積を誇ります。"},
-                {q: "産業革命が最初に起きた国は？", choices: ["フランス", "ドイツ", "アメリカ", "イギリス"], correct: "イギリス", exp: "18世紀後半、イギリスで最初に起こりました。"}
+                {q: "江戸幕府を開いたのは？", choices: ["徳川家康", "織田信長", "豊臣秀吉", "足利義満"], correct: "徳川家康", exp: "1603年に開かれました。"},
+                {q: "産業革命が最初に起きた国は？", choices: ["フランス", "ドイツ", "イギリス", "アメリカ"], correct: "イギリス", exp: "18世紀後半のことです。"},
+                {q: "大政奉還は何年？", choices: ["1867", "1868", "1870", "1875"], correct: "1867", exp: "江戸幕府が政権を返上しました。"},
+                {q: "江戸時代の身分制度は？", choices: ["士農工商", "四民平等", "貴族平民", "カースト制"], correct: "士農工商", exp: "厳格な身分区分でした。"},
+                {q: "アメリカ独立宣言は何年？", choices: ["1776", "1789", "1800", "1850"], correct: "1776", exp: "アメリカ合衆国が誕生しました。"},
+                {q: "フランス革命の年号は？", choices: ["1776", "1789", "1790", "1800"], correct: "1789", exp: "自由・平等・博愛が掲げられました。"},
+                {q: "鎖国を完成させた将軍は？", choices: ["家康", "家光", "綱吉", "吉宗"], correct: "家光", exp: "1639年のことです。"},
+                {q: "ペリーが来航したのは何年？", choices: ["1850", "1853", "1858", "1860"], correct: "1853", exp: "浦賀に来航しました。"},
+                {q: "日米修好通商条約を結んだ大老は？", choices: ["井伊直弼", "徳川慶喜", "松平定信", "勝海舟"], correct: "井伊直弼", exp: "安政の大獄も有名です。"},
+                {q: "江戸の商業の中心地は？", choices: ["江戸", "京都", "大阪", "長崎"], correct: "大阪", exp: "「天下の台所」と呼ばれました。"},
+                {q: "元寇で襲来した国は？", choices: ["清", "元", "明", "金"], correct: "元", exp: "フビライ・ハンの軍です。"},
+                {q: "応仁の乱のきっかけとなった将軍は？", choices: ["義満", "義政", "義教", "義経"], correct: "義政", exp: "室町時代の終わりを告げる乱です。"},
+                {q: "大航海時代を切り開いた国は？", choices: ["イギリス", "スペイン", "オランダ", "ロシア"], correct: "スペイン", exp: "コロンブスらの探検です。"},
+                {q: "キリスト教を日本に伝えたのは？", choices: ["ザビエル", "マテオ・リッチ", "ルター", "カルヴァン"], correct: "ザビエル", exp: "1549年に伝来しました。"},
+                {q: "江戸時代の農業技術進歩で重要な肥料は？", choices: ["干鰯", "化成肥料", "堆肥", "油粕"], correct: "干鰯", exp: "商品作物の栽培に使われました。"},
+                {q: "島原・天草一揆の時の幕府の対応は？", choices: ["和解", "武力鎮圧", "黙認", "交渉"], correct: "武力鎮圧", exp: "幕府権力の強化につながりました。"},
+                {q: "江戸幕府の最初の都市政策は？", choices: ["参勤交代", "五街道の整備", "新田開発", "貨幣統一"], correct: "五街道の整備", exp: "東海道などが整備されました。"},
+                {q: "浮世絵で有名な画家の1人は？", choices: ["葛飾北斎", "狩野永徳", "雪舟", "尾形光琳"], correct: "葛飾北斎", exp: "富嶽三十六景が有名です。"},
+                {q: "明治維新以前の日本の政治体制は？", choices: ["封建制", "民主制", "共和制", "独裁制"], correct: "封建制", exp: "武士が支配する社会でした。"},
+                {q: "18世紀に蒸気機関を改良したのは？", choices: ["ワット", "エジソン", "ベル", "ニュートン"], correct: "ワット", exp: "産業革命を加速させました。"}
             ],
             '3': [
-                {q: "明治維新が行われた年は？", choices: ["1867", "1868", "1870", "1875"], correct: "1868", exp: "慶応4年＝明治元年です。"},
-                {q: "第一次世界大戦が始まった年は？", choices: ["1910", "1912", "1914", "1916"], correct: "1914", exp: "1914年から1918年まで続きました。"}
+                {q: "明治維新の年は？", choices: ["1867", "1868", "1870", "1889"], correct: "1868", exp: "慶応4年＝明治元年です。"},
+                {q: "日本国憲法が施行されたのは？", choices: ["1945", "1946", "1947", "1952"], correct: "1947", exp: "5月3日に施行されました。"},
+                {q: "国会の主な役割は？", choices: ["立法", "行政", "司法", "軍事"], correct: "立法", exp: "国権の最高機関です。"},
+                {q: "国連本部はどこ？", choices: ["ジュネーブ", "ニューヨーク", "ロンドン", "パリ"], correct: "ニューヨーク", exp: "国際連合の拠点です。"},
+                {q: "三権分立の3つの機関は？", choices: ["国会・内閣・裁判所", "天皇・国会・内閣", "警察・軍・裁判所", "政党・マスコミ・国会"], correct: "国会・内閣・裁判所", exp: "権力の集中を防ぎます。"},
+                {q: "第一次世界大戦の開始は？", choices: ["1910", "1914", "1918", "1920"], correct: "1914", exp: "サラエボ事件がきっかけです。"},
+                {q: "第二次世界大戦の終結は？", choices: ["1941", "1945", "1947", "1950"], correct: "1945", exp: "8月15日に終戦を迎えました。"},
+                {q: "日本国憲法の平和主義は第何条？", choices: ["第8条", "第9条", "第10条", "第1条"], correct: "第9条", exp: "戦争放棄を規定しています。"},
+                {q: "衆議院の任期は？", choices: ["3年", "4年", "5年", "6年"], correct: "4年", exp: "解散があるため短くなることもあります。"},
+                {q: "裁判員制度の対象は？", choices: ["すべての裁判", "刑事裁判", "民事裁判", "家庭裁判"], correct: "刑事裁判", exp: "重大な刑事事件が対象です。"},
+                {q: "所得税は？", choices: ["直接税", "間接税", "消費税", "法人税"], correct: "直接税", exp: "所得に直接かかる税です。"},
+                {q: "GDPの意味は？", choices: ["国民総生産", "国内総生産", "国民総所得", "国内総所得"], correct: "国内総生産", exp: "国全体の経済活動の規模です。"},
+                {q: "参政権に含まれないものは？", choices: ["選挙権", "被選挙権", "国民審査権", "納税の義務"], correct: "納税の義務", exp: "納税は国民の三大義務です。"},
+                {q: "政党政治とは？", choices: ["政党が競い合う", "一党独裁", "王政", "軍事政権"], correct: "政党が競い合う", exp: "現代の民主主義の基本です。"},
+                {q: "地球温暖化の主な原因は？", choices: ["酸素", "二酸化炭素", "窒素", "ヘリウム"], correct: "二酸化炭素", exp: "温室効果ガスの一つです。"},
+                {q: "日清戦争は何年？", choices: ["1890", "1894", "1900", "1904"], correct: "1894", exp: "朝鮮半島を巡る争いです。"},
+                {q: "冷戦とは何と何の対立？", choices: ["米・ソ", "日・中", "英・独", "仏・伊"], correct: "米・ソ", exp: "資本主義と社会主義の対立です。"},
+                {q: "基本的人権を保障するのは？", choices: ["法律", "道徳", "憲法", "慣習"], correct: "憲法", exp: "最高法規です。"},
+                {q: "地方自治の本旨は？", choices: ["住民自治・団体自治", "中央集権", "独裁", "軍事"], correct: "住民自治・団体自治", exp: "地方自治の原則です。"},
+                {q: "市場価格は何によって決まる？", choices: ["政府", "企業", "需要と供給", "消費者"], correct: "需要と供給", exp: "市場メカニズムの基本です。"}
             ]
         };
 
-        function updateStats() {
-            const p = localStorage.getItem('totalPoints') || '0';
-            const t = parseInt(localStorage.getItem('totalAnswers') || 0);
-            const c = parseInt(localStorage.getItem('totalCorrect') || 0);
-            const a = t > 0 ? Math.round((c / t) * 100) : 0;
-            document.getElementById('pts-display').innerText = "ポイント: " + p;
-            document.getElementById('acc-display').innerText = "正答率: " + a + "%";
-        }
-        updateStats();
-
-        let currentQ, currentCount = 0, targetCount = 0;
-        function startQuiz() {
-            targetCount = document.getElementById('count-sel').value;
+        let currentQ, count = 0, targetGrade = '1';
+        function start() {
+            targetGrade = document.getElementById('grade-sel').value;
             document.getElementById('setup').style.display = 'none';
             document.getElementById('quiz').style.display = 'block';
-            showQ();
+            nextQ();
         }
-        function showQ() {
-            if(currentCount >= targetCount) { alert("終了！ホームに戻ります。"); location.href='index.html'; return; }
-            document.getElementById('next-area').innerHTML = '';
-            document.getElementById('explanation').style.display = 'none';
-            const grade = document.getElementById('grade-sel').value;
-            const qList = db[grade];
+        function nextQ() {
+            document.getElementById('feedback-area').style.display = 'none';
+            const qList = db[targetGrade];
             currentQ = qList[Math.floor(Math.random()*qList.length)];
             document.getElementById('q-text').innerText = currentQ.q;
             const area = document.getElementById('choices-area'); area.innerHTML = '';
             currentQ.choices.forEach(c => {
                 const b = document.createElement('button'); b.className = 'choice-btn'; b.innerText = c;
-                b.onclick = () => reveal(c);
-                area.appendChild(b);
+                b.onclick = () => check(c); area.appendChild(b);
             });
         }
-        function reveal(ans) {
-            const exp = document.getElementById('explanation');
-            exp.style.display = 'block';
-            exp.innerText = (ans === currentQ.correct ? "正解！" : "不正解...") + " 解説: " + currentQ.exp;
+        function check(ans) {
+            document.getElementById('feedback-area').style.display = 'block';
+            document.getElementById('choices-area').innerHTML = '';
+            const res = document.getElementById('res-text');
+            const exp = document.getElementById('exp-text');
             
             let t = parseInt(localStorage.getItem('totalAnswers')||0) + 1;
             localStorage.setItem('totalAnswers', t);
+
             if(ans === currentQ.correct) {
-                let p = parseInt(localStorage.getItem('totalPoints')||0) + 2;
-                localStorage.setItem('totalPoints', p);
-                let c = parseInt(localStorage.getItem('totalCorrect')||0) + 1;
-                localStorage.setItem('totalCorrect', c);
+                res.innerText = "正解"; res.style.color = "#10b981";
+                localStorage.setItem('totalPoints', parseInt(localStorage.getItem('totalPoints')||0)+2);
+                localStorage.setItem('totalCorrect', parseInt(localStorage.getItem('totalCorrect')||0)+1);
+            } else {
+                res.innerText = "不正解"; res.style.color = "#ef4444";
             }
-            updateStats();
-            document.getElementById('next-area').innerHTML = '<button id="next-btn" onclick="currentCount++; showQ();">次へ</button>';
+            exp.innerText = "解説: " + currentQ.exp;
         }
     </script>
 </body>
