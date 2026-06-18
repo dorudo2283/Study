@@ -58,7 +58,6 @@
         .btn.correct { background-color: var(--success-color) !important; color: white !important; border-color: var(--success-color) !important; }
         .btn.wrong { background-color: var(--danger-color) !important; color: white !important; border-color: var(--danger-color) !important; }
         
-        /* はみ出しを絶対に防ぐプライマリーボタンの修正 */
         .btn-primary { 
             background-color: var(--accent-color); color: white; border: none; text-align: center; 
             padding: 1.1rem; border-radius: 14px; font-size: 1.1rem; font-weight: 700; 
@@ -133,7 +132,7 @@
         // --- 社会 完全網羅解説版 100問 (地理・歴史) ---
         const quizDatabase = [
             // 【地理：地球の姿・世界の地域】
-            { q: "地球の表面積において、陸地と海洋の比率はおよそどれくらいか？", choices: ["3 : 7", "4 : 6", "5 : 5", "2 : 8"], a: "3 : 7", hint: "正確には陸地が約29%、海洋が約71%です。「海が7割」と覚えましょう。" },
+            { q: "地球の表面積において、陸地と海洋的比率はおよそどれくらいか？", choices: ["3 : 7", "4 : 6", "5 : 5", "2 : 8"], a: "3 : 7", hint: "正確には陸地が約29%、海洋が約71%です。「海が7割」と覚えましょう。" },
             { q: "世界で最も面積の広い大洋はどれか？", choices: ["太平洋", "大西洋", "インド洋", "北極海"], a: "太平洋", hint: "太平洋は地球の全表面積の約3分の1を占める、世界最大の海洋です。" },
             { q: "世界最大の面積を持つ、ユーラシア大陸の東側に広がる大陸はどれか？", choices: ["ユーラシア大陸", "アフリカ大陸", "北アメリカ大陸", "オーストラリア大陸"], a: "ユーラシア大陸", hint: "アジアとヨーロッパが合体した最大の大陸。日本はこの東端に位置します。" },
             { q: "世界で最も面積の小さい、地球上で唯一1つの国で占められている大陸は？", choices: ["オーストラリア大陸", "南極大陸", "南アメリカ大陸", "アフリカ大陸"], a: "オーストラリア大陸", hint: "オーストラリア大陸は最小の大陸ですが、日本の約20倍の広さがあります。" },
@@ -148,7 +147,7 @@
             { q: "赤道付近に見られる、一年中気温が高く雨が多い気候帯はどれか？", choices: ["熱帯", "温帯", "乾燥帯", "寒帯"], a: "熱帯", hint: "季節の変化がほとんどなく、毎日スコールと呼ばれる激しい雨が降る特徴があります。" },
             { q: "熱帯地域で見られる、1日の午後に降る猛烈な突風を伴う大雨を何というか？", choices: ["スコール", "タイフーン", "ハリケーン", "モンスーン"], a: "スコール", hint: "日本の夕立に似ていますが、より激しく、短時間で降り止むのが特徴です。" },
             { q: "砂漠や、樹木が育たないステップと呼ばれる草原が広がる気候帯はどれか？", choices: ["乾燥帯", "熱帯", "高山気候", "寒帯"], a: "乾燥帯", hint: "雨が極端に少なく、水分が蒸発してしまうため、植物が育ちにくい気候です。" },
-            { q: "砂漠において、地下水が湧き出て植物が育、人間が集落をつくる場所を何というか？", choices: ["オアシス", "ワジ", "ステップ", "サバナ"], a: "オアシス", hint: "乾燥帯での生活や農業の重要な拠点となります。" },
+            { q: "砂漠において、地下水が湧き出て植物が育ち、人間が集落をつくる場所を何というか？", choices: ["オアシス", "ワジ", "ステップ", "サバナ"], a: "オアシス", hint: "乾燥帯での生活や農業の重要な拠点となります。" },
             { q: "日本が属する、四季の変化がはっきりしていて、比較的温暖で過ごしやすい気候帯はどれか？", choices: ["温帯", "亜熱帯", "冷帯（亜寒帯）", "熱帯"], a: "温帯", hint: "人口が最も集中し、農業や産業が盛んな気候帯です。" },
             { q: "温帯のうち、ヨーロッパ西部のように、暖流と偏西風の影響で高緯度のわりに冬が温暖な気候は？", choices: ["西岸海洋性気候", "地中海性気候", "温暖湿潤気候", "ステップ気候"], a: "西岸海洋性気候", hint: "北大西洋海流（暖流）の上を吹く偏西風が、暖かい空気を大陸に運ぶためです。テスト超頻出！" },
             { q: "温帯のうち、イタリアなど地中海沿岸に見られる、夏に乾燥し冬に雨が降る気候を何というか？", choices: ["地中海性気候", "西岸海洋性気候", "温暖湿潤気候", "熱帯モンスーン気候"], a: "地中海性気候", hint: "夏に雨が降らないため、オリーブやオレンジ、ブドウなどの栽培が盛んです。" },
@@ -191,7 +190,7 @@
             // 【歴史：人類の誕生・古代文明】
             { q: "約700万年前にアフリカに現れた、最も古い人類の段階を何というか？", choices: ["猿人", "原人", "旧人", "新人"], a: "猿人", hint: "二足歩行を始めたことが最大の特徴。サヘラントロプス・チャデンシスやアウストラロピテクスが有名です。" },
             { q: "直立二足歩行をして火や言葉を使い始め、北京原人などが属する人類の段階は何か？", choices: ["原人", "猿人", "旧人", "新人"], a: "原人", hint: "火を使うことで、寒さをしのぎ、食べ物を調理して消化を良くしました。" },
-            { q: "現在生きている私たちの直接のご先祖様にあたる、クロマニョン人などの人類の段階は何か？", choices: ["新人（ホモ・サピエンス）", "旧人", "原人", "猿人"], a: "新人（ホモ・サピエンス）", hint: "約20万年前にアフリカで誕生し、世界中に広がっていきました。" },
+            { q: "暗在生きている私たちの直接のご先祖様にあたる、クロマニョン人などの人類の段階は何か？", choices: ["新人（ホモ・サピエンス）", "旧人", "原人", "猿人"], a: "新人（ホモ・サピエンス）", hint: "約20万年前にアフリカで誕生し、世界中に広がっていきました。" },
             { q: "人類が石を打ち欠いて作った、鋭い利点を持つだけの道具を何というか？", choices: ["打製石器", "磨製石器", "青銅器", "鉄器"], a: "打製石器", hint: "狩りや肉の切り分けに使われました。これを使っていた時代を「旧石器時代」と呼びます。" },
             { q: "石器時代後半に現れた、石を磨いて形を整えた、より使い勝手の良い石器は何か？", choices: ["磨製石器", "打製石器", "石斧", "鉄器"], a: "磨製石器", hint: "農耕や牧畜が始まり、木を切り倒したり加工したりするために開発されました（新石器時代）。" },
             { q: "エジプト文明が栄えた、「エジプトはナイル川の賜物」と言わしめた大河はどこか？", choices: ["ナイル川", "チグリス川", "インダス川", "黄河"], a: "ナイル川", hint: "定期的な氾濫が周囲の土地に肥沃な土壌をもたらしたため、農業が発達し巨大な文明が生まれました。" },
@@ -208,7 +207,7 @@
             { q: "縄文時代に作られた、魔除けや豊かな実りを祈るために使われたとされる、女性をかたどった土製品は何か？", choices: ["土偶", "埴輪", "石包丁", "銅鐸"], a: "土偶", hint: "古墳時代の「埴輪（はにわ）」と非常によくひっかけ問題にされるので注意！縄文は「土偶（どぐう）」です。" },
             { q: "紀元前4世紀頃から始まり、大陸から稲作と青銅器・鉄器の技術が伝わって始まった時代は何か？", choices: ["弥生時代", "縄文時代", "古墳時代", "飛鳥時代"], a: "弥生時代", hint: "薄手で硬く、赤褐色の弥生土器が使われました。米作りによって貧富の差や小国が誕生します。" },
             { q: "弥生時代に、収穫した米の穂を摘み取るために使われた、穴に紐を通して使う石の道具は何か？", choices: ["石包丁", "打製石器", "磨製石斧", "鉄鎌"], a: "石包丁", hint: "米の「実（穂）」の部分だけを1つずつ摘み取るための道具です。のちに鉄製の鎌へと変わります。" },
-            { q: "弥生時代に、ネズミや湿気を防ぎ、収穫した米を安全に保管するために作られた高床の建物を何というか？", choices: ["高床倉庫", "竪穴住居", "寝殿造", "物見やぐら"], a: "高床倉庫", hint: "床を高くすることで風通しを良くし、柱にはネズミの侵入を防ぎ「ネズミ返し」がついていました。" },
+            { q: "弥生時代に、ネズミや湿気を防ぎ、収穫した米を安全に保管するために作られた高床の建物を何というか？", choices: ["高床倉庫", "竪穴住居", "寝殿造", "物見やぐら"], a: "高床倉庫", hint: "床を高くすることで風通しを良くし、柱にはネズミの侵入を防ぐ「ネズミ返し」がついていました。" },
             { q: "佐賀県で発見された、弥生時代の巨大な環濠集落（周りに堀をめぐらせた集落）の遺跡はどこか？", choices: ["吉野ヶ里遺跡", "三内丸山遺跡", "登呂遺跡", "板付遺跡"], a: "吉野ヶ里遺跡", hint: "物見やぐらや防壁があり、他国との戦いに備えていた様子がわかる弥生時代最大級の遺跡です。" },
             { q: "青森県で発見された、縄文時代の大規模な定住集落の遺跡はどこか？", choices: ["三内丸山遺跡", "吉野ヶ里遺跡", "登呂遺跡", "岩宿遺跡"], a: "三内丸山遺跡", hint: "巨大な栗の木の柱の跡などが見つかり、縄文時代のイメージを覆す高度な社会があったことが判明しました。" },
             { q: "『漢書』地理志に記述がある、紀元前1世紀頃の日本（倭）の状況として、国はいくつくらいに分かれていたか？", choices: ["100余りの国", "30余りの国", "1つの大国", "邪馬台国のみ"], a: "100余りの国", hint: "「倭人が定期的に楽浪郡（朝鮮半島）に使者を送ってきた」と書かれています。" },
@@ -243,8 +242,9 @@
             { q: "894年、菅原道真の提案により、唐の衰退を理由に停止された、中国への公式使節の派遣制度は何か？", choices: ["遣唐使の廃止", "遣隋使の停止", "日宋貿易の禁止", "鎖国令"], a: "遣唐使の廃止", hint: "「白紙（894）に戻そう遣唐使」です。これをきっかけに、日本の風土に合わせた「国風文化」が発達します。" },
             { q: "遣唐使の廃止後、日本の気候や好みに合わせて発達した、貴族を中心とする日本独自の文化を何というか？", choices: ["国風文化", "天平文化", "飛鳥文化", "弘仁・貞観文化"], a: "国風文化", hint: "漢字を崩して作られた「かな文字（平仮名・片仮名）」が誕生し、文学が大発展しました。" },
             { q: "平安時代、紫式部によって書かれた、宮廷の恋愛や人間模様を描いた世界最古級の長編小説は何か？", choices: ["源氏物語", "枕草子", "竹取物語", "伊勢物語"], a: "源氏物語", hint: "主人公・光源氏（ひかるげんじ）の一生を描いた、国風文化を代表する傑作です。" },
-            { q: "平安時代、清少納言によって書かれた、「春はあけぼの…」の文頭で有名な随筆（エッセイ）は何か？", choices: ["枕草子", "源氏物語", "方丈記", "徒然草"], a: "枕草子", hint: "宮廷生活の中で感じた鋭い自然観察やユーアが、かな文字で綴られています。" },
+            { q: "平安時代、清少納言によって書かれた、「春はあけぼの…」の文頭で有名な随筆（エッセイ）は何か？", choices: ["枕草子", "源氏物語", "方丈記", "徒然草"], a: "枕草子", hint: "宮廷生活の中で感じた鋭い自然観察やユーモアが、かな文字で綴られています。" },
             { q: "地方の治安悪化に伴い、自分の領地（荘園）を自衛するために、武器（弓矢や刀）を持って武装し始めた人々を何というか？", choices: ["武士", "地頭", "守護", "御家人"], a: "武士", hint: "最初は小規模な警備集団でしたが、やがて平氏や源氏といった巨大な武士団へと成長し、歴史を動かしていきます。" },
+
             // === テスト写真から厳選追加された20問 (古代文明・宗教・時差・日本古代) ===
             { q: "インダス川流域を中心に栄え、整備された道路や水路、モヘンジョ・ダロなどの都市遺跡を持つ古代文明は何か？", choices: ["インダス文明", "エジプト文明", "メソポタミア文明", "中国文明"], a: "インダス文明", hint: "紀元前2500年ごろにインドで栄えた文明です。のちに身分制度である「カースト制度」が作られました。" },
             { q: "エジプト文明を代表する巨大建造物であり、王の墓とも言われる右の資料Xの建造物は何か？", choices: ["ピラミッド", "パルテノン神殿", "コロッセオ", "万里の長城"], a: "ピラミッド", hint: "ナイル川流域のエジプト文明で作られた、巨石を積み上げた建造物です。" },
@@ -327,43 +327,43 @@
                 const button = document.createElement('button');
                 button.className = 'btn';
                 button.innerText = choice;
-                button.onclick = () => checkAnswer(button, choice, current.a, current.hint);
+                button.onclick = () => selectChoice(button, choice);
                 choicesBox.appendChild(button);
             });
         }
 
-        function checkAnswer(selectedButton, selectedChoice, correctAnswer, hintText) {
-            if (hasAnswered) return; 
+        function selectChoice(selectedButton, choice) {
+            if (hasAnswered) return;
             hasAnswered = true;
 
-            const buttons = document.getElementById('choices-box').getElementsByClassName('btn');
-            const judgeTextEl = document.getElementById('judge-text');
+            const current = currentQuestions[currentIndex];
+            const choicesBox = document.getElementById('choices-box');
+            const buttons = choicesBox.getElementsByClassName('btn');
 
-            for (let btn of buttons) {
-                btn.disabled = true;
-                if (btn.innerText === correctAnswer) {
-                    btn.classList.add('correct');
+            // すべてのボタンを選択不可にする
+            for (let button of buttons) {
+                button.disabled = true;
+                if (button.innerText === current.a) {
+                    button.classList.add('correct'); // 正解のボタンを緑色にする
                 }
             }
 
-            if (selectedChoice === correctAnswer) {
+            const judgeText = document.getElementById('judge-text');
+            if (choice === current.a) {
                 correctAnswers++;
-                judgeTextEl.innerText = "⭕ 正解！ (+2pt)";
-                judgeTextEl.classList.add('is-correct');
-                
-                let totalPoints = parseInt(localStorage.getItem('userPoints') || 0);
-                totalPoints += 2;
-                localStorage.setItem('userPoints', totalPoints);
-                document.getElementById('bar-points').innerText = `${totalPoints} pt`;
+                judgeText.innerText = "正解！";
+                judgeText.className = "judge-display is-correct";
             } else {
-                selectedButton.classList.add('wrong');
-                judgeTextEl.innerText = "❌ 不正解...";
-                judgeTextEl.classList.add('is-wrong');
+                selectedButton.classList.add('wrong'); // 間違えたボタンを赤色にする
+                judgeText.innerText = "不正解…";
+                judgeText.className = "judge-display is-wrong";
             }
 
-            document.getElementById('explain-text').innerText = hintText;
+            // 解説の表示
+            document.getElementById('explain-text').innerText = current.hint;
             document.getElementById('explain-area').classList.add('visible');
 
+            // 「次へ」ボタンの有効化
             document.getElementById('nav-next-btn').classList.add('visible');
         }
 
@@ -372,30 +372,31 @@
             if (currentIndex < currentQuestions.length) {
                 showQuestion();
             } else {
-                clearInterval(timerInterval);
-                const totalTimeSec = Math.floor((Date.now() - startTime) / 1000);
-
-                saveStats(currentQuestions.length, correctAnswers);
-                
-                document.getElementById('result-summary').innerText = `解いた問題数：${currentQuestions.length}問`;
-                document.getElementById('correct-count').innerText = correctAnswers;
-                document.getElementById('total-count').innerText = currentQuestions.length;
-                document.getElementById('result-time').innerText = `かかった時間: ${totalTimeSec} 秒`;
-                
-                document.getElementById('nav-next-btn').classList.remove('visible');
-                changeView('step-result');
+                endQuiz();
             }
         }
 
-        function saveStats(solvedCount, correctCount) {
-            let currentTotal = parseInt(localStorage.getItem('social_solved') || 0);
-            localStorage.setItem('social_solved', currentTotal + solvedCount);
+        function endQuiz() {
+            clearInterval(timerInterval);
+            changeView('step-result');
 
-            let accuracy = Math.round((correctCount / solvedCount) * 100);
-            let currentBest = parseInt(localStorage.getItem('social_bestAccuracy') || 0);
-            if (accuracy > currentBest) {
-                localStorage.setItem('social_bestAccuracy', accuracy);
-            }
+            // タイム計上
+            const elapsedTime = Math.floor((Date.now() - startTime) / 1000);
+            const minutes = String(Math.floor(elapsedTime / 60)).padStart(2, '0');
+            const seconds = String(elapsedTime % 60).padStart(2, '0');
+
+            // 結果テキストへの反映
+            document.getElementById('result-summary').innerText = `全 ${currentQuestions.length} 問中、あなたの正解数は以下の通りです。`;
+            document.getElementById('correct-count').innerText = correctAnswers;
+            document.getElementById('total-count').innerText = currentQuestions.length;
+            document.getElementById('result-time').innerText = `かかった時間: ${minutes}分${seconds}秒`;
+
+            // ポイント計算とローカルストレージの更新（1問正解につき10pt加算）
+            const earnedPoints = correctAnswers * 10;
+            let totalPoints = parseInt(localStorage.getItem('userPoints') || 0);
+            totalPoints += earnedPoints;
+            localStorage.setItem('userPoints', totalPoints);
+            document.getElementById('bar-points').innerText = `${totalPoints} pt`;
         }
     </script>
 </body>
