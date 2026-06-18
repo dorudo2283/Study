@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="ja">
 <head>
@@ -5,45 +6,64 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>一問一答 - 社会</title>
     <style>
-        body { margin: 0; padding: 60px 10px 20px; font-family: sans-serif; background: #f1f5f9; box-sizing: border-box; }
-        header { position: fixed; top: 0; left:0; width: 100%; height: 50px; background: #1e293b; color: white; display: flex; align-items: center; justify-content: space-between; padding: 0 15px; box-sizing: border-box; z-index: 100; }
-        .box { background: white; padding: 20px; border-radius: 12px; margin-bottom: 20px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
-        .choice-btn { display: block; width: 100%; padding: 15px; margin: 10px 0; background: white; border: 2px solid #2563eb; border-radius: 8px; font-size: 1.1rem; }
-        #next-btn { background: #22c55e; color: white; border: none; padding: 8px 15px; border-radius: 4px; font-weight: bold; cursor: pointer; }
-        #explanation { margin-top: 15px; padding: 15px; background: #f0fdf4; border-left: 4px solid #22c55e; display: none; }
+        body { margin: 0; padding-top: 80px; font-family: sans-serif; background: #f1f5f9; box-sizing: border-box; }
+        header { position: fixed; top: 0; width: 100%; height: 70px; background: #1e293b; color: white; display: flex; align-items: center; justify-content: space-between; padding: 0 20px; box-sizing: border-box; z-index: 100; box-shadow: 0 2px 5px rgba(0,0,0,0.2); }
+        .header-stats { text-align: right; font-size: 0.85rem; }
+        .box { background: white; padding: 25px; border-radius: 16px; margin: 0 15px 20px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
+        .choice-btn { display: block; width: 100%; padding: 18px; margin: 12px 0; background: white; border: 2px solid #2563eb; border-radius: 12px; font-size: 1.1rem; cursor: pointer; }
+        #next-btn { background: #22c55e; color: white; border: none; padding: 10px 20px; border-radius: 8px; font-weight: bold; cursor: pointer; }
+        #explanation { margin-top: 20px; padding: 20px; background: #f0fdf4; border-left: 6px solid #22c55e; display: none; border-radius: 4px; }
     </style>
 </head>
 <body>
     <header>
-        <div>一問一答勉強WEBサイト</div>
-        <div>
-            <span id="pts" style="margin-right:10px;">Pts: 0</span>
-            <a href="index.html" style="color:white; margin-right:10px;">ホーム</a>
-            <span id="next-area"></span>
+        <div style="font-weight:bold;">一問一答勉強WEBサイト</div>
+        <div class="header-stats">
+            <span id="pts-display">ポイント: 0</span> | <span id="acc-display">正答率: 0%</span><br>
+            <a href="index.html" style="color:#bfdbfe;">ホーム</a> <span id="next-area"></span>
         </div>
     </header>
 
     <div id="setup" class="box">
         <h3>社会 学習設定</h3>
-        学年: <select id="grade-sel"><option value="1">中1</option><option value="2">中2</option><option value="3">中3</option></select>
-        問題数: <select id="count-sel"><option value="5">5問</option><option value="10">10問</option></select>
-        <button onclick="startQuiz()" style="width:100%; padding:15px; margin-top:10px; background:#2563eb; color:white; border:none; border-radius:8px;">開始</button>
+        学年: <select id="grade-sel" style="width:100%; padding:10px; margin:10px 0;"><option value="1">中1</option><option value="2">中2</option><option value="3">中3</option></select>
+        問題数: <select id="count-sel" style="width:100%; padding:10px; margin:10px 0;"><option value="5">5問</option><option value="10">10問</option></select>
+        <button onclick="startQuiz()" style="width:100%; padding:15px; margin-top:10px; background:#2563eb; color:white; border:none; border-radius:12px; font-weight:bold;">学習開始</button>
     </div>
 
     <div id="quiz" class="box" style="display:none;">
-        <div id="q-text" style="font-weight:bold; font-size:1.2rem; margin-bottom:15px;"></div>
+        <div id="q-text" style="font-weight:bold; font-size:1.3rem; margin-bottom:20px;"></div>
         <div id="choices-area"></div>
         <div id="explanation"></div>
     </div>
 
     <script>
+        // 問題データをここに追加してください
         const db = {
-            '1': [{q: "日本の首都は？", choices: ["大阪", "京都", "東京", "福岡", "札幌"], correct: "東京", exp: "日本の中心地です。"}],
-            '2': [{q: "世界で一番面積が広い国は？", choices: ["アメリカ", "中国", "ロシア", "カナダ", "ブラジル"], correct: "ロシア", exp: "ユーラシア大陸にまたがる広大な国です。"}],
-            '3': [{q: "明治維新は西暦何年？", choices: ["1867", "1868", "1870", "1875", "1880"], correct: "1868", exp: "慶応4年＝明治元年です。"}]
+            '1': [
+                {q: "日本の首都は？", choices: ["大阪", "京都", "東京", "福岡", "札幌"], correct: "東京", exp: "日本の政治・経済の中心地です。"},
+                {q: "ユーラシア大陸の西側にある地域は？", choices: ["アフリカ", "ヨーロッパ", "アメリカ", "オーストラリア"], correct: "ヨーロッパ", exp: "ユーラシア大陸の西側はヨーロッパです。"}
+            ],
+            '2': [
+                {q: "世界で最も面積が広い国は？", choices: ["アメリカ", "中国", "ロシア", "カナダ", "ブラジル"], correct: "ロシア", exp: "世界最大の面積を誇ります。"},
+                {q: "産業革命が最初に起きた国は？", choices: ["フランス", "ドイツ", "アメリカ", "イギリス"], correct: "イギリス", exp: "18世紀後半、イギリスで最初に起こりました。"}
+            ],
+            '3': [
+                {q: "明治維新が行われた年は？", choices: ["1867", "1868", "1870", "1875"], correct: "1868", exp: "慶応4年＝明治元年です。"},
+                {q: "第一次世界大戦が始まった年は？", choices: ["1910", "1912", "1914", "1916"], correct: "1914", exp: "1914年から1918年まで続きました。"}
+            ]
         };
 
-        // 以下ロジックはmath.htmlと同じ
+        function updateStats() {
+            const p = localStorage.getItem('totalPoints') || '0';
+            const t = parseInt(localStorage.getItem('totalAnswers') || 0);
+            const c = parseInt(localStorage.getItem('totalCorrect') || 0);
+            const a = t > 0 ? Math.round((c / t) * 100) : 0;
+            document.getElementById('pts-display').innerText = "ポイント: " + p;
+            document.getElementById('acc-display').innerText = "正答率: " + a + "%";
+        }
+        updateStats();
+
         let currentQ, currentCount = 0, targetCount = 0;
         function startQuiz() {
             targetCount = document.getElementById('count-sel').value;
@@ -52,11 +72,12 @@
             showQ();
         }
         function showQ() {
-            if(currentCount >= targetCount) { alert("終了！"); location.href='index.html'; return; }
+            if(currentCount >= targetCount) { alert("終了！ホームに戻ります。"); location.href='index.html'; return; }
             document.getElementById('next-area').innerHTML = '';
             document.getElementById('explanation').style.display = 'none';
             const grade = document.getElementById('grade-sel').value;
-            currentQ = db[grade][Math.floor(Math.random()*db[grade].length)];
+            const qList = db[grade];
+            currentQ = qList[Math.floor(Math.random()*qList.length)];
             document.getElementById('q-text').innerText = currentQ.q;
             const area = document.getElementById('choices-area'); area.innerHTML = '';
             currentQ.choices.forEach(c => {
@@ -69,11 +90,16 @@
             const exp = document.getElementById('explanation');
             exp.style.display = 'block';
             exp.innerText = (ans === currentQ.correct ? "正解！" : "不正解...") + " 解説: " + currentQ.exp;
+            
+            let t = parseInt(localStorage.getItem('totalAnswers')||0) + 1;
+            localStorage.setItem('totalAnswers', t);
             if(ans === currentQ.correct) {
                 let p = parseInt(localStorage.getItem('totalPoints')||0) + 2;
                 localStorage.setItem('totalPoints', p);
-                document.getElementById('pts').innerText = "Pts: " + p;
+                let c = parseInt(localStorage.getItem('totalCorrect')||0) + 1;
+                localStorage.setItem('totalCorrect', c);
             }
+            updateStats();
             document.getElementById('next-area').innerHTML = '<button id="next-btn" onclick="currentCount++; showQ();">次へ</button>';
         }
     </script>
