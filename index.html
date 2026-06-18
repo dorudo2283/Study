@@ -298,7 +298,65 @@
 
 </main>
 
-<script src="script.js"></script>
+<script src="script.js">
+// ===== ポイント =====
+let point = Number(localStorage.getItem("point")) || 0;
+document.getElementById("point").textContent = point;
+
+// ===== 教科データ =====
+const subjects = [
+    "math",
+    "social",
+    "japanese",
+    "science"
+];
+
+let totalCorrect = 0;
+let totalAnswered = 0;
+
+// ===== 教科別表示 =====
+subjects.forEach(subject => {
+
+    const correct = Number(localStorage.getItem(subject + "Correct")) || 0;
+    const answered = Number(localStorage.getItem(subject + "Answered")) || 0;
+
+    totalCorrect += correct;
+    totalAnswered += answered;
+
+    const rate = answered === 0
+        ? 0
+        : Math.round(correct / answered * 100);
+
+    document.getElementById(subject + "Rate").textContent = rate + "%";
+    document.getElementById(subject + "Count").textContent = answered + "問";
+
+});
+
+// ===== 全体表示 =====
+const totalRate = totalAnswered === 0
+    ? 0
+    : Math.round(totalCorrect / totalAnswered * 100);
+
+document.getElementById("accuracy").textContent = totalRate + "%";
+document.getElementById("answers").textContent = totalAnswered + "問";
+
+// ===== 初期データ作成 =====
+if(localStorage.getItem("initialized") === null){
+
+    localStorage.setItem("initialized","true");
+
+    localStorage.setItem("point",0);
+
+    subjects.forEach(subject=>{
+
+        localStorage.setItem(subject + "Correct",0);
+        localStorage.setItem(subject + "Answered",0);
+
+    });
+
+}
+
+</script>
 
 </body>
 </html>
