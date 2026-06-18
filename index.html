@@ -2,50 +2,40 @@
 <html lang="ja">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>一問一答 - 学習管理システム</title>
+    <title>一問一答 勉強WEBサイト</title>
     <style>
         body { font-family: sans-serif; background: #f1f5f9; margin: 0; padding: 20px; }
-        header { text-align: center; font-size: 1.2rem; font-weight: bold; margin-bottom: 20px; color: #1e293b; }
-        .dashboard { background: #1e293b; color: white; padding: 20px; border-radius: 16px; margin-bottom: 20px; }
-        .stat-val { font-size: 2rem; font-weight: bold; display: block; }
-        .subject-card { background: white; padding: 20px; border-radius: 12px; margin-bottom: 15px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
-        .btn-start { display: block; width: 100%; padding: 15px; background: #2563eb; color: white; text-align: center; text-decoration: none; border-radius: 8px; font-weight: bold; margin-top: 10px; }
+        .dashboard { background: #1e293b; color: white; padding: 20px; border-radius: 12px; margin-bottom: 20px; }
+        .stat-val { font-size: 1.5rem; font-weight: bold; }
+        .card { background: white; padding: 20px; border-radius: 12px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        select, button { width: 100%; padding: 15px; margin-top: 10px; border-radius: 8px; border: 1px solid #ccc; font-size: 1rem; }
+        button { background: #2563eb; color: white; border: none; cursor: pointer; }
     </style>
 </head>
 <body>
-    <header>一問一答 勉強WEBサイト</header>
-
     <div class="dashboard">
         <div>総回答数: <span id="total-answers" class="stat-val">0</span></div>
         <div>総合ポイント: <span id="total-points" class="stat-val">0</span> pt</div>
     </div>
 
-    <div id="subjects-container">
-        <div class="subject-card">
-            <h3>数学</h3>
-            <p>正答率: <span id="math-rate">0</span>%</p>
-            <select id="grade-math">
-                <option value="1">中学1年</option>
-                <option value="2">中学2年</option>
-                <option value="3">中学3年</option>
-            </select>
-            <a href="study.html?sub=math" class="btn-start" onclick="saveSelection('math')">学習開始</a>
-        </div>
+    <div class="card">
+        <h3>数学・学年選択</h3>
+        <select id="grade-select">
+            <option value="1">中学1年</option>
+            <option value="2">中学2年</option>
+            <option value="3">中学3年</option>
+        </select>
+        <button onclick="start()">学習開始</button>
     </div>
 
     <script>
-        // データの読み込みと表示
-        document.getElementById('total-points').innerText = localStorage.getItem('totalPoints') || 0;
-        document.getElementById('total-answers').innerText = localStorage.getItem('totalAnswers') || 0;
-        
-        // 正答率の計算と表示
-        const mathTotal = parseInt(localStorage.getItem('mathTotal')) || 0;
-        const mathCorrect = parseInt(localStorage.getItem('mathCorrect')) || 0;
-        document.getElementById('math-rate').innerText = mathTotal > 0 ? Math.round((mathCorrect / mathTotal) * 100) : 0;
+        document.getElementById('total-points').innerText = localStorage.getItem('totalPoints') || '0';
+        document.getElementById('total-answers').innerText = localStorage.getItem('totalAnswers') || '0';
 
-        function saveSelection(sub) {
-            localStorage.setItem('targetGrade', document.getElementById(`grade-${sub}`).value);
+        function start() {
+            const grade = document.getElementById('grade-select').value;
+            localStorage.setItem('targetGrade', grade);
+            window.location.href = 'math.html';
         }
     </script>
 </body>
