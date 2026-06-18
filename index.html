@@ -11,10 +11,11 @@ body{background:#f4f7fb;color:#222}
 
 /* NAV */
 .navbar{
-width:100%;height:60px;background:#1e88e5;color:#fff;
-display:flex;justify-content:space-between;align-items:center;
-padding:0 20px;position:sticky;top:0;
-box-shadow:0 5px 15px rgba(0,0,0,.15);
+  width:100%;height:60px;background:#1e88e5;color:#fff;
+  display:flex;justify-content:space-between;align-items:center;
+  padding:0 20px;position:sticky;top:0;
+  box-shadow:0 5px 15px rgba(0,0,0,.15);
+  z-index: 100;
 }
 .logo{font-weight:bold;font-size:20px}
 nav{display:flex;align-items:center;gap:10px}
@@ -28,43 +29,46 @@ nav a{color:#fff;text-decoration:none;font-weight:bold}
 
 /* GRID */
 .stats,.subjects,.records{
-width:90%;max-width:900px;margin:15px auto;
-display:grid;grid-template-columns:repeat(2,1fr);
-gap:10px;
+  width:90%;max-width:900px;margin:15px auto;
+  display:grid;grid-template-columns:repeat(2,1fr);
+  gap:15px;
 }
 
 /* CARD */
 .card,.subject,.record{
-background:#fff;border-radius:12px;
-padding:12px;
-box-shadow:0 4px 12px rgba(0,0,0,.06);
+  background:#fff;border-radius:12px;
+  padding:15px;
+  box-shadow:0 4px 12px rgba(0,0,0,.06);
 }
 
 /* TEXT */
-.card p{font-size:24px;color:#1e88e5;font-weight:bold}
-.title{text-align:center;margin:15px 0;font-size:20px}
+.card{text-align:center;}
+.card h2{font-size:16px;color:#555;margin-bottom:5px;}
+.card p{font-size:28px;color:#1e88e5;font-weight:bold}
+.title{text-align:center;margin:25px 0 10px 0;font-size:20px;position:relative;}
 
 /* SUBJECT */
-.subject{text-decoration:none;color:#222;text-align:center;transition:.2s}
-.subject:hover{transform:translateY(-3px)}
-.subject h2{font-size:18px}
+.subject{text-decoration:none;color:#222;text-align:center;transition:.2s;display:block;}
+.subject:hover{transform:translateY(-3px);box-shadow:0 6px 16px rgba(0,0,0,.1);}
+.subject h2{font-size:18px;margin:5px 0;}
 .subject p{font-size:12px;color:#666}
-.icon{font-size:30px}
+.icon{font-size:35px}
 
 /* RECORD */
-.record h3{text-align:center;font-size:14px;margin-bottom:8px}
+.record h3{text-align:center;font-size:16px;margin-bottom:10px;padding-bottom:5px;border-bottom:1px solid #eee;}
 .info{display:flex;justify-content:space-around;text-align:center}
-.info b{color:#1e88e5}
+.info span{font-size:12px;color:#666;display:block;margin-bottom:3px;}
+.info b{color:#1e88e5;font-size:18px;}
 
-/* COLORS */
+/* COLORS (教科ごとのテーマカラー) */
 .math{border-top:4px solid #42a5f5}
 .social{border-top:4px solid #66bb6a}
 .japanese{border-top:4px solid #ef5350}
 .science{border-top:4px solid #ffca28}
 
-/* MOBILE */
+/* MOBILE RESPONSIVE */
 @media(max-width:600px){
-.stats,.subjects,.records{grid-template-columns:1fr}
+  .stats,.subjects,.records{grid-template-columns:1fr}
 }
 </style>
 </head>
@@ -72,101 +76,105 @@ box-shadow:0 4px 12px rgba(0,0,0,.06);
 <body>
 
 <header class="navbar">
-<div class="logo">📚 一問一答</div>
-<nav>
-<a href="index.html">ホーム</a>
-<div class="pointBox">⭐ <span id="point">0</span>P</div>
-</nav>
+  <div class="logo">📚 一問一答マスター</div>
+  <nav>
+    <a href="index.html">ホーム</a>
+    <div class="pointBox">⭐ <span id="point">0</span>P</div>
+  </nav>
 </header>
 
 <section class="hero">
-<h1>一問一答マスター</h1>
-<p>ゲーム感覚で勉強</p>
+  <h1>一問一答マスター</h1>
+  <p>ゲーム感覚で知識を定着させよう</p>
 </section>
 
 <section class="stats">
-<div class="card"><h2>正答率</h2><p id="accuracy">0%</p></div>
-<div class="card"><h2>回答数</h2><p id="answers">0</p></div>
+  <div class="card"><h2>全体の正答率</h2><p id="accuracy">0%</p></div>
+  <div class="card"><h2>総回答数</h2><p id="answers">0</p></div>
 </section>
 
-<h2 class="title">教科</h2>
+<h2 class="title">教科を選択して挑戦</h2>
 
 <section class="subjects">
-<a class="subject math" href="math.html"><div class="icon">📐</div><h2>数学</h2><p>中1-中3</p></a>
-<a class="subject social" href="social.html"><div class="icon">🌏</div><h2>社会</h2><p>中1-中3</p></a>
-<a class="subject japanese" href="japanese.html"><div class="icon">📖</div><h2>国語</h2><p>中1-中3</p></a>
-<a class="subject science" href="science.html"><div class="icon">🧪</div><h2>理科</h2><p>中1-中3</p></a>
+  <a class="subject math" href="math.html"><div class="icon">📐</div><h2>数学</h2><p>中1 - 中3</p></a>
+  <a class="subject social" href="social.html"><div class="icon">🌏</div><h2>社会</h2><p>中1 - 中3</p></a>
+  <a class="subject japanese" href="japanese.html"><div class="icon">📖</div><h2>国語</h2><p>中1 - 中3</p></a>
+  <a class="subject science" href="science.html"><div class="icon">🧪</div><h2>理科</h2><p>中1 - 中3</p></a>
 </section>
 
-<h2 class="title">教科別</h2>
+<h2 class="title">現在の学習記録</h2>
 
 <section class="records">
+  <div class="record">
+    <h3>数学の記録</h3>
+    <div class="info">
+      <div><span>正答率</span><b id="mathRate">0%</b></div>
+      <div><span>回答数</span><b id="mathCount">0</b></div>
+    </div>
+  </div>
 
-<div class="record">
-<h3>数学</h3>
-<div class="info">
-<div><span>正答率</span><b id="mathRate">0%</b></div>
-<div><span>回答</span><b id="mathCount">0</b></div>
-</div>
-</div>
+  <div class="record">
+    <h3>社会の記録</h3>
+    <div class="info">
+      <div><span>正答率</span><b id="socialRate">0%</b></div>
+      <div><span>回答数</span><b id="socialCount">0</b></div>
+    </div>
+  </div>
 
-<div class="record">
-<h3>社会</h3>
-<div class="info">
-<div><span>正答率</span><b id="socialRate">0%</b></div>
-<div><span>回答</span><b id="socialCount">0</b></div>
-</div>
-</div>
+  <div class="record">
+    <h3>国語の記録</h3>
+    <div class="info">
+      <div><span>正答率</span><b id="japaneseRate">0%</b></div>
+      <div><span>回答数</span><b id="japaneseCount">0</b></div>
+    </div>
+  </div>
 
-<div class="record">
-<h3>国語</h3>
-<div class="info">
-<div><span>正答率</span><b id="japaneseRate">0%</b></div>
-<div><span>回答</span><b id="japaneseCount">0</b></div>
-</div>
-</div>
-
-<div class="record">
-<h3>理科</h3>
-<div class="info">
-<div><span>正答率</span><b id="scienceRate">0%</b></div>
-<div><span>回答</span><b id="scienceCount">0</b></div>
-</div>
-</div>
-
+  <div class="record">
+    <h3>理科の記録</h3>
+    <div class="info">
+      <div><span>正答率</span><b id="scienceRate">0%</b></div>
+      <div><span>回答数</span><b id="scienceCount">0</b></div>
+    </div>
+  </div>
 </section>
 
 <script>
-const subjects=["math","social","japanese","science"];
+const subjects = ["math", "social", "japanese", "science"];
 
-if(!localStorage.getItem("init")){
-localStorage.setItem("init","1");
-localStorage.setItem("point","0");
-subjects.forEach(s=>{
-localStorage.setItem(s+"Correct","0");
-localStorage.setItem(s+"Answered","0");
-});
+// --- 1. ローカルストレージの初期化化システム ---
+if (!localStorage.getItem("init")) {
+  localStorage.setItem("init", "1");
+  localStorage.setItem("point", "0");
+  subjects.forEach(s => {
+    localStorage.setItem(s + "Correct", "0");
+    localStorage.setItem(s + "Answered", "0");
+  });
 }
 
-let point=+localStorage.getItem("point");
-document.getElementById("point").textContent=point;
+// --- 2. 累計ポイントの描画 ---
+let point = Number(localStorage.getItem("point")) || 0;
+document.getElementById("point").textContent = point;
 
-let totalC=0,totalA=0;
+let totalC = 0;
+let totalA = 0;
 
-subjects.forEach(s=>{
-let c=+localStorage.getItem(s+"Correct");
-let a=+localStorage.getItem(s+"Answered");
+// --- 3. 各教科のデータ集計と個別反映 ---
+subjects.forEach(s => {
+  let c = Number(localStorage.getItem(s + "Correct")) || 0;
+  let a = Number(localStorage.getItem(s + "Answered")) || 0;
 
-totalC+=c;totalA+=a;
+  totalC += c;
+  totalA += a;
 
-let rate=a?Math.round(c/a*100):0;
+  let rate = a ? Math.round((c / a) * 100) : 0;
 
-document.getElementById(s+"Rate").textContent=rate+"%";
-document.getElementById(s+"Count").textContent=a;
+  document.getElementById(s + "Rate").textContent = rate + "%";
+  document.getElementById(s + "Count").textContent = a;
 });
 
-document.getElementById("accuracy").textContent=totalA?Math.round(totalC/totalA*100):0+"%";
-document.getElementById("answers").textContent=totalA;
+
+document.getElementById("accuracy").textContent = (totalA ? Math.round((totalC / totalA) * 100) : 0) + "%";
+document.getElementById("answers").textContent = totalA;
 </script>
 
 </body>
