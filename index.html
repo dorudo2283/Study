@@ -1,127 +1,288 @@
+
 <!DOCTYPE html>
 <html lang="ja">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>一問一答勉強サイト - ホーム</title>
+    <title>総合ガチノック - 既存ファイル連動版</title>
     <style>
         :root {
             --bg-color: #f1f5f9;
             --text-color: #0f172a;
-            --accent-color: #3b82f6;
+            --accent-color: #6366f1;
+            --accent-hover: #4f46e5;
+            --success-color: #10b981;
+            --danger-color: #ef4444;
             --card-bg: #ffffff;
             --border-color: #e2e8f0;
         }
         body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
             background-color: var(--bg-color); color: var(--text-color); margin: 0; padding: 0;
             display: flex; flex-direction: column; align-items: center; min-height: 100vh;
         }
         nav {
             width: 100%; background: var(--card-bg); border-bottom: 1px solid var(--border-color);
-            padding: 1rem 1.5rem; box-sizing: border-box; display: flex; justify-content: space-between; align-items: center;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.05); position: sticky; top: 0; z-index: 100;
+            padding: 0 1.5rem; box-shadow: 0 1px 3px rgba(0,0,0,0.05); position: sticky; top: 0; z-index: 100; height: 65px;
+            display: flex; justify-content: space-between; align-items: center; box-sizing: border-box;
         }
-        nav .nav-logo { color: var(--text-color); font-size: 1.1rem; font-weight: 800; text-decoration: none; }
-        .pt-display { background: #fef3c7; color: #d97706; padding: 0.4rem 1rem; border-radius: 20px; font-weight: 700; font-size: 0.95rem; border: 1px solid #fde68a; }
+        .nav-back { width: 25%; text-align: left; }
+        .nav-back a { color: #64748b; text-decoration: none; font-size: 0.95rem; font-weight: 700; }
+        .nav-center { width: 40%; text-align: center; }
+        .pt-badge { display: inline-block; background: #e0f2fe; color: #0369a1; padding: 0.3rem 0.8rem; border-radius: 15px; font-weight: 700; font-size: 0.9rem; border: 1px solid #bae6fd; }
+        .nav-right { width: 35%; text-align: right; }
+        .nav-next-btn { background: var(--accent-color); color: white; border: none; padding: 0.5rem 1rem; font-size: 0.9rem; font-weight: 700; border-radius: 8px; cursor: pointer; visibility: hidden; opacity: 0; transition: opacity 0.2s ease; }
+        .nav-next-btn.visible { visibility: visible; opacity: 1; }
+
+        header { width: 100%; text-align: center; padding: 2rem 1rem 1rem 1rem; box-sizing: border-box; }
+        h1 { font-size: 1.8rem; font-weight: 800; margin: 0; }
+        .container { width: 100%; max-width: 540px; padding: 0 1.5rem; margin-bottom: 4rem; box-sizing: border-box; }
         
-        header { width: 100%; text-align: center; padding: 2.5rem 1rem 1rem 1rem; box-sizing: border-box; }
-        h1 { font-size: 2.2rem; font-weight: 800; margin: 0; color: var(--text-color); }
-        .total-badge { display: inline-block; background: #e0f2fe; color: #0369a1; padding: 0.5rem 1.5rem; border-radius: 30px; font-weight: 800; margin-top: 1rem; font-size: 1.1rem; }
+        .card { background: var(--card-bg); border-radius: 20px; padding: 2.5rem 1.5rem; box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.05); text-align: center; display: none; width: 100%; box-sizing: border-box; }
+        .card.active { display: block; animation: fadeIn 0.35s ease; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
         
-        .container { width: 100%; max-width: 540px; padding: 0 1.5rem; box-sizing: border-box; margin-bottom: 4rem; }
-        .card { background: var(--card-bg); border-radius: 20px; padding: 2.5rem 1.5rem; box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.05); margin-top: 1.5rem; text-align: center; box-sizing: border-box; }
-        h2 { font-size: 1.3rem; margin-top: 0; margin-bottom: 1.5rem; color: #334155; font-weight: 700; text-align: left; border-left: 4px solid var(--accent-color); padding-left: 0.6rem; }
+        h2 { font-size: 1.25rem; margin-top: 0; margin-bottom: 1.5rem; color: #334155; font-weight: 700; }
+        .btn-list { display: flex; flex-direction: column; gap: 0.8rem; width: 100%; box-sizing: border-box; }
         
-        .btn-list { display: flex; flex-direction: column; gap: 1rem; }
         .btn {
-            display: flex; justify-content: space-between; align-items: center;
             background-color: var(--card-bg); border: 1px solid var(--border-color); color: var(--text-color);
-            padding: 1.2rem 1.5rem; font-size: 1.1rem; font-weight: 700; border-radius: 14px; cursor: pointer; transition: all 0.2s ease;
-            text-decoration: none; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+            padding: 1rem 1.2rem; font-size: 1.05rem; font-weight: 600; border-radius: 12px; cursor: pointer; transition: all 0.2s ease;
+            text-align: left; width: 100%; box-sizing: border-box; word-break: break-all;
         }
-        .btn:hover { border-color: var(--accent-color); background-color: rgba(59, 130, 246, 0.02); transform: translateY(-1px); }
-        .btn-arrow { color: #94a3b8; font-size: 1.2rem; }
+        .btn:hover:not(:disabled) { border-color: var(--accent-color); }
+        .btn.correct { background-color: var(--success-color) !important; color: white !important; border-color: var(--success-color) !important; }
+        .btn.wrong { background-color: var(--danger-color) !important; color: white !important; border-color: var(--danger-color) !important; }
         
-        .stats-table { width: 100%; border-collapse: collapse; margin-top: 0.5rem; }
-        .stats-table th, .stats-table td { padding: 1rem 0.5rem; text-align: left; border-bottom: 1px solid var(--border-color); font-size: 0.95rem; }
-        .stats-table th { color: #64748b; font-weight: 600; }
-        .stats-table td { font-weight: 700; color: #334155; }
-        .subject-name { display: flex; align-items: center; gap: 0.5rem; }
-        .dot { width: 8px; height: 8px; border-radius: 50%; }
+        .btn-primary { 
+            background-color: var(--accent-color); color: white; border: none; text-align: center; 
+            padding: 1.1rem; border-radius: 14px; font-size: 1.1rem; font-weight: 700; width: 100%; cursor: pointer;
+        }
+
+        .select-box {
+            width: 100%; padding: 0.8rem; font-size: 1rem; border-radius: 10px; border: 1px solid var(--border-color);
+            background-color: #f8fafc; margin-bottom: 1.5rem; font-weight: 600; color: #334155;
+        }
+
+        .quiz-text { font-size: 1.25rem; font-weight: 700; margin-bottom: 2rem; min-height: 80px; display: flex; align-items: center; justify-content: center; color: #0f172a; white-space: pre-wrap; line-height: 1.6; text-align: left; }
+        .quiz-info { display: flex; justify-content: space-between; margin-bottom: 1.2rem; }
+        .progress, .timer { font-size: 0.85rem; font-weight: 700; color: #94a3b8; }
+        .subject-badge { background: #e2e8f0; color: #475569; padding: 0.2rem 0.6rem; border-radius: 6px; font-size: 0.8rem; font-weight: 800; margin-bottom: 0.5rem; display: inline-block; }
+
+        .judge-display { font-size: 2rem; font-weight: 900; margin: 1.2rem 0; display: none; }
+        .judge-display.is-correct { display: block; color: var(--success-color); }
+        .judge-display.is-wrong { display: block; color: var(--danger-color); }
+
+        .explain-box { display: none; background: #f8fafc; border: 1px solid var(--border-color); border-left: 5px solid var(--accent-color); padding: 1.2rem; border-radius: 12px; text-align: left; margin: 1.5rem 0; font-size: 0.95rem; line-height: 1.6; white-space: pre-wrap; }
+        .explain-box.visible { display: block; }
+        .explain-title { font-weight: 800; color: #0f172a; margin-bottom: 0.4rem; }
+
+        .score-display { font-size: 3.5rem; font-weight: 800; color: var(--accent-color); margin: 0.5rem 0 1rem 0; }
+        .time-display { font-size: 1.1rem; font-weight: 600; color: #475569; margin-bottom: 1.5rem; }
     </style>
+
+    <script src="syakai1.html"></script>
+    <script src="suugaku1.html"></script>
 </head>
 <body>
 
     <nav>
-        <a href="index.html" class="nav-logo">一問一答アプリ</a>
-        <div class="pt-display" id="nav-points">0 pt</div>
+        <div class="nav-back"><a href="#" onclick="location.reload()">🔄 やり直す</a></div>
+        <div class="nav-center"><span class="pt-badge" id="bar-points">0 pt</span></div>
+        <div class="nav-right"><button id="nav-next-btn" class="nav-next-btn" onclick="nextQuestion()">次へ ➔</button></div>
     </nav>
 
     <header>
-        <h1>ダッシュボード</h1>
-        <div class="total-badge" id="total-solved-badge">総解答数: 0 問</div>
+        <h1>教科別・総合</h1>
     </header>
 
     <div class="container">
-        <div class="card">
-            <h2>教科を選ぶ</h2>
-            <div class="btn-list">
-                <a href="suugaku1.html" class="btn" style="border-left: 5px solid #3b82f6;">
-                    <span>📐 中学1年 数学 (50問)</span>
-                    <span class="btn-arrow">→</span>
-                </a>
-                <a href="syakai1.html" class="btn" style="border-left: 5px solid #f59e0b;">
-                    <span>🌍 中学1年 社会 (50問)</span>
-                    <span class="btn-arrow">→</span>
-                </a>
+        <div id="step-setup" class="card active">
+            <h2>設定を選んでスタート！</h2>
+            
+            <div style="text-align: left; margin-bottom: 0.5rem; font-weight: 700; color: #475569;">📚 教科えらび</div>
+            <select id="subject-select" class="select-box">
+                <option value="mix">🌟 全教科</option>
+                <option value="社会">社会</option>
+                <option value="数学">数学</option>
+            </select>
+
+            <div style="text-align: left; margin-bottom: 0.5rem; font-weight: 700; color: #475569;">📝 解く問題数</div>
+            <select id="count-select" class="select-box">
+                <option value="5">5 問</option>
+                <option value="10">10 問</option>
+                <option value="30">30 問</option>
+            </select>
+
+            <button class="btn-primary" style="margin-top: 1rem;" onclick="startQuiz()">ガチノックを開始する</button>
+        </div>
+
+        <div id="step-quiz" class="card">
+            <div class="quiz-info">
+                <div class="progress" id="quiz-progress">第 1 問 / 全 5 問</div>
+                <div class="timer" id="quiz-timer">タイム: 00:00</div>
+            </div>
+            <div style="text-align: center;"><span class="subject-badge" id="quiz-subject">社会</span></div>
+            <div class="quiz-text" id="quiz-question">問題文</div>
+            <div class="btn-list" id="choices-box"></div>
+            <div id="judge-text" class="judge-display">正解！</div>
+            <div id="explain-area" class="explain-box">
+                <div class="explain-title">💡 解説</div>
+                <div id="explain-text">解説</div>
             </div>
         </div>
 
-        <div class="card">
-            <h2>学習の記録（教科別統計）</h2>
-            <table class="stats-table">
-                <thead>
-                    <tr>
-                        <th>教科</th>
-                        <th style="text-align: center;">答えた問題数</th>
-                        <th style="text-align: right;">最高正答率</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td><div class="subject-name"><span class="dot" style="background:#3b82f6;"></span>数学</div></td>
-                        <td id="stats-math-count" style="text-align: center;">0 問</td>
-                        <td id="stats-math-acc" style="text-align: right; color: #3b82f6;">0%</td>
-                    </tr>
-                    <tr>
-                        <td><div class="subject-name"><span class="dot" style="background:#f59e0b;"></span>社会</div></td>
-                        <td id="stats-history-count" style="text-align: center;">0 問</td>
-                        <td id="stats-history-acc" style="text-align: right; color: #f59e0b;">0%</td>
-                    </tr>
-                </tbody>
-            </table>
+        <div id="step-result" class="card">
+            <h2>結果発表</h2>
+            <p id="result-summary" style="font-size: 1rem; color: #64748b; margin: 0;">解いた問題数</p>
+            <div class="score-display"><span id="correct-count">0</span> / <span id="total-count">5</span></div>
+            <div class="time-display" id="result-time">かかった時間</div>
+            <button onclick="location.reload()" class="btn-primary">もう一度解く</button>
         </div>
     </div>
 
     <script>
+        // 各ファイルで定義されている配列（変数名）をここで合体させます
+        // ※ syakai1.html内が「socialQuestions」、suugaku1.html内が「mathQuestions」という変数名になっている前提です
+        const masterDatabase = [...socialQuestions, ...mathQuestions];
+
+        let currentQuestions = [];
+        let currentIndex = 0;
+        let correctAnswers = 0;
+        let hasAnswered = false;
+        let startTime;
+        let timerInterval;
+
         window.onload = function() {
-            const points = localStorage.getItem('userPoints') || 0;
-            document.getElementById('nav-points').innerText = `${points} pt`;
-
-            const mathCount = parseInt(localStorage.getItem('math_solved') || 0);
-            const mathBest = parseInt(localStorage.getItem('math_bestAccuracy') || 0);
-            document.getElementById('stats-math-count').innerText = `${mathCount} 問`;
-            document.getElementById('stats-math-acc').innerText = `${mathBest}%`;
-
-            const historyCount = parseInt(localStorage.getItem('history_solved') || 0);
-            const historyBest = parseInt(localStorage.getItem('history_bestAccuracy') || 0);
-            document.getElementById('stats-history-count').innerText = `${historyCount} 問`;
-            document.getElementById('stats-history-acc').innerText = `${historyBest}%`;
-
-            const totalSolved = mathCount + historyCount;
-            document.getElementById('total-solved-badge').innerText = `総解答数: ${totalSolved} 問`;
+            const totalPoints = localStorage.getItem('userPoints') || 0;
+            document.getElementById('bar-points').innerText = `${totalPoints} pt`;
         };
+
+        function changeView(stepId) {
+            document.querySelectorAll('.card').forEach(card => card.classList.remove('active'));
+            document.getElementById(stepId).classList.add('active');
+        }
+
+        function startQuiz() {
+            const selectedSubject = document.getElementById('subject-select').value;
+            const selectedCount = parseInt(document.getElementById('count-select').value);
+
+            let pool = [];
+            if (selectedSubject === 'mix') {
+                pool = [...masterDatabase];
+            } else {
+                pool = masterDatabase.filter(item => item.subject === selectedSubject);
+            }
+
+            pool.sort(() => 0.5 - Math.random());
+            currentQuestions = pool.slice(0, Math.min(selectedCount, pool.length));
+            
+            if (currentQuestions.length === 0) {
+                alert("問題が見つかりませんでした。");
+                return;
+            }
+
+            currentIndex = 0;
+            correctAnswers = 0;
+            startTime = Date.now();
+            startTimer();
+
+            changeView('step-quiz');
+            showQuestion();
+        }
+
+        function startTimer() {
+            clearInterval(timerInterval);
+            timerInterval = setInterval(() => {
+                const elapsedTime = Math.floor((Date.now() - startTime) / 1000);
+                const minutes = String(Math.floor(elapsedTime / 60)).padStart(2, '0');
+                const seconds = String(elapsedTime % 60).padStart(2, '0');
+                document.getElementById('quiz-timer').innerText = `タイム: ${minutes}:${seconds}`;
+            }, 1000);
+        }
+
+        function showQuestion() {
+            hasAnswered = false;
+            const current = currentQuestions[currentIndex];
+            
+            document.getElementById('quiz-progress').innerText = `第 ${currentIndex + 1} 問 / 全 ${currentQuestions.length} 問`;
+            document.getElementById('quiz-subject').innerText = current.subject;
+            document.getElementById('quiz-question').innerText = current.q;
+            
+            const nextBtn = document.getElementById('nav-next-btn');
+            nextBtn.style.visibility = 'hidden';
+            nextBtn.classList.remove('visible');
+            
+            document.getElementById('judge-text').className = 'judge-display';
+            document.getElementById('explain-area').classList.remove('visible');
+
+            const shuffledChoices = [...current.choices].sort(() => 0.5 - Math.random());
+            const choicesBox = document.getElementById('choices-box');
+            choicesBox.innerHTML = ''; 
+            
+            shuffledChoices.forEach(choice => {
+                const button = document.createElement('button');
+                button.className = 'btn';
+                button.innerText = choice;
+                button.onclick = () => checkAnswer(button, choice, current.a, current.hint);
+                choicesBox.appendChild(button);
+            });
+        }
+
+        function checkAnswer(selectedButton, selectedChoice, correctAnswer, hintText) {
+            if (hasAnswered) return; 
+            hasAnswered = true;
+
+            const buttons = document.getElementById('choices-box').getElementsByClassName('btn');
+            const judgeTextEl = document.getElementById('judge-text');
+
+            for (let btn of buttons) {
+                btn.disabled = true;
+                if (btn.innerText === correctAnswer) {
+                    btn.classList.add('correct');
+                }
+            }
+
+            if (selectedChoice === correctAnswer) {
+                correctAnswers++;
+                judgeTextEl.innerText = "⭕ 正解！ (+2pt)";
+                judgeTextEl.classList.add('is-correct');
+                
+                let totalPoints = parseInt(localStorage.getItem('userPoints') || 0);
+                totalPoints += 2;
+                localStorage.setItem('userPoints', totalPoints);
+                document.getElementById('bar-points').innerText = `${totalPoints} pt`;
+            } else {
+                selectedButton.classList.add('wrong');
+                judgeTextEl.innerText = "❌ 不正解...";
+                judgeTextEl.classList.add('is-wrong');
+            }
+
+            document.getElementById('explain-text').innerText = hintText;
+            document.getElementById('explain-area').classList.add('visible');
+
+            const nextBtn = document.getElementById('nav-next-btn');
+            nextBtn.style.visibility = 'visible';
+            nextBtn.classList.add('visible');
+        }
+
+        function nextQuestion() {
+            currentIndex++;
+            if (currentIndex < currentQuestions.length) {
+                showQuestion();
+            } else {
+                clearInterval(timerInterval);
+                const totalTimeSec = Math.floor((Date.now() - startTime) / 1000);
+                
+                document.getElementById('result-summary').innerText = `解いた問題数：${currentQuestions.length}問`;
+                document.getElementById('correct-count').innerText = correctAnswers;
+                document.getElementById('total-count').innerText = currentQuestions.length;
+                document.getElementById('result-time').innerText = `かかった時間: ${totalTimeSec} 秒`;
+                
+                document.getElementById('nav-next-btn').style.visibility = 'hidden';
+                changeView('step-result');
+            }
+        }
     </script>
 </body>
 </html>
