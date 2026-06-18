@@ -3,12 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>中学1年 社会 - 一問一答クイズ</title>
+    <title>中学1年 社会 - 一問一答</title>
     <style>
         :root {
             --bg-color: #f1f5f9;
             --text-color: #0f172a;
-            --accent-color: #f59e0b; /* 社会はオレンジ・ゴールド系 */
+            --accent-color: #f59e0b; /* 社会はゴールド・オレンジ */
             --accent-hover: #d97706;
             --success-color: #10b981;
             --danger-color: #ef4444;
@@ -20,66 +20,66 @@
             background-color: var(--bg-color); color: var(--text-color); margin: 0; padding: 0;
             display: flex; flex-direction: column; align-items: center; min-height: 100vh;
         }
+        
         nav {
             width: 100%; background: var(--card-bg); border-bottom: 1px solid var(--border-color);
-            padding: 1.2rem 2rem; box-sizing: border-box; display: flex; justify-content: space-between; align-items: center;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+            padding: 0.8rem 1.5rem; box-sizing: border-box; display: flex; justify-content: space-between; align-items: center;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05); position: sticky; top: 0; z-index: 100; height: 60px;
         }
-        nav a { color: #64748b; text-decoration: none; font-size: 0.95rem; font-weight: 600; }
-        nav a.nav-logo { color: var(--text-color); font-size: 1.2rem; font-weight: 800; }
-        header { width: 100%; text-align: center; padding: 3rem 1rem 1.5rem 1rem; }
-        h1 { font-size: 2.2rem; font-weight: 800; margin: 0; color: var(--text-color); }
+        nav a { color: #64748b; text-decoration: none; font-size: 0.9rem; font-weight: 600; }
+        .nav-center { display: flex; gap: 0.8rem; align-items: center; }
+        .pt-badge { background: #fef3c7; color: #d97706; padding: 0.3rem 0.8rem; border-radius: 15px; font-weight: 700; font-size: 0.85rem; border: 1px solid #fde68a; }
+        
+        .nav-next-btn { background: var(--accent-color); color: white; border: none; padding: 0.4rem 1.2rem; font-size: 0.9rem; font-weight: 700; border-radius: 8px; cursor: pointer; display: none; }
+        .nav-next-btn.visible { display: block; animation: pulse 1.5s infinite; }
+        @keyframes pulse { 0% { opacity: 0.8; } 50% { opacity: 1; transform: scale(1.03); } 100% { opacity: 0.8; } }
+
+        header { width: 100%; text-align: center; padding: 2rem 1rem 1rem 1rem; }
+        h1 { font-size: 1.8rem; font-weight: 800; margin: 0; color: var(--text-color); }
         .container { width: 100%; max-width: 540px; padding: 0 1.5rem; box-sizing: border-box; margin-bottom: 4rem; }
         
-        .card {
-            background: var(--card-bg); border-radius: 20px; padding: 3rem 2rem;
-            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.05); text-align: center; display: none;
-        }
+        .card { background: var(--card-bg); border-radius: 20px; padding: 2.5rem 1.5rem; box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.05); text-align: center; display: none; }
         .card.active { display: block; animation: fadeIn 0.35s ease; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
         
-        h2 { font-size: 1.35rem; margin-top: 0; margin-bottom: 2.5rem; color: #334155; font-weight: 700; }
-        .btn-list { display: flex; flex-direction: column; gap: 1rem; }
+        h2 { font-size: 1.25rem; margin-top: 0; margin-bottom: 2rem; color: #334155; font-weight: 700; }
+        .btn-list { display: flex; flex-direction: column; gap: 0.8rem; }
         
         .btn {
             background-color: var(--card-bg); border: 1px solid var(--border-color); color: var(--text-color);
-            padding: 1.1rem 2rem; font-size: 1.1rem; font-weight: 600; border-radius: 14px; cursor: pointer; transition: all 0.2s ease;
-            text-align: left; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+            padding: 1rem 1.2rem; font-size: 1.05rem; font-weight: 600; border-radius: 12px; cursor: pointer; transition: all 0.2s ease;
+            text-align: left; box-shadow: 0 2px 4px rgba(0,0,0,0.02);
         }
-        .btn:hover:not(:disabled) { border-color: var(--accent-color); background-color: rgba(245, 158, 11, 0.02); transform: translateY(-1px); }
-        
-        /* 正誤演出 */
+        .btn:hover:not(:disabled) { border-color: var(--accent-color); background-color: rgba(245, 158, 11, 0.01); }
         .btn.correct { background-color: var(--success-color) !important; color: white !important; border-color: var(--success-color) !important; }
         .btn.wrong { background-color: var(--danger-color) !important; color: white !important; border-color: var(--danger-color) !important; }
         
-        .btn-primary { background-color: var(--accent-color); color: white; border: none; text-align: center; }
-        .btn-primary:hover { background-color: var(--accent-hover); }
+        .btn-primary { background-color: var(--accent-color); color: white; border: none; text-align: center; padding: 1.1rem; border-radius: 14px; font-size: 1.1rem; font-weight: 700; width: 100%; display: block; text-decoration: none; box-shadow: 0 4px 6px -1px rgba(245, 158, 11, 0.2); }
+
+        .quiz-text { font-size: 1.3rem; font-weight: 700; margin-bottom: 2rem; min-height: 70px; display: flex; align-items: center; justify-content: center; color: #0f172a; white-space: pre-wrap; line-height: 1.5; }
+        .quiz-info { display: flex; justify-content: space-between; margin-bottom: 1.2rem; }
+        .progress, .timer { font-size: 0.85rem; font-weight: 700; color: #94a3b8; letter-spacing: 0.05em; }
         
-        .quiz-text { font-size: 1.4rem; font-weight: 700; margin-bottom: 2.5rem; min-height: 80px; display: flex; align-items: center; justify-content: center; color: #0f172a; white-space: pre-wrap; line-height: 1.5; }
-        
-        .quiz-info { display: flex; justify-content: space-between; margin-bottom: 1.5rem; }
-        .progress, .timer { font-size: 0.95rem; font-weight: 700; color: #94a3b8; letter-spacing: 0.05em; }
-        .timer { color: #64748b; }
-        
-        .judge-display { font-size: 2.2rem; font-weight: 900; margin: 1.5rem 0; display: none; }
+        .judge-display { font-size: 2rem; font-weight: 900; margin: 1.2rem 0; display: none; }
         .judge-display.is-correct { display: block; color: var(--success-color); }
         .judge-display.is-wrong { display: block; color: var(--danger-color); }
 
-        .explain-box { display: none; background: #f8fafc; border: 1px solid var(--border-color); border-left: 5px solid var(--accent-color); padding: 1.5rem; border-radius: 12px; text-align: left; margin: 2rem 0; font-size: 1rem; line-height: 1.6; color: #334155; white-space: pre-wrap; }
+        .explain-box { display: none; background: #f8fafc; border: 1px solid var(--border-color); border-left: 5px solid var(--accent-color); padding: 1.2rem; border-radius: 12px; text-align: left; margin: 1.5rem 0; font-size: 0.95rem; line-height: 1.6; color: #334155; white-space: pre-wrap; }
         .explain-box.visible { display: block; animation: fadeIn 0.3s ease; }
-        .explain-title { font-weight: 800; color: #0f172a; margin-bottom: 0.5rem; font-size: 1.05rem; }
+        .explain-title { font-weight: 800; color: #0f172a; margin-bottom: 0.4rem; }
 
-        .score-display { font-size: 4rem; font-weight: 800; color: var(--accent-color); margin: 0.5rem 0 1.5rem 0; }
-        .time-display { font-size: 1.2rem; font-weight: 600; color: #475569; margin-bottom: 2rem; }
-        
-        #next-btn-box { display: none; margin-top: 2rem; }
+        .score-display { font-size: 3.5rem; font-weight: 800; color: var(--accent-color); margin: 0.5rem 0 1rem 0; }
+        .time-display { font-size: 1.1rem; font-weight: 600; color: #475569; margin-bottom: 1.5rem; }
     </style>
 </head>
 <body>
 
     <nav>
-        <a href="index.html" class="nav-logo">一問一答勉強サイト</a>
-        <div><a href="index.html">← トップに戻る</a></div>
+        <a href="index.html">← 戻る</a>
+        <div class="nav-center">
+            <span class="pt-badge" id="bar-points">0 pt</span>
+        </div>
+        <button id="nav-next-btn" class="nav-next-btn" onclick="nextQuestion()">次へ ➔</button>
     </nav>
 
     <header>
@@ -92,7 +92,8 @@
             <div class="btn-list">
                 <button class="btn" style="text-align:center;" onclick="startQuiz(5)">5問</button>
                 <button class="btn" style="text-align:center;" onclick="startQuiz(10)">10問</button>
-                <button class="btn" style="text-align:center;" onclick="startQuiz(12)">12問（全問）</button>
+                <button class="btn" style="text-align:center;" onclick="startQuiz(25)">25問</button>
+                <button class="btn" style="text-align:center;" onclick="startQuiz(50)">50問（全問ノック）</button>
             </div>
         </div>
 
@@ -102,110 +103,83 @@
                 <div class="timer" id="quiz-timer">タイム: 00:00</div>
             </div>
             <div class="quiz-text" id="quiz-question">問題文</div>
-            
             <div class="btn-list" id="choices-box"></div>
-            
             <div id="judge-text" class="judge-display">正解！</div>
-
             <div id="explain-area" class="explain-box">
                 <div class="explain-title">💡 解説</div>
-                <div id="explain-text">ここに解説が入ります。</div>
-            </div>
-
-            <div id="next-btn-box">
-                <button class="btn btn-primary" style="width:100%;" onclick="nextQuestion()">次の問題へ</button>
+                <div id="explain-text">解説</div>
             </div>
         </div>
 
         <div id="step-result" class="card">
             <h2>結果発表</h2>
-            <p id="result-summary" style="font-size: 1.1rem; color: #64748b; margin: 0;">解いた問題数：5問</p>
+            <p id="result-summary" style="font-size: 1rem; color: #64748b; margin: 0;">解いた問題数</p>
             <div class="score-display"><span id="correct-count">0</span> / <span id="total-count">5</span></div>
-            <div class="time-display" id="result-time">かかった時間: 0秒</div>
-            <div class="btn-list">
-                <a href="index.html" class="btn btn-primary">ホームに戻って実績を確認</a>
-            </div>
+            <div class="time-display" id="result-time">かかった時間</div>
+            <a href="index.html" class="btn-primary">ホームに戻る</a>
         </div>
     </div>
 
     <script>
-        // --- 中学1年 社会（地理・歴史ごちゃまぜデータベース） ---
+        // --- 社会（地理・歴史） 限界突破の50問データベース ---
         const quizDatabase = [
-            // === 地理セクション ===
-            { 
-                q: "地球上の位置を表すとき、ロンドンの旧グリニッジ天文台を通る「本初子午線」を基準にした横の線を何というか？", 
-                choices: ["緯線", "経線", "赤道", "日付変更線"],
-                a: "経線",
-                hint: "「経（たて）線」と「緯（よこ）線」の覚え方！経線の『経』の字には『糸（縦糸）』が入っているから縦の線！本初子午線は経度0度の基準線だよ。"
-            },
-            { 
-                q: "地球の赤道の全周は、およそ何万キロメートルか？", 
-                choices: ["約2万km", "約4万km", "約6万km", "約10万km"],
-                a: "約4万km",
-                hint: "地球1周は約4万km！ちなみに日本の新幹線で休まず走り続けても約5日かかる距離だよ。"
-            },
-            { 
-                q: "経度が15度離れると、時間の差（時差）は何時間生まれるか？", 
-                choices: ["1時間", "2時間", "15時間", "24時間"],
-                a: "1時間",
-                hint: "地球は1周360度で、24時間かけて1回転（自転）するよね。\n360度 ÷ 24時間 ＝ 15度\nつまり、15度ずれるごとに1時間の時差が生まれる！"
-            },
-            { 
-                q: "日本の標準時子午線（時間の基準）が通る、兵庫県の都市はどこか？", 
-                choices: ["神戸市", "明石市", "姫路市", "西宮市"],
-                a: "明石市",
-                hint: "兵庫県明石市を通る「東経135度」の経線が、日本の時間の基準（標準時子午線）に定められているよ。"
-            },
-            { 
-                q: "面積が世界で最も小さい、イタリアのローマ市内にある国はどこか？", 
-                choices: ["モナコ", "サンマリノ", "バチカン市国", "モルディブ"],
-                a: "バチカン市国",
-                hint: "バチカン市国は世界最小の国。広さは東京ディズニーランドより少し狭いくらいだよ。"
-            },
-            { 
-                q: "オーストラリアのように、まわりを全て海に囲まれた国を何というか？", 
-                choices: ["内陸国", "海国（島国）", "半島国", "大陸国"],
-                a: "海国（島国）",
-                hint: "日本やオーストラリアのように、領土がすべて島からなる国を「島国（海国）」と呼ぶよ。逆に海に面していない国は「内陸国」。"
-            },
+            // 世界の姿・国々 (1-10)
+            { q: "地球上に3つある巨大な海（三大洋）に含まれない海はどれか？", choices: ["太平洋", "大西洋", "インド洋", "北極海"], a: "北極海", hint: "三大洋は「太平洋」「大西洋」「インド洋」です。北極海や南極海は含まれません。" },
+            { q: "世界で最も面積が大きい国はどこか？", choices: ["カナダ", "アメリカ", "中国", "ロシア"], a: "ロシア", hint: "ロシアは世界最大の面積を持ち、日本の約45倍の広さがあります。2位はカナダです。" },
+            { q: "世界で最も面積が小さい国はどこか？", choices: ["モナコ", "バチカン市国", "サンマリノ", "モルディブ"], a: "バチカン市国", hint: "イタリアのローマ市内にある「バチカン市国」が世界最小です。ディズニーランドより狭いです。" },
+            { q: "周りをすべて別の国に囲まれ、海に全く面していない国を何というか？", choices: ["島国", "内陸国", "半島国", "大陸国"], a: "内陸国", hint: "モンゴルやスイスのように海がない国を「内陸国（ないりくこく）」と言います。対義語は「島国（海国）」です。" },
+            { q: "アフリカ大陸の国々の国線に、直線が多いのはなぜか？", choices: ["地形が平らだから", "かつてヨーロッパ諸国が植民地の境界を緯線や経線で決めたから", "川や山脈が直線だから", "民族の住むエリアが直線だったから"], a: "かつてヨーロッパ諸国が植民地の境界を緯線や経線で決めたから", hint: "19世紀にヨーロッパの国々が話し合いで勝手に緯線や経線を使って領土を区切った歴史が残っているためです。" },
+            { q: "南アメリカ大陸のブラジルなどで主に使われている、南米最大の言語は何か？", choices: ["英語", "スペイン語", "ポルトガル語", "フランス語"], a: "ポルトガル語", hint: "南米の多くの国はスペイン語ですが、最大の面積を持つ「ブラジル」だけはポルトガル語が公用語です。超頻出！" },
+            { q: "地球の真ん中を通る、緯度0度の基準となる線を何というか？", choices: ["赤道", "本初子午線", "日付変更線", "回帰線"], a: "赤道", hint: "横の線の基準（緯度0度）は「赤道」です。縦の線の基準（経度0度）は「本初子午線」です。ごちゃ混ぜ注意。" },
+            { q: "ロンドンの旧グリニッジ天文台を通る、経度0度の基準となる縦の線を何というか？", choices: ["赤道", "本初子午線", "北回帰線", "東経135度線"], a: "本初子午線", hint: "世界標準時の基準となる経度0度の縦線を「本初子午線（ほんしょしごせん）」と呼びます。" },
+            { q: "地球が1日に1回自転することから、経度が何度ずれると1時間の時差が発生するか？", choices: ["10度", "15度", "30度", "180度"], a: "15度", hint: "地球1周は360度。これを24時間で割ると「360 ÷ 24 ＝ 15度」となり、15度で1時間の時差が出ます。" },
+            { q: "日本の時間の基準（標準時子午線）となっている、東経135度の経線が通る兵庫県の都市はどこか？", choices: ["神戸市", "姫路市", "明石市", "尼崎市"], a: "明石市", hint: "兵庫県「明石市（あかしし）」を通る東経135度を日本の標準時としています。" },
 
-            // === 歴史セクション ===
-            { 
-                q: "エジプト文明で使われ、のちにロゼッタ・ストーンの解読で有名になった象形文字を何というか？", 
-                choices: ["楔形文字", "神聖文字（ヒエログリフ）", "甲骨文字", "漢字"],
-                a: "神聖文字（ヒエログリフ）",
-                hint: "エジプト文明＝神聖文字（ヒエログリフ）。\nメソポタミア文明＝楔形（くさびがた）文字。この2つの区別はテストにめちゃくちゃ出る！"
-            },
-            { 
-                q: "メソポタミア文明の「目には目を、歯には歯を」で有名な、世界最古級の法律を何というか？", 
-                choices: ["十戒", "ハムラビ法典", "大宝律令", "ローマ法"],
-                a: "ハムラビ法典",
-                hint: "ハムラビ王が定めた「ハムラビ法典」。「やられたら同じ分だけやり返してよい（ただし身分による）」という復讐法の原則が書かれているよ。"
-            },
-            { 
-                q: "中国の黄河文明で使われた、亀の甲羅や動物の骨に刻まれた、漢字の原型となった文字は何か？", 
-                choices: ["楔形文字", "甲骨文字", "金文", "ヒエログリフ"],
-                a: "甲骨文字",
-                hint: "甲羅（甲）や骨（骨）に刻んだから「甲骨（こうこつ）文字」。占いの結果を記録するために使われていたよ。"
-            },
-            { 
-                q: "シャカ（釈迦）が開いた、すべての人が平等であると説き、アジア各地に広まった宗教は何か？", 
-                choices: ["仏教", "キリスト教", "イスラム教", "ヒンドゥー教"],
-                a: "仏教",
-                hint: "紀元前5世紀ごろにインドでシャカが開いたのが仏教。のちに日本にも伝わって、歴史に大きな影響を与えることになるよ。"
-            },
-            { 
-                q: "パレスチナ地方でイエスが興し、のちにローマ帝国の国教となった宗教は何か？", 
-                choices: ["イスラム教", "キリスト教", "ユダヤ教", "仏教"],
-                a: "キリスト教",
-                hint: "神の前の平愛を説いたイエスが興したのがキリスト教。世界の暦（西暦）の基準にもなっているよ。"
-            },
-            { 
-                q: "7世紀にムハンマドがアラビア半島で開き、唯一神「アッラー」を信仰する宗教は何か？", 
-                choices: ["ヒンドゥー教", "ユダヤ教", "イスラム教", "キリスト教"],
-                a: "イスラム教",
-                hint: "ムハンマドが開いたのがイスラム教。聖典は「コーラン」。これに仏教・キリスト教を合わせて「世界三大宗教」と呼ぶよ。"
-            }
+            // 世界の気候・環境 (11-20)
+            { q: "赤道付近に広がり、一年中気温が高く雨が大量に降る気候区分は何か？", choices: ["熱帯", "乾燥帯", "温帯", "冷帯（亜寒帯）"], a: "熱帯", hint: "一年中夏でスコールが降り、ジャングルが広がるのが「熱帯」です。" },
+            { q: "雨が極端に少なく、サボテンなどが生える砂漠やステップが広がる気候区分は何か？", choices: ["寒帯", "乾燥帯", "冷帯", "高山気候"], a: "乾燥帯", hint: "降水量が極めて少なく、昼夜の気温差が激しいのが「乾燥帯」です。" },
+            { q: "日本のように四季がはっきりしており、温暖で人間が最も住みやすい気候区分は何か？", choices: ["熱帯", "温帯", "冷帯", "寒帯"], a: "温帯", hint: "温暖湿潤気候や地中海性気候などがあり、世界の人口が多く集まっているのが「温帯」です。" },
+            { q: "冬の寒さが非常に厳しいが、夏はそれなりに気温が上がり、タイガと呼ばれる針葉樹林が広がる気候区分は何か？", choices: ["寒帯", "冷帯（亜寒帯）", "乾燥帯", "高山気候"], a: "冷帯（亜寒帯）", hint: "ロシアのシベリアや日本の北海道などが属する、針葉樹林（タイガ）が特徴の気候は「冷帯」です。" },
+            { q: "一年中氷と雪に覆われ、樹木が全く育たない、世界で最も寒い気候区分は何か？", choices: ["冷帯", "寒帯", "高山気候", "ステップ気候"], a: "寒帯", hint: "夏でも氷が溶けない、あるいは苔しか生えない極寒の地が「寒帯」です。" },
+            { q: "地中海沿岸で見られる、夏に雨がほとんど降らず乾燥し、冬に雨が降る温帯の気候を何というか？", choices: ["温暖湿潤気候", "西岸海洋性気候", "地中海性気候", "温暖冬季少雨気候"], a: "地中海性気候", hint: "夏に乾燥するため、オリーブやぶどう、オレンジなどの栽培が盛んなのが「地中海性気候」です。" },
+            { q: "乾燥帯の砂漠の周辺で見られる、短い草が広がる草原地帯を何というか？", choices: ["タイガ", "サバナ", "ステップ", "ツンドラ"], a: "ステップ", hint: "わずかに雨が降り、草が生える草原を「ステップ」と言います。砂漠のまわりに広がっています。" },
+            { q: "東南アジアや日本などで、季節によって風向きがガラリと変わり、気候に大きな影響を与える風は何か？", choices: ["偏西風", "季節風（モンスーン）", "貿易風", "エルニーニョ"], a: "季節風（モンスーン）", hint: "夏は海から陸へ、冬は陸から海へ吹く「季節風（モンスーン）」です。日本の梅雨や大雪の原因になります。" },
+            { q: "アルプス山脈やアンデス山脈など、標高が非常に高い地域で見られる、緯度の割に気温が低い気候を何というか？", choices: ["寒帯", "高山気候", "冷帯", "ツンドラ気候"], a: "高山気候", hint: "標高が1000m上がると気温は約6℃下がります。赤道近くでも年中涼しい「高山気候」です。" },
+            { q: "熱帯地域において、周辺の樹木を焼き払ってその灰を肥料にし、数年ごとに移動する農業を何というか？", choices: ["焼畑農業", "プランテーション農業", "オアシス農業", "棚田農業"], a: "焼畑農業", hint: "木を焼いた灰を肥料にする「焼畑（やきはた）農業」です。伝統的な粗放的農業です。" },
+
+            // 世界の古代文明と宗教 (21-35)
+            { q: "ナイル川のほとりで栄え、ピラミッドや太陽暦、神聖文字（ヒエログリフ）を生み出した文明は何か？", choices: ["メソポタミア文明", "エジプト文明", "インダス文明", "黄河文明"], a: "エジプト文明", hint: "「エジプトはナイルの賜物」。ナイル川の定期的な氾濫から天文学が発達し、太陽暦が作られました。" },
+            { q: "チグリス川・ユーフラテス川流域で栄え、太陰暦や楔形文字、六十進法を生み出した文明は何か？", choices: ["エジプト文明", "メソポタミア文明", "インダス文明", "黄河文明"], a: "メソポタミア文明", hint: "現在のイラク周辺。「楔形（くさびがた）文字」や、1分＝60秒のルーツである「六十進法」が特徴です。" },
+            { q: "インダス川流域で栄え、モヘンジョ・ダロなどの計画都市や青銅器を作った文明は何か？", choices: ["エジプト文明", "メソポタミア文明", "インダス文明", "中国文明"], a: "インダス文明", hint: "レンガ造りの強固な排水溝をもつ都市遺跡「モヘンジョ・ダロ」で有名な文明です。" },
+            { q: "中国の黄河流域や長江流域で栄え、甲骨文字や青銅器を生み出した文明は何か？", choices: ["エジプト文明", "メソポタミア文明", "インダス文明", "中国文明（黄河・長江文明）"], a: "中国文明（黄河・長江文明）", hint: "漢字の原型となった「甲骨（こうこつ）文字」が使われていたのが特徴です。" },
+            { q: "紀元前5世紀ごろにインドのシャカ（釈迦）が開いた、すべての人の平等と心の平穏を説いた宗教は何か？", choices: ["仏教", "キリスト教", "イスラム教", "ヒンドゥー教"], a: "仏教", hint: "アジア一帯に広まり、のちに日本にも伝来して歴史を大きく動かす世界三大宗教の1つです。" },
+            { q: "パレスチナ地方でイエスが興し、神の前の愛と平等を説いた、西暦の基準にもなっている宗教は何か？", choices: ["仏教", "キリスト教", "イスラム教", "ユダヤ教"], a: "キリスト教", hint: "イエスの誕生の年が西暦1年の基準となっています。聖典は「聖書」。" },
+            { q: "7世紀にムハンマドがアラビア半島で開き、唯一神「アッラー」を信仰し、聖典コーランを持つ宗教は何か？", choices: ["仏教", "キリスト教", "イスラム教", "ヒンドゥー教"], a: "イスラム教", hint: "１日５回の礼拝や、豚肉を食べないなどの戒律がある世界三大宗教の1つです。" },
+            { q: "紀元前6世紀の中国で、孔子が説いた、道徳や礼儀を重んじる政治の教えを何というか？", choices: ["仏教", "儒教（新儒教）", "道教", "キリスト教"], a: "儒教（新儒教）", hint: "孔子が開いた「儒教（じゅきょう）」です。のちに日本の武士の教えや政治の基礎になります。" },
+            { q: "秦の始皇帝が、北方の遊牧民族の侵入を防ぐために修築した、世界最大の巨大な壁は何か？", choices: ["万里の長城", "ピラミッド", "コロッセオ", "パルテノン神殿"], a: "万里の長城", hint: "始皇帝が国中の壁をつなぎ合わせて大修築したのが「万里の長城（ばんりのちょうじょう）」です。" },
+            { q: "ローマ帝国やギリシャなどで発達した、市民が話し合いで政治を決める仕組みを何というか？", choices: ["独裁政治", "民主政治", "王政", "貴族政治"], a: "民主政治", hint: "アテネ（ギリシャ）などで始まった、市民が参加する「民主政治（みんしゅせいじ）」の原型です。" },
+
+            // 日本の成り立ち：旧石器〜奈良時代 (36-50)
+            { q: "日本列島で人々がナウマンゾウなどを狩っていた時代に使われた、石を打ち欠いただけの石器を何というか？", choices: ["磨製石器", "打製石器", "鉄器", "青銅器"], a: "打製石器", hint: "旧石器時代に使われた、叩いて割っただけのシンプルな石器を「打製（だせい）石器」と言います。" },
+            { q: "約1万2000年前から始まり、表面に縄の模様がある土器や、竪穴住居、貝塚が特徴の時代は何か？", choices: ["旧石器時代", "縄文時代", "弥生時代", "古墳時代"], a: "縄文時代", hint: "弓矢が使われ、人々が狩りや採集をして定住し始めた「縄文（じょうもん）時代」です。" },
+            { q: "縄文時代に、魔よけや豊かな実りを祈るために作られた、女性をかたどったとされる粘土の人形を何というか？", choices: ["埴輪", "土偶", "銅鐸", "土器"], a: "土偶", hint: "縄文時代は「土偶（どぐう）」。古墳時代の「埴輪（はにわ）」とごっちゃになる人続出。要注意！" },
+            { q: "紀元前3世紀ごろから始まり、本格的な稲作（水田）や、薄手で硬い土器、金属器が伝わった時代は何か？", choices: ["縄文時代", "弥生時代", "古墳時代", "飛鳥時代"], a: "弥生時代", hint: "大陸から九州北部に稲作が伝わり、貧富の差やクニの争いが始まった「弥生（やよい）時代」です。" },
+            { q: "弥生時代に、米を湿気やネズミから守るために、床を高くして作られた倉庫を何というか？", choices: ["竪穴住居", "高床倉庫", "貝塚", "前方後円墳"], a: "高床倉庫", hint: "柱にネズミ返しをつけ、風通しをよくした「高床（たかゆか）倉庫」に貴重な米を蓄えました。" },
+            { q: "弥生時代に、お祭りの宝物として使われた、中国から伝わった金属器を叩いて作った釣鐘型の青銅器は何か？", choices: ["鉄剣", "銅鐸", "土偶", "埴輪"], a: "銅鐸", hint: "弥生時代の青銅器の代表例が「銅鐸（どうたく）」です。お祭りの道具と考えられています。" },
+            { q: "中国の歴史書『漢書』地理志に記された、紀元前1世紀ごろの日本（倭）の様子はどうだったか？", choices: ["1つの大きな国だった", "100余りの国に分かれていた", "女王が支配していた", "文字を使っていた"], a: "100余りの国に分かれていた", hint: "「倭人が定期的に中国（漢）に使者を送っており、100余りの国に分かれていた」と書かれています。" },
+            { q: "西暦57年に中国の光武帝から金印（漢委奴国王）を授かったとされる、九州にあった国はどこか？", choices: ["邪馬台国", "奴国", "末盧国", "伊都国"], a: "奴国", hint: "「なこく（奴国）」の王が金印をもらいました。志賀島（福岡県）で江戸時代に発見されました。" },
+            { q: "3世紀後半、30余りの国を従え、中国（魏）に使いを送って「親魏倭王」の称号を得た女王は誰か？", choices: ["持統天皇", "卑弥呼", "額田王", "推古天皇"], a: "卑弥呼", hint: "『魏志』倭人伝に登場する、邪馬台国（やまたいこく）の女王「卑弥呼（ひみこ）」です。まじないで国を治めました。" },
+            { q: "3世紀後半から大和地方を中心に作られた、王や豪族の巨大なお墓を何というか？", choices: ["貝塚", "古墳", "高床倉庫", "ピラミッド"], a: "古墳", hint: "争いを勝ち抜いた強力な勢力（大和政権）が作った巨大な墓が「古墳（こふん）」です。" },
+            { q: "古墳のなかでも、円形と方形を組み合わせた日本独特の形をした古墳を何というか？", choices: ["前方後円墳", "円墳", "方墳", "八角墳"], a: "前方後円墳", hint: "鍵穴のような形をした「前方後円墳（ぜんぽうこうえんふん）」です。大仙（仁徳天皇陵）古墳が世界最大級です。" },
+            { q: "古墳の頂や周囲に並べられた、人や馬、家などをかたどった素焼きの土製品を何というか？", choices: ["土偶", "埴輪", "銅鐸", "土器"], a: "埴輪", hint: "古墳時代は「埴輪（はにわ）」です。縄文時代の「土偶」と完全に区別してください。超頻出！" },
+            { q: "593年、推古天皇の摂政となり、仏教を取り入れた政治や冠位十二階、十七条の憲法を定めた人物は誰か？", choices: ["中大兄皇子", "聖徳太子（厩戸王）", "中臣鎌足", "蘇我馬子"], a: "聖徳太子（厩戸王）", hint: "大和政権の改革を行った「聖徳太子（しょうとくたいし）」です。小野妹子を遣隋使として中国に送りました。" },
+            { q: "645年、中大兄皇子と中臣鎌足が蘇我氏を倒し、天皇中心の国づくりを始めた政治改革を何というか？", choices: ["大化の改新", "壬申の乱", "承久の乱", "建武の新政"], a: "大化の改新", hint: "蘇我入鹿らを暗殺して始まった「大化の改新（たいかのかいしん）」です。ここから日本の律令国家への歩みが加速します。" },
+            { q: "701年に制定された、中国の仕組みを手本に、法律（律・令）に基づいて国を治める完成形となった制度は何か？", choices: ["十七条の憲法", "大宝律令", "分国法", "公事方御定書"], a: "大宝律令", hint: "刑法の「律」と行政法の「令」を合わせた「大宝律令（たいほうりつりょう）」です。これにより法律国家になりました。" },
+            { q: "710年、唐の都（長安）を手本にして、現在の奈良県に作られた大規模な都を何というか？", choices: ["藤原京", "平城京", "平安京", "長岡京"], a: "平城京", hint: "「なんと（710年）きれいな平城京」。奈良時代の幕開けとなった都です。" },
+            { q: "奈良時代に、税（租・調・庸）の負担に苦しむ農民が土地を捨てて逃げ出すのを防ぐため、743年に出された「新しく耕した土地は永遠に自分のものにしてよい」という法律は何か？", choices: ["公地公民の制", "墾田永年私財法", "三世一身の法", "地租改正"], a: "墾田永年私財法", hint: "土地の私有を認めた「墾田永年私財法（こんでんえいねんしざいほう）」です。これがのちに荘園（貴族の私有地）のルーツになります。" },
+            { q: "聖武天皇の命令によって、国ごとに建てられた寺と、都に建てられた東大寺の国全体のシンボルをそれぞれ何というか？", choices: ["国分寺・東大寺大仏", "本願寺・金閣寺", "清水寺・五重塔", "中尊寺金色堂"], a: "国分寺・東大寺大仏", hint: "仏教の力で国を災害や病気から守ろうとした聖武天皇が建てたのが「国分寺（こくぶんじ）」と「東大寺（大仏）」です。" },
+            { q: "奈良時代に編纂された、日本最古の和歌集で、防人（さきもり）や農民の歌まで幅広く収められているものは何か？", choices: ["古今和歌集", "万葉集", "新古今和歌集", "源氏物語"], a: "万葉集", hint: "約4500首が収録されている、奈良時代の文化（天平文化）を代表する歌集「万葉集（まんようしゅう）」です。" },
+            { q: "聖武天皇の遺品などが納められた、シルクロード経由のガラス製品などが今も残る、東大寺にある校倉造の倉庫は何か？", choices: ["正倉院", "金堂", "登呂遺跡", "三内丸山遺跡"], a: "正倉院", hint: "世界の宝物が眠る「正倉院（しょうそういん）」です。木の組み合わせで湿度を調節する校倉造（あぜくらづくり）で有名です。" }
         ];
 
         let currentQuestions = [];
@@ -220,12 +194,12 @@
             document.getElementById(stepId).classList.add('active');
         }
 
+        window.onload = function() {
+            const totalPoints = localStorage.getItem('userPoints') || 0;
+            document.getElementById('bar-points').innerText = `${totalPoints} pt`;
+        };
+
         function startQuiz(count) {
-            if (quizDatabase.length === 0) {
-                alert("問題が登録されていません。");
-                window.location.href = 'index.html';
-                return;
-            }
             const shuffled = [...quizDatabase].sort(() => 0.5 - Math.random());
             currentQuestions = shuffled.slice(0, Math.min(count, shuffled.length));
             currentIndex = 0;
@@ -254,7 +228,7 @@
             document.getElementById('quiz-progress').innerText = `第 ${currentIndex + 1} 問 / 全 ${currentQuestions.length} 問`;
             document.getElementById('quiz-question').innerText = current.q;
             
-            document.getElementById('next-btn-box').style.display = 'none';
+            document.getElementById('nav-next-btn').classList.remove('visible');
             document.getElementById('judge-text').className = 'judge-display';
             document.getElementById('explain-area').classList.remove('visible');
 
@@ -275,8 +249,7 @@
             if (hasAnswered) return; 
             hasAnswered = true;
 
-            const choicesBox = document.getElementById('choices-box');
-            const buttons = choicesBox.getElementsByClassName('btn');
+            const buttons = document.getElementById('choices-box').getElementsByClassName('btn');
             const judgeTextEl = document.getElementById('judge-text');
 
             for (let btn of buttons) {
@@ -288,8 +261,13 @@
 
             if (selectedChoice === correctAnswer) {
                 correctAnswers++;
-                judgeTextEl.innerText = "⭕ 正解！";
+                judgeTextEl.innerText = "⭕ 正解！ (+2pt)";
                 judgeTextEl.classList.add('is-correct');
+                
+                let totalPoints = parseInt(localStorage.getItem('userPoints') || 0);
+                totalPoints += 2;
+                localStorage.setItem('userPoints', totalPoints);
+                document.getElementById('bar-points').innerText = `${totalPoints} pt`;
             } else {
                 selectedButton.classList.add('wrong');
                 judgeTextEl.innerText = "❌ 不正解...";
@@ -299,7 +277,7 @@
             document.getElementById('explain-text').innerText = hintText;
             document.getElementById('explain-area').classList.add('visible');
 
-            document.getElementById('next-btn-box').style.display = 'block';
+            document.getElementById('nav-next-btn').classList.add('visible');
         }
 
         function nextQuestion() {
@@ -317,18 +295,20 @@
                 document.getElementById('total-count').innerText = currentQuestions.length;
                 document.getElementById('result-time').innerText = `かかった時間: ${totalTimeSec} 秒`;
                 
+                document.getElementById('nav-next-btn').classList.remove('visible');
                 changeView('step-result');
             }
         }
 
+        // 社会用の統計データを個別セーブ
         function saveStats(solvedCount, correctCount) {
-            let currentTotal = parseInt(localStorage.getItem('totalSolved') || 0);
-            localStorage.setItem('totalSolved', currentTotal + solvedCount);
+            let currentTotal = parseInt(localStorage.getItem('history_solved') || 0);
+            localStorage.setItem('history_solved', currentTotal + solvedCount);
 
             let accuracy = Math.round((correctCount / solvedCount) * 100);
-            let currentBest = parseInt(localStorage.getItem('bestAccuracy') || 0);
+            let currentBest = parseInt(localStorage.getItem('history_bestAccuracy') || 0);
             if (accuracy > currentBest) {
-                localStorage.setItem('bestAccuracy', accuracy);
+                localStorage.setItem('history_bestAccuracy', accuracy);
             }
         }
     </script>
