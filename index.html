@@ -3,47 +3,49 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>一問一答 - 学力ブースト</title>
+    <title>一問一答勉強WEBサイト</title>
     <style>
-        :root { --primary: #2563eb; --bg: #f8fafc; --text: #1e293b; }
-        body { font-family: 'Helvetica Neue', Arial, sans-serif; background: var(--bg); color: var(--text); margin: 0; padding-top: 70px; }
-        
-        /* 固定ヘッダー */
-        header { position: fixed; top: 0; width: 100%; height: 60px; background: #fff; box-shadow: 0 2px 10px rgba(0,0,0,0.1); display: flex; align-items: center; justify-content: space-around; z-index: 100; }
-        .score-box { font-size: 1.2rem; font-weight: bold; color: var(--primary); }
-        .nav-link { color: #64748b; text-decoration: none; font-size: 0.9rem; }
-
-        .container { max-width: 600px; margin: 20px auto; padding: 20px; }
-        h1 { text-align: center; font-size: 1.5rem; margin-bottom: 30px; }
-
-        /* 教科カード */
-        .subject-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
-        .card { background: white; padding: 30px 10px; border-radius: 12px; text-align: center; box-shadow: 0 4px 6px rgba(0,0,0,0.05); transition: 0.3s; cursor: pointer; border: 2px solid transparent; }
-        .card:hover { border-color: var(--primary); transform: translateY(-5px); }
-        .card span { display: block; font-size: 1.2rem; font-weight: bold; }
+        :root { --bg: #f0f2f5; --card: #ffffff; --text: #334155; }
+        body { font-family: sans-serif; background: var(--bg); color: var(--text); margin: 0; padding: 20px; }
+        header { text-align: center; font-size: 1.5rem; font-weight: bold; margin-bottom: 20px; }
+        .stat-card { background: var(--card); padding: 20px; border-radius: 16px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); text-align: center; margin-bottom: 20px; }
+        .stat-card h2 { margin: 0; font-size: 1rem; color: #64748b; }
+        .pts { font-size: 2.5rem; color: #2563eb; font-weight: 800; }
+        .subject-grid { display: grid; gap: 15px; }
+        .subject-card { background: var(--card); padding: 20px; border-radius: 12px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
+        .btn-select { padding: 10px 15px; border-radius: 8px; border: none; background: #2563eb; color: white; font-weight: bold; }
     </style>
 </head>
 <body>
-
-<header>
-    <div class="score-box">⚡ <span id="points">0</span> pt</div>
-    <a href="index.html" class="nav-link">HOME</a>
-</header>
-
-<div class="container">
-    <h1>勉強を選択</h1>
-    <div class="subject-grid">
-        <div class="card" onclick="location.href='math.html'"><span>数学</span></div>
-        <div class="card"><span>社会</span></div>
-        <div class="card"><span>国語</span></div>
-        <div class="card"><span>理科</span></div>
+    <header>一問一答勉強WEBサイト</header>
+    <div class="stat-card">
+        <h2>総合獲得ポイント</h2>
+        <div class="pts" id="total-points">0</div>
     </div>
-</div>
+    
+    <div class="subject-grid">
+        <div class="subject-card">
+            <div>
+                <strong>数学</strong>
+                <p style="font-size: 0.8rem; color: #64748b;">正答率: <span id="math-rate">0</span>%</p>
+            </div>
+            <select id="grade-math" class="btn-select">
+                <option value="1">中1</option>
+                <option value="2">中2</option>
+                <option value="3">中3</option>
+            </select>
+            <button class="btn-select" onclick="startStudy('math')">開始</button>
+        </div>
+        </div>
 
-<script>
-    // ポイント初期化（ローカルストレージ）
-    let points = localStorage.getItem('totalPoints') || 0;
-    document.getElementById('points').innerText = points;
-</script>
+    <script>
+        document.getElementById('total-points').innerText = localStorage.getItem('totalPoints') || 0;
+        function startStudy(subject) {
+            const grade = document.getElementById(`grade-${subject}`).value;
+            localStorage.setItem('targetSubject', subject);
+            localStorage.setItem('targetGrade', grade);
+            location.href = 'quiz.html';
+        }
+    </script>
 </body>
 </html>
