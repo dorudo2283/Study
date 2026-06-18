@@ -43,6 +43,20 @@ margin-bottom:20px;
 text-align:center;
 }
 
+/* 追加: 設定エリアのスタイル */
+.settings {
+margin-bottom: 20px;
+background: white;
+padding: 15px;
+border-radius: 10px;
+display: inline-block;
+}
+.settings select {
+padding: 5px 10px;
+font-size: 16px;
+border-radius: 5px;
+}
+
 button{
 padding:12px 18px;
 border:none;
@@ -58,7 +72,7 @@ button:hover{
 background:#1565c0;
 }
 
-#game{
+#game, #final-result {
 display:none;
 }
 
@@ -135,27 +149,42 @@ display:none;
 width:100%;
 margin-top:20px;
 }
+
+/* 追加: 最終結果画面のスタイル */
+#final-result {
+text-align: center;
+background: white;
+padding: 30px;
+border-radius: 10px;
+box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+}
+.result-stats {
+font-size: 22px;
+margin: 15px 0;
+font-weight: bold;
+}
+.result-rate {
+font-size: 28px;
+color: #e53935;
+margin: 15px 0;
+font-weight: bold;
+}
+.result-point {
+font-size: 20px;
+color: #1e88e5;
+margin-bottom: 20px;
+}
 </style>
 
 </head>
 <body>
 
 <header>
-
+<div>📚 一問一答マスター</div>
 <div>
-📚 一問一答マスター
-</div>
-
-<div>
-
 <a href="index.html">🏠ホーム</a>
-
-<span class="point">
-⭐ <span id="point">0</span>P
-</span>
-
+<span class="point">⭐ <span id="point">0</span>P</span>
 </div>
-
 </header>
 
 <main>
@@ -163,234 +192,177 @@ margin-top:20px;
 <h1>📐 数学</h1>
 
 <div class="menu" id="menu">
+  
+  <div class="settings">
+    <label for="q-count"><b>出題数：</b></label>
+    <select id="q-count">
+      <option value="1">1問</option>
+      <option value="2" selected>2問</option>
+      <option value="3">3問</option>
+      <option value="5">5問</option>
+      <option value="10">10問</option>
+    </select>
+  </div>
 
-<h2>学年を選択</h2>
-
-<button onclick="start(1)">中1</button>
-<button onclick="start(2)">中2</button>
-<button onclick="start(3)">中3</button>
-
+  <h2>学年を選択してスタート</h2>
+  <button onclick="start(1)">中1</button>
+  <button onclick="start(2)">中2</button>
+  <button onclick="start(3)">中3</button>
 </div>
 
 <div id="game">
-
-<div class="progressText" id="progressText"></div>
-
-<div class="progress">
-<div id="bar"></div>
+  <div class="progressText" id="progressText"></div>
+  <div class="progress">
+    <div id="bar"></div>
+  </div>
+  <div class="question" id="question"></div>
+  <div id="choices"></div>
+  <div id="result"></div>
+  <div id="explain"></div>
+  <button id="next" onclick="nextQuestion()">次の問題 ▶</button>
 </div>
 
-<div class="question" id="question"></div>
-
-<div id="choices"></div>
-
-<div id="result"></div>
-
-<div id="explain"></div>
-
-<button id="next" onclick="nextQuestion()">
-次の問題 ▶
-</button>
-
+<div id="final-result">
+  <h2>🎉 結果発表 🎉</h2>
+  <div class="result-stats" id="final-score">正解数: 0 / 0問</div>
+  <div class="result-rate" id="final-rate">正答率: 0%</div>
+  <div class="result-point" id="final-earned-points">獲得ポイント: +0P</div>
+  <button onclick="location.reload()">もう一度遊ぶ</button>
+  <button onclick="location.href='index.html'" style="background: #757575;">ホームへ戻る</button>
 </div>
 
 </main>
 
 <script>
+const pointText = document.getElementById("point");
+let point = Number(localStorage.getItem("point")) || 0;
+pointText.textContent = point;
 
-const pointText=document.getElementById("point");
+let current = 0;
+let answered = false;
+let questions = [];
 
-let point=Number(localStorage.getItem("point"))||0;
-pointText.textContent=point;
+// 追加: 今回のプレイでの正解数をカウントする変数
+let correctCount = 0; 
 
-let current=0;
-let answered=false;
-let questions=[];
-
-const db={
-
-1:[
-{
-q:"(-5)+8=?",
-c:["2","3","4","5","6"],
-a:1,
-ex:"8-5=3"
-},
-{
-q:"2(x+3)を展開すると？",
-c:["2x+6","2x+3","x+6","2x+9","x+3"],
-a:0,
-ex:"分配法則で2x+6"
-}
-],
-
-2:[
-{
-q:"2x=18 のxは？",
-c:["7","8","9","10","11"],
-a:2,
-ex:"18÷2=9"
-},
-{
-q:"y=5x の傾きは？",
-c:["3","4","5","6","7"],
-a:2,
-ex:"xの係数"
-}
-],
-
-3:[
-{
-q:"√64は？",
-c:["6","7","8","9","10"],
-a:2,
-ex:"8×8=64"
-},
-{
-q:"三平方の定理は？",
-c:[
-"a+b=c",
-"a²+b²=c²",
-"a=b+c",
-"ab=c²",
-"a²=b²"
-],
-a:1,
-ex:"直角三角形で成り立つ公式"
-}
-]
+const db = {
+  1:[
+    { q:"(-5)+8=?", c:["2","3","4","5","6"], a:1, ex:"8-5=3" },
+    { q:"2(x+3)を展開すると？", c:["2x+6","2x+3","x+6","2x+9","x+3"], a:0, ex:"分配法則で2x+6" }
+  ],
+  2:[
+    { q:"2x=18 のxは？", c:["7","8","9","10","11"], a:2, ex:"18÷2=9" },
+    { q:"y=5x の傾きは？", c:["3","4","5","6","7"], a:2, ex:"xの係数" }
+  ],
+  3:[
+    { q:"√64は？", c:["6","7","8","9","10"], a:2, ex:"8×8=64" },
+    { q:"三平方の定理は？", c:["a+b=c","a²+b²=c²","a=b+c","ab=c²","a²=b²"], a:1, ex:"直角三角形で成り立つ公式" }
+  ]
 };
 
-function start(g){
+function start(g) {
+  current = 0;
+  correctCount = 0; // リセット
+  answered = false;
 
-current=0;
-answered=false;
+  // 選択された問題数を取得
+  const selectedCount = Number(document.getElementById("q-count").value);
 
-questions=[...db[g]];
+  // 対象学年の問題をコピーしてシャッフル
+  let allQuestions = [...db[g]];
+  allQuestions.sort(() => Math.random() - 0.5);
 
-// ランダム
-questions.sort(()=>Math.random()-0.5);
+  // シャッフルした問題の中から、選択された問題数だけ切り取る（実際のDB問題数が少ない場合は最大数に合わせる）
+  questions = allQuestions.slice(0, Math.min(selectedCount, allQuestions.length));
 
-document.getElementById("menu").style.display="none";
-document.getElementById("game").style.display="block";
+  document.getElementById("menu").style.display = "none";
+  document.getElementById("game").style.display = "block";
 
-showQuestion();
-
+  showQuestion();
 }
 
-function showQuestion(){
+function showQuestion() {
+  answered = false;
+  let q = questions[current];
 
-answered=false;
+  document.getElementById("progressText").innerHTML = "問題 " + (current + 1) + " / " + questions.length;
+  document.getElementById("bar").style.width = ((current + 1) / questions.length * 100) + "%";
+  document.getElementById("question").innerHTML = q.q;
 
-let q=questions[current];
+  let html = "";
+  q.c.forEach((choice, index) => {
+    html += `<button class="choice" onclick="answer(${index})">${choice}</button>`;
+  });
 
-document.getElementById("progressText").innerHTML=
-"問題 "+(current+1)+" / "+questions.length;
-
-document.getElementById("bar").style.width=
-((current+1)/questions.length*100)+"%";
-
-document.getElementById("question").innerHTML=q.q;
-
-let html="";
-
-q.c.forEach((choice,index)=>{
-
-html+=`
-<button class="choice"
-onclick="answer(${index})">
-${choice}
-</button>
-`;
-
-});
-
-document.getElementById("choices").innerHTML=html;
-
-document.getElementById("result").innerHTML="";
-document.getElementById("explain").innerHTML="";
-document.getElementById("next").style.display="none";
-
+  document.getElementById("choices").innerHTML = html;
+  document.getElementById("result").innerHTML = "";
+  document.getElementById("explain").innerHTML = "";
+  document.getElementById("next").style.display = "none";
 }
 
-function answer(select){
+function answer(select) {
+  if (answered) return;
+  answered = true;
 
-if(answered)return;
+  const q = questions[current];
+  const buttons = document.querySelectorAll(".choice");
 
-answered=true;
+  buttons.forEach((btn, index) => {
+    btn.disabled = true;
+    if (index === q.a) {
+      btn.classList.add("correct");
+    }
+    if (index === select && select !== q.a) {
+      btn.classList.add("wrong");
+    }
+  });
 
-const q=questions[current];
+  localStorage.setItem("mathAnswered", (Number(localStorage.getItem("mathAnswered")) || 0) + 1);
 
-const buttons=document.querySelectorAll(".choice");
+  if (select === q.a) {
+    document.getElementById("result").innerHTML = "⭕ 正解！ +2P";
+    
+    // 正解数とポイントを加算
+    correctCount++;
+    point += 2;
+    localStorage.setItem("point", point);
+    pointText.textContent = point;
+    localStorage.setItem("mathCorrect", (Number(localStorage.getItem("mathCorrect")) || 0) + 1);
+  } else {
+    document.getElementById("result").innerHTML = "❌ 不正解";
+  }
 
-buttons.forEach((btn,index)=>{
-
-btn.disabled=true;
-
-if(index===q.a){
-btn.classList.add("correct");
+  document.getElementById("explain").innerHTML = "<b>解説</b><br>" + q.ex;
+  document.getElementById("next").style.display = "block";
 }
 
-if(index===select&&select!==q.a){
-btn.classList.add("wrong");
+function nextQuestion() {
+  current++;
+
+  if (current >= questions.length) {
+    // 全問終了したら結果画面を表示する
+    showFinalResult();
+    return;
+  }
+
+  showQuestion();
 }
 
-});
+// 追加: 最終結果を表示する関数
+function showFinalResult() {
+  document.getElementById("game").style.display = "none";
+  document.getElementById("final-result").style.display = "block";
 
-localStorage.setItem(
-"mathAnswered",
-(Number(localStorage.getItem("mathAnswered"))||0)+1
-);
+  // 正答率の計算 (小数点以下四捨五入)
+  const rate = Math.round((correctCount / questions.length) * 100);
+  // 今回の獲得ポイント
+  const earnedPoints = correctCount * 2;
 
-if(select===q.a){
-
-document.getElementById("result").innerHTML=
-"⭕ 正解！ +2P";
-
-point+=2;
-
-localStorage.setItem("point",point);
-
-pointText.textContent=point;
-
-localStorage.setItem(
-"mathCorrect",
-(Number(localStorage.getItem("mathCorrect"))||0)+1
-);
-
-}else{
-
-document.getElementById("result").innerHTML=
-"❌ 不正解";
-
-}
-
-document.getElementById("explain").innerHTML=
-"<b>解説</b><br>"+q.ex;
-
-document.getElementById("next").style.display="block";
-
-}
-
-function nextQuestion(){
-
-current++;
-
-if(current>=questions.length){
-
-alert("終了！");
-
-location.href="index.html";
-
-return;
-
-}
-
-showQuestion();
-
+  document.getElementById("final-score").innerHTML = `正解数: ${correctCount} / ${questions.length}問`;
+  document.getElementById("final-rate").innerHTML = `正答率: ${rate}%`;
+  document.getElementById("final-earned-points").innerHTML = `獲得ポイント: +${earnedPoints}P`;
 }
 
 </script>
-
 </body>
 </html>
