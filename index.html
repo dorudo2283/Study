@@ -5,16 +5,17 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>一問一答勉強WEBサイト</title>
     <style>
-        body { margin: 0; padding: 60px 10px 20px; font-family: sans-serif; background: #f1f5f9; box-sizing: border-box; }
-        header { position: fixed; top: 0; left:0; width: 100%; height: 50px; background: #1e293b; color: white; display: flex; align-items: center; justify-content: space-between; padding: 0 15px; box-sizing: border-box; z-index: 100; box-shadow: 0 2px 5px rgba(0,0,0,0.2); }
-        .box { background: white; padding: 20px; border-radius: 12px; margin-bottom: 20px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
-        a { display: block; text-align: center; padding: 15px; background: #2563eb; color: white; text-decoration: none; border-radius: 8px; font-weight: bold; }
+        body { margin: 0; padding-top: 80px; font-family: sans-serif; background: #f1f5f9; box-sizing: border-box; }
+        header { position: fixed; top: 0; left:0; width: 100%; height: 70px; background: #1e293b; color: white; display: flex; align-items: center; justify-content: space-between; padding: 0 20px; box-sizing: border-box; z-index: 100; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+        .stats-summary { font-size: 0.9rem; text-align: right; }
+        .box { background: white; padding: 25px; border-radius: 16px; margin: 0 15px 20px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
+        a { display: block; text-align: center; padding: 18px; background: #2563eb; color: white; text-decoration: none; border-radius: 12px; font-weight: bold; font-size: 1.1rem; }
     </style>
 </head>
 <body>
     <header>
-        <div>一問一答勉強WEBサイト</div>
-        <div id="pts-display">Pts: 0</div>
+        <div style="font-weight:bold; font-size:1.2rem;">一問一答勉強WEBサイト</div>
+        <div class="stats-summary" id="stats-header"></div>
     </header>
 
     <div class="box">
@@ -27,7 +28,11 @@
     </div>
 
     <script>
-        document.getElementById('pts-display').innerText = "Pts: " + (localStorage.getItem('totalPoints') || '0');
+        const pts = localStorage.getItem('totalPoints') || '0';
+        const total = parseInt(localStorage.getItem('totalAnswers') || 0);
+        const correct = parseInt(localStorage.getItem('totalCorrect') || 0);
+        const acc = total > 0 ? Math.round((correct / total) * 100) : 0;
+        document.getElementById('stats-header').innerHTML = `ポイント: ${pts}<br>正答率: ${acc}%`;
     </script>
 </body>
 </html>
