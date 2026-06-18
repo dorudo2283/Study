@@ -8,7 +8,7 @@
         :root {
             --bg-color: #f1f5f9;
             --text-color: #0f172a;
-            --accent-color: #f59e0b; /* 社会は地理・歴史のイメージから温かみのあるアンバー */
+            --accent-color: #f59e0b;
             --accent-hover: #d97706;
             --success-color: #10b981;
             --danger-color: #ef4444;
@@ -22,11 +22,10 @@
             -webkit-text-size-adjust: 100%;
         }
         
-        /* ボタン位置崩れを絶対に起こさないナビゲーションバー */
         nav {
             width: 100%; background: var(--card-bg); border-bottom: 1px solid var(--border-color);
-            padding: 0 1.5rem; box-sizing: border-box; display: flex; justify-content: space-between; align-items: center;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.05); position: sticky; top: 0; z-index: 100; height: 65px;
+            padding: 0 1.5rem; box-shadow: 0 1px 3px rgba(0,0,0,0.05); position: sticky; top: 0; z-index: 100; height: 65px;
+            display: flex; justify-content: space-between; align-items: center; box-sizing: border-box;
         }
         .nav-back { width: 25%; text-align: left; }
         .nav-back a { color: #64748b; text-decoration: none; font-size: 0.95rem; font-weight: 700; display: inline-block; padding: 0.5rem 0; }
@@ -40,29 +39,36 @@
 
         header { width: 100%; text-align: center; padding: 2rem 1rem 1rem 1rem; box-sizing: border-box; }
         h1 { font-size: 1.8rem; font-weight: 800; margin: 0; color: var(--text-color); }
-        .container { width: 100%; max-width: 540px; padding: 0 1.5rem; box-sizing: border-box; margin-bottom: 4rem; }
+        .container { width: 100%; max-width: 540px; padding: 0 1.5rem; margin-bottom: 4rem; box-sizing: border-box; }
         
-        .card { background: var(--card-bg); border-radius: 20px; padding: 2.5rem 1.5rem; box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.05); text-align: center; display: none; box-sizing: border-box; width: 100%; }
+        .card { background: var(--card-bg); border-radius: 20px; padding: 2.5rem 1.5rem; box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.05); text-align: center; display: none; width: 100%; box-sizing: border-box; }
         .card.active { display: block; animation: fadeIn 0.35s ease; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
         
         h2 { font-size: 1.25rem; margin-top: 0; margin-bottom: 2rem; color: #334155; font-weight: 700; }
-        .btn-list { display: flex; flex-direction: column; gap: 0.8rem; width: 100%; }
+        .btn-list { display: flex; flex-direction: column; gap: 0.8rem; width: 100%; box-sizing: border-box; }
         
         .btn {
             background-color: var(--card-bg); border: 1px solid var(--border-color); color: var(--text-color);
             padding: 1rem 1.2rem; font-size: 1.05rem; font-weight: 600; border-radius: 12px; cursor: pointer; transition: all 0.2s ease;
-            text-align: left; box-shadow: 0 2px 4px rgba(0,0,0,0.02); box-sizing: border-box; width: 100%;
+            text-align: left; box-shadow: 0 2px 4px rgba(0,0,0,0.02); width: 100%; box-sizing: border-box;
             word-break: break-all;
         }
         .btn:hover:not(:disabled) { border-color: var(--accent-color); background-color: rgba(245, 158, 110, 0.01); }
         .btn.correct { background-color: var(--success-color) !important; color: white !important; border-color: var(--success-color) !important; }
         .btn.wrong { background-color: var(--danger-color) !important; color: white !important; border-color: var(--danger-color) !important; }
         
-        .btn-primary { background-color: var(--accent-color); color: white; border: none; text-align: center; padding: 1.1rem; border-radius: 14px; font-size: 1.1rem; font-weight: 700; width: 100%; display: block; text-decoration: none; box-shadow: 0 4px 6px -1px rgba(245, 158, 110, 0.2); box-sizing: border-box; }
+        /* はみ出しを絶対に防ぐプライマリーボタンの修正 */
+        .btn-primary { 
+            background-color: var(--accent-color); color: white; border: none; text-align: center; 
+            padding: 1.1rem; border-radius: 14px; font-size: 1.1rem; font-weight: 700; 
+            width: 100%; display: block; text-decoration: none; 
+            box-shadow: 0 4px 6px -1px rgba(245, 158, 110, 0.2); 
+            box-sizing: border-box; margin: 0 auto;
+        }
 
         .quiz-text { font-size: 1.25rem; font-weight: 700; margin-bottom: 2rem; min-height: 80px; display: flex; align-items: center; justify-content: center; color: #0f172a; white-space: pre-wrap; line-height: 1.6; text-align: left; padding: 0 0.5rem; }
-        .quiz-info { display: flex; justify-content: space-between; margin-bottom: 1.2rem; width: 100%; }
+        .quiz-info { display: flex; justify-content: space-between; margin-bottom: 1.2rem; width: 100%; box-sizing: border-box; }
         .progress, .timer { font-size: 0.85rem; font-weight: 700; color: #94a3b8; letter-spacing: 0.05em; }
         
         .judge-display { font-size: 2rem; font-weight: 900; margin: 1.2rem 0; display: none; }
@@ -142,7 +148,7 @@
             { q: "赤道付近に見られる、一年中気温が高く雨が多い気候帯はどれか？", choices: ["熱帯", "温帯", "乾燥帯", "寒帯"], a: "熱帯", hint: "季節の変化がほとんどなく、毎日スコールと呼ばれる激しい雨が降る特徴があります。" },
             { q: "熱帯地域で見られる、1日の午後に降る猛烈な突風を伴う大雨を何というか？", choices: ["スコール", "タイフーン", "ハリケーン", "モンスーン"], a: "スコール", hint: "日本の夕立に似ていますが、より激しく、短時間で降り止むのが特徴です。" },
             { q: "砂漠や、樹木が育たないステップと呼ばれる草原が広がる気候帯はどれか？", choices: ["乾燥帯", "熱帯", "高山気候", "寒帯"], a: "乾燥帯", hint: "雨が極端に少なく、水分が蒸発してしまうため、植物が育ちにくい気候です。" },
-            { q: "砂漠において、地下水が湧き出て植物が育ち、人間が集落をつくる場所を何というか？", choices: ["オアシス", "ワジ", "ステップ", "サバナ"], a: "オアシス", hint: "乾燥帯での生活や農業の重要な拠点となります。" },
+            { q: "砂漠において、地下水が湧き出て植物が育、人間が集落をつくる場所を何というか？", choices: ["オアシス", "ワジ", "ステップ", "サバナ"], a: "オアシス", hint: "乾燥帯での生活や農業の重要な拠点となります。" },
             { q: "日本が属する、四季の変化がはっきりしていて、比較的温暖で過ごしやすい気候帯はどれか？", choices: ["温帯", "亜熱帯", "冷帯（亜寒帯）", "熱帯"], a: "温帯", hint: "人口が最も集中し、農業や産業が盛んな気候帯です。" },
             { q: "温帯のうち、ヨーロッパ西部のように、暖流と偏西風の影響で高緯度のわりに冬が温暖な気候は？", choices: ["西岸海洋性気候", "地中海性気候", "温暖湿潤気候", "ステップ気候"], a: "西岸海洋性気候", hint: "北大西洋海流（暖流）の上を吹く偏西風が、暖かい空気を大陸に運ぶためです。テスト超頻出！" },
             { q: "温帯のうち、イタリアなど地中海沿岸に見られる、夏に乾燥し冬に雨が降る気候を何というか？", choices: ["地中海性気候", "西岸海洋性気候", "温暖湿潤気候", "熱帯モンスーン気候"], a: "地中海性気候", hint: "夏に雨が降らないため、オリーブやオレンジ、ブドウなどの栽培が盛んです。" },
@@ -202,7 +208,7 @@
             { q: "縄文時代に作られた、魔除けや豊かな実りを祈るために使われたとされる、女性をかたどった土製品は何か？", choices: ["土偶", "埴輪", "石包丁", "銅鐸"], a: "土偶", hint: "古墳時代の「埴輪（はにわ）」と非常によくひっかけ問題にされるので注意！縄文は「土偶（どぐう）」です。" },
             { q: "紀元前4世紀頃から始まり、大陸から稲作と青銅器・鉄器の技術が伝わって始まった時代は何か？", choices: ["弥生時代", "縄文時代", "古墳時代", "飛鳥時代"], a: "弥生時代", hint: "薄手で硬く、赤褐色の弥生土器が使われました。米作りによって貧富の差や小国が誕生します。" },
             { q: "弥生時代に、収穫した米の穂を摘み取るために使われた、穴に紐を通して使う石の道具は何か？", choices: ["石包丁", "打製石器", "磨製石斧", "鉄鎌"], a: "石包丁", hint: "米の「実（穂）」の部分だけを1つずつ摘み取るための道具です。のちに鉄製の鎌へと変わります。" },
-            { q: "弥生時代に、ネズミや湿気を防ぎ、収穫した米を安全に保管するために作られた高床の建物を何というか？", choices: ["高床倉庫", "竪穴住居", "寝殿造", "物見やぐら"], a: "高床倉庫", hint: "床を高くすることで風通しを良くし、柱にはネズミの侵入を防ぐ「ネズミ返し」がついていました。" },
+            { q: "弥生時代に、ネズミや湿気を防ぎ、収穫した米を安全に保管するために作られた高床の建物を何というか？", choices: ["高床倉庫", "竪穴住居", "寝殿造", "物見やぐら"], a: "高床倉庫", hint: "床を高くすることで風通しを良くし、柱にはネズミの侵入を防ぎ「ネズミ返し」がついていました。" },
             { q: "佐賀県で発見された、弥生時代の巨大な環濠集落（周りに堀をめぐらせた集落）の遺跡はどこか？", choices: ["吉野ヶ里遺跡", "三内丸山遺跡", "登呂遺跡", "板付遺跡"], a: "吉野ヶ里遺跡", hint: "物見やぐらや防壁があり、他国との戦いに備えていた様子がわかる弥生時代最大級の遺跡です。" },
             { q: "青森県で発見された、縄文時代の大規模な定住集落の遺跡はどこか？", choices: ["三内丸山遺跡", "吉野ヶ里遺跡", "登呂遺跡", "岩宿遺跡"], a: "三内丸山遺跡", hint: "巨大な栗の木の柱の跡などが見つかり、縄文時代のイメージを覆す高度な社会があったことが判明しました。" },
             { q: "『漢書』地理志に記述がある、紀元前1世紀頃の日本（倭）の状況として、国はいくつくらいに分かれていたか？", choices: ["100余りの国", "30余りの国", "1つの大国", "邪馬台国のみ"], a: "100余りの国", hint: "「倭人が定期的に楽浪郡（朝鮮半島）に使者を送ってきた」と書かれています。" },
@@ -211,10 +217,10 @@
             { q: "3世紀後半から、大和地方（奈良県）を中心に、豪族たちが連合して作った強力な政治権力を何というか？", choices: ["大和政権（大和朝廷）", "幕府", "摂関家", "平氏政権"], a: "大和政権（大和朝廷）", hint: "最高権力者は「大王（おおきみ）」と呼ばれ、これがのちの天皇につながります。" },
             { q: "大和政権の王や豪族たちの墓として作られた、巨大な土盛りの建造物を何というか？", choices: ["古墳", "貝塚", "ピラミッド", "寺院"], a: "古墳", hint: "前方後円墳など独特な形があり、これらが盛んに作られた時代を「古墳時代」と呼びます。" },
             { q: "古墳の周囲や頂上に並べられた、素焼きの土製品で、人間や動物、家などの形をしたものを何というか？", choices: ["埴輪", "土偶", "青銅器", "仏像"], a: "埴輪", hint: "聖なるエリアを区切るため、また死者の霊を慰めるために並べられました。縄文の「土偶」と区別！" },
-            { q: "5世紀頃、朝鮮半島から日本列島に移住し、漢字、儒教、仏教、織物、須恵器などの高度な技術を伝えた人々は？", choices: ["渡来人", "遣隋使", "遣唐使", "南蛮人"], a: "渡来人", hint: "大和政権は彼らを優遇し、国の政治や技術開発の重要なポストに就けました。"
+            { q: "5世紀頃、朝鮮半島から日本列島に移住し、漢字、儒教、仏教、織物、須恵器などの高度な技術を伝えた人々は？", choices: ["渡来人", "遣隋使", "遣唐使", "南蛮人"], a: "渡来人", hint: "大和政権は彼らを優遇し、国の政治や技術開発の重要なポストに就けました。" },
 
             // 【歴史：飛鳥・奈良・平安時代】
-            , { q: "593年、推古天皇の摂政となり、蘇我氏と協力して仏教を取り入れた政治改革を行った人物は？", choices: ["聖徳太子（厩戸王）", "中大兄皇子", "大海人皇子", "藤原不比等"], a: "聖徳太子（厩戸王）", hint: "冠位十二階や十七条の憲法を定め、天皇中心の国づくりを目指しました。" },
+            { q: "593年、推古天皇の摂政となり、蘇我氏と協力して仏教を取り入れた政治改革を行った人物は？", choices: ["聖徳太子（厩戸王）", "中大兄皇子", "大海人皇子", "藤原不比等"], a: "聖徳太子（厩戸王）", hint: "冠位十二階や十七条の憲法を定め、天皇中心の国づくりを目指しました。" },
             { q: "聖徳太子が定めた、家柄ではなく個人の能力や功績によって役人を登用する制度は何か？", choices: ["冠位十二階", "十七条の憲法", "班田収授法", "身分統制令"], a: "冠位十二階", hint: "冠の色で役人の位（12段階）を表し、能力のある優秀な人材を集めようとしました。" },
             { q: "聖徳太子が役人の心得として定めた、「和をもって貴しとなす」で始まる決まりは何か？", choices: ["十七条の憲法", "冠位十二階", "御成敗式目", "武家諸法度"], a: "十七条の憲法", hint: "仏教や儒教の教えを取り入れ、役人としての道徳や天皇への忠誠を説きました。" },
             { q: "聖徳太子が中国の隋に派遣した、小野妹子らによる使節を何というか？", choices: ["遣隋使", "遣唐使", "遣明使", "通信使"], a: "遣隋使", hint: "「日出づる処の天子、書を日没する処の天子に致す…」という対等な立場を強調した手紙が有名です。" },
@@ -237,7 +243,7 @@
             { q: "894年、菅原道真の提案により、唐の衰退を理由に停止された、中国への公式使節の派遣制度は何か？", choices: ["遣唐使の廃止", "遣隋使の停止", "日宋貿易の禁止", "鎖国令"], a: "遣唐使の廃止", hint: "「白紙（894）に戻そう遣唐使」です。これをきっかけに、日本の風土に合わせた「国風文化」が発達します。" },
             { q: "遣唐使の廃止後、日本の気候や好みに合わせて発達した、貴族を中心とする日本独自の文化を何というか？", choices: ["国風文化", "天平文化", "飛鳥文化", "弘仁・貞観文化"], a: "国風文化", hint: "漢字を崩して作られた「かな文字（平仮名・片仮名）」が誕生し、文学が大発展しました。" },
             { q: "平安時代、紫式部によって書かれた、宮廷の恋愛や人間模様を描いた世界最古級の長編小説は何か？", choices: ["源氏物語", "枕草子", "竹取物語", "伊勢物語"], a: "源氏物語", hint: "主人公・光源氏（ひかるげんじ）の一生を描いた、国風文化を代表する傑作です。" },
-            { q: "平安時代、清少納言によって書かれた、「春はあけぼの…」の文頭で有名な随筆（エッセイ）は何か？", choices: ["枕草子", "源氏物語", "方丈記", "徒然草"], a: "枕草子", hint: "宮廷生活の中で感じた鋭い自然観察やユーモアが、かな文字で綴られています。" },
+            { q: "平安時代、清少納言によって書かれた、「春はあけぼの…」の文頭で有名な随筆（エッセイ）は何か？", choices: ["枕草子", "源氏物語", "方丈記", "徒然草"], a: "枕草子", hint: "宮廷生活の中で感じた鋭い自然観察やユーアが、かな文字で綴られています。" },
             { q: "地方の治安悪化に伴い、自分の領地（荘園）を自衛するために、武器（弓矢や刀）を持って武装し始めた人々を何というか？", choices: ["武士", "地頭", "守護", "御家人"], a: "武士", hint: "最初は小規模な警備集団でしたが、やがて平氏や源氏といった巨大な武士団へと成長し、歴史を動かしていきます。" }
         ];
 
